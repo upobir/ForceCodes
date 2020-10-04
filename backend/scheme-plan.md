@@ -24,32 +24,32 @@
 
 - [x] CONTEST (<u>id</u>, name, time_start, duration, min_rated, max_rated)
 
-- [ ] BLOG_POST (<u>id</u>, title, body, creation_time, <u>contest_id</u>, <u>author_id</u>)
+- [x] BLOG_POST (<u>id</u>, title, body, creation_time, <u>contest_id</u>, <u>author_id</u>)
 
-- [ ] COMMENT (<u>id</u>, body, creation_time, <u>author_id</u>, <u>blog_id</u>, <u>parent_id</u>)
+- [x] POST_COMMENT (<u>id</u>, body, creation_time, <u>author_id</u>, <u>blog_id</u>, <u>parent_id</u>)
 
-- [ ] PROBLEM (<u>id</u>, name, <u>contest_id</u>, body, source_limit, time_limit, memory_limit, rating)
+- [x] PROBLEM (<u>id</u>, name, <u>contest_id</u>, body, source_limit, time_limit, memory_limit, rating)
 
-- [ ] TEST_FILE (<u>id</u>, <u>problem_id</u>, type, input, output)
+- [x] TEST_FILE (<u>id</u>, <u>problem_id</u>, test_number, type, input, output)
 
-- [ ] SUBMISSION (<u>id</u>, <u>problem_id</u>, <u>author_id</u>, submission_time, judge_time, <u>lang_id</u>)
+- [x] SUBMISSION (<u>id</u>, <u>problem_id</u>, <u>author_id</u>, submission_time, judge_time, <u>lang_id</u>)
 
-- [ ] USER_USER_FOLLOW (<u>id</u>, <u>follower_id</u>, <u>followed_id</u>)
+- [x] USER_USER_FOLLOW (<u>follower_id</u>, <u>followed_id</u>)
 
-- [ ] USER_TEAM_MEMBER (<u>id</u>, <u>user_id</u>, <u>team_id</u>)
+- [x] USER_TEAM_MEMBER (<u>user_id</u>, <u>team_id</u>, type)
 
-- [ ] BLOG_USER_VOTE (<u>id</u>, <u>user_id</u>, <u>blog_id</u>, type)
+- [x] BLOG_USER_VOTE (<u>user_id</u>, <u>blog_id</u>, type)
 
-- [ ] USER_CONTEST_ADMIN (<u>id</u>, <u>user_id</u>, <u>contest_id</u>, type)
+- [x] USER_CONTEST_ADMIN (<u>user_id</u>, <u>contest_id</u>, type)
 
-- [ ] CONTESTANT_CONTEST_REGISTRATION (<u>id</u>, <u>contestant_id</u>, <u>contest_id</u>, standing, rating_change)
+- [x] CONTEST_REGISTRATION (<u>contestant_id</u>, <u>contest_id</u>, standing, rating_change)
 
-- [ ] COMMENT_USER_VOTE (<u>id</u>, <u>user_id</u>, <u>comment_id</u>, type)
+- [x] COMMENT_USER_VOTE (<u>user_id</u>, <u>comment_id</u>, type)
 
-- [ ] BLOG_TAG (<u>id</u>, <u>blog_id</u>, <u>tag</u>)
+- [x] BLOG_TAG (<u>blog_id</u>, <u>tag_id</u>)
 
-- [ ] CONTEST_ANNOUNCEMENTS (<u>id</u>, <u>contest_id</u>, body, creation_time)
+- [ ] CONTEST_ANNOUNCEMENTS (<u>contest_id</u>, body, creation_time)
 
-- [ ] PROBLEM_TAG (<u>id</u>, <u>problem_id</u>, <u>tag_id</u>)
+- [ ] PROBLEM_TAG (<u>problem_id</u>, <u>tag_id</u>)
 
-- [ ] SUBMISSION_TEST_RUN (<u>id</u>, <u>submission_id</u>, <u>test_id</u>, result, runtime, memory)
+- [ ] SUBMISSION_TEST_RUN (<u>submission_id</u>, <u>test_id</u>, result, runtime, memory)
