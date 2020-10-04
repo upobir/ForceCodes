@@ -32,7 +32,7 @@
 
 - [x] TEST_FILE (<u>id</u>, <u>problem_id</u>, test_number, type, input, output)
 
-- [x] SUBMISSION (<u>id</u>, <u>problem_id</u>, <u>author_id</u>, submission_time, judge_time, <u>lang_id</u>)
+- [x] SUBMISSION (<u>id</u>, <u>problem_id</u>, <u>author_id</u>, submission_time, judge_time, <u>lang_id</u>, code_size)
 
 - [x] USER_USER_FOLLOW (<u>follower_id</u>, <u>followed_id</u>)
 
@@ -48,8 +48,8 @@
 
 - [x] BLOG_TAG (<u>blog_id</u>, <u>tag_id</u>)
 
-- [ ] CONTEST_ANNOUNCEMENTS (<u>contest_id</u>, body, creation_time)
+- [x] CONTEST_ANNOUNCEMENTS (<u>contest_id</u>, body, creation_time)
 
-- [ ] PROBLEM_TAG (<u>problem_id</u>, <u>tag_id</u>)
+- [x] PROBLEM_TAG (<u>problem_id</u>, <u>tag_id</u>)
 
-- [ ] SUBMISSION_TEST_RUN (<u>submission_id</u>, <u>test_id</u>, result, runtime, memory)
+- [x] SUBMISSION_TEST_RUN (<u>submission_id</u>, <u>test_id</u>, result, runtime, memory)
