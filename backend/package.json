@@ -4,14 +4,15 @@
   "description": "Backend for ForceCodes",
   "main": "index.js",
   "scripts": {
-    "start" : "node index.js",
-    "dev" : "nodemon index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "author": "Md Sabbir Rahman",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "oracledb": "^5.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.5"

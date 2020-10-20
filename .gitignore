@@ -1,1 +1,6 @@
 backend/sql/test.sql
+
+# database connection examples
+backend/dbconfig.js
+backend/example.js
+backend/demodrop.js
