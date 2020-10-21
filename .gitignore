@@ -4,3 +4,6 @@ backend/sql/test.sql
 backend/dbconfig.js
 backend/example.js
 backend/demodrop.js
+
+# node modules
+backend/node_modules
