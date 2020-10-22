@@ -1,18 +1,25 @@
+// libraries
 const express = require('express');
 const morgan = require('morgan');
-const middlewares = require('./middlewares');
 
+// middlewares/routers
+const middlewares = require('./middlewares');
+const router = require('./router/router')
+
+// app creation
 const app = express();
 
+// using libraries
 app.use(morgan('tiny'));
 app.set('view engine', 'ejs');
 
-app.get('/', (req, res) =>{
-    res.json({
-        message : 'Hello world'
-    })
-});
+// using router
+app.use('/', router);
 
+// allow public directory
+app.use(express.static('public'))
+
+// using error handling middlware
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
 
