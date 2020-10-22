@@ -4,15 +4,15 @@
 
 - [x] ORGANIZATION (<u>id</u>, name)
 
-- [x] COUNTRY (<u>id</u>, name)
+- [x] COUNTRY (<u>id</u>, name) `admin`
 
-- [x] CITY (<u>id</u>, name, <u>country_id</u>)
+- [x] CITY (<u>id</u>, name, <u>country_id</u>) `admin`
 
-- [x] LANGUAGE (<u>id</u>, name, command)
+- [x] LANGUAGE (<u>id</u>, name, command) `admin`
 
 - [x] TAG (<u>id</u>, name, type)
 
-- [x] RANK (<U>id</u>, name, color, min_rating, max_rating, division)
+- [x] RANK (<U>id</u>, name, color, min_rating, max_rating, division) `admin`
 
 - [x] CONTESTANT (<u>id</u>, type, handle, creation_time)
 
