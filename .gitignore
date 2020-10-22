@@ -1,9 +1,9 @@
-backend/sql/test.sql
+sql/test.sql
 
 # database connection examples
-backend/dbconfig.js
-backend/example.js
-backend/demodrop.js
+dbconfig.js
+example.js
+demodrop.js
 
 # node modules
-backend/node_modules
+node_modules

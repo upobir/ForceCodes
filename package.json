@@ -10,6 +10,7 @@
   "author": "Md Sabbir Rahman",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^3.1.5",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
     "oracledb": "^5.0.0"
