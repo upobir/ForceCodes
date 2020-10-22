@@ -1,0 +1,22 @@
+.my-logo{
+    height: 7.5vh;
+    width: 15vw
+}
+
+.my-nav{
+    margin-bottom: 0 !important;
+}
+
+.my-container{
+    width: 80vw !important;
+    max-width : 100vw !important;
+}
+
+.my-site-font{
+    font-family: verdana, arial, sans-serif;
+    font-size: 0.8em;
+}
+
+.my-nav-link{
+    color: black !important;
+}
