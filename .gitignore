@@ -1,4 +1,8 @@
+# sql draft
 sql/test.sql
+
+# vscode files
+*.code-workspace
 
 # database connection examples
 dbconfig.js
