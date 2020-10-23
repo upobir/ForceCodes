@@ -1,6 +1,7 @@
 // libraries
 const express = require('express');
 const morgan = require('morgan');
+const bodyParser = require('body-parser');
 
 // middlewares/routers
 const middlewares = require('./middlewares');
@@ -10,7 +11,10 @@ const router = require('./router/router')
 const app = express();
 
 // using libraries
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(morgan('tiny'));
+
 app.set('view engine', 'ejs');
 
 // using router

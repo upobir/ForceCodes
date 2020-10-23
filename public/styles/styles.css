@@ -1,6 +1,12 @@
+*{
+    font-family: verdana, arial, sans-serif;
+    font-size: 0.8em;
+    -webkit-text-size-adjust: none;
+}
+
 .my-logo{
-    height: 7.5vh;
-    width: 15vw
+    height: 8vh;
+    width: 16vw
 }
 
 .my-nav{
@@ -12,11 +18,10 @@
     max-width : 100vw !important;
 }
 
-*{
-    font-family: verdana, arial, sans-serif;
-    font-size: 0.8em;
-}
-
 .my-nav-link{
     color: black !important;
+}
+
+.my-message-notification{
+    font-weight: bold;
 }
