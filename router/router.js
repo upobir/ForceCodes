@@ -2,6 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 const signupRouter = require('./signup');
+const loginRouter = require('./login');
 
 router.get('/', (req, res) =>{
     res.render('../views/layout.ejs', {
@@ -13,6 +14,7 @@ router.get('/', (req, res) =>{
 });
 
 router.use('/signup', signupRouter);
+router.use('/login', loginRouter);
 
 
 module.exports = router

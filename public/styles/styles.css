@@ -4,6 +4,10 @@
     -webkit-text-size-adjust: none;
 }
 
+.my-main-body{
+    min-height: 100vh !important;
+}
+
 .my-logo{
     height: 8vh;
     width: 16vw

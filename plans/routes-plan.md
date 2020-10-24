@@ -1,7 +1,7 @@
-* index
-* signup
+* index @
+* signup @
     * successful
-* login `post`
+* login `post` @
 * (user)
     * blogs
         * new `post`
