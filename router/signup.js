@@ -1,18 +1,32 @@
 const express = require('express');
+const oracledb = require('oracledb');
+const DB = require('../db-connection/db-connection');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
+    const errors = [];
     res.render('../views/layout.ejs', {
         title : 'Sign Up - ForceCodes',
-        prompt : '_non-user-prompt',
         body : 'signup',
-        message_count : 0
+        user : null,
+        errors : errors
     })
 });
 
 router.post('/', (req, res) => {
-    res.json(req.body);
+    console.log(req.body);
+    // DB.run(async (connection) => {
+    //     let sql = `SELECT * FROM COUNTRY`;
+    //     let binds = {};
+    //     let options = {
+    //         outFormat: oracledb.OUT_FORMAT_OBJECT
+    //     }
+
+    //     let result = await connection.execute(sql, binds, options);
+    //     console.log(result);
+    //     res.redirect('/')
+    // });
 })
 
 module.exports = router;

@@ -1,3 +1,8 @@
-<a href="/upobir">upobir</a> | <a href="/logout">log out</a>
-<br>
-<span hidden><a href="/messages"><b>messages(<%= message_count %>)</b></a></span>
+<a href="/upobir"> <%= user %> </a> | <a href="/logout">log out</a>
+
+<% if(typeof user.messages !== undefined) { %>
+    <br>
+    <span hidden>
+        <a href="/messages"><b>messages(<%= message_count %>)</b></a>
+    </span>
+<% } %>

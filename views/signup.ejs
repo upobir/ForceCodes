@@ -1,30 +1,48 @@
-<div class="card w-50 mx-auto">
+<div class="card w-50 mx-auto border-primary">
     <form action="/signup" method="POST" class="card-body">
-
+        <!-- handle -->
         <div class="form-group row">
             <label for="handle" class="col-4 col-form-label">Handle</label>
             <div class="col-8">
-                <input type="text" class="form-control" name="handle" required>
+                <input type="text" class="form-control" name="handle" required 
+                value="<%= (typeof form != 'undefined')? form.handle : '' %>" >
             </div>
         </div>
+        <!-- email -->
         <div class="form-group row">
             <label for="email" class="col-4 col-form-label">Email</label>
             <div class="col-8">
-                <input type="email" class="form-control" name="email" required>
+                <input type="email" class="form-control" name="email" required 
+                value="<%= (typeof form != 'undefined')? form.email : '' %>" >
             </div>
         </div>
+        <!-- password -->
         <div class="form-group row">
             <label for="password" class="col-4 col-form-label">Password</label>
             <div class="col-8">
-                <input type="password" class="form-control" name="Password" required>
+                <input type="password" class="form-control" name="password" required 
+                value="<%= (typeof form != 'undefined')? form.password : '' %>" >
             </div>
         </div>
+        <!-- confirm password -->
         <div class="form-group row">
             <label for="password2" class="col-4 col-form-label">Confirm Password</label>
             <div class="col-8">
-                <input type="password" class="form-control" name="Password2" required>
+                <input type="password" class="form-control" name="password2" required
+                value="<%= (typeof form != 'undefined')? form.password2 : '' %>" >
             </div>
         </div>
+        <!-- error list -->
+        <% if (errors.length > 0) {     %> 
+            <div class="row mx-0 pb-0 alert alert-danger">
+                <ul>
+                    <% for (e of errors) { %> 
+                        <li> <%= e %> </li>
+                    <% } %> 
+                </ul>
+            </div>
+        <% } %> 
+        <!-- submit -->
         <div class="form-group row">
             <input type="submit" value="Submit" class="btn btn-primary col-2 mx-auto">
         </div>

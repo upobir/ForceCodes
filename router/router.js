@@ -6,7 +6,7 @@ const signupRouter = require('./signup');
 router.get('/', (req, res) =>{
     res.render('../views/layout.ejs', {
         title: 'ForceCodes', 
-        prompt: '_non-user-prompt', 
+        user: null, 
         body : 'home',
         message_count : 0
     });
