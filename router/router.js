@@ -7,7 +7,7 @@ const loginRouter = require('./login');
 router.get('/', (req, res) =>{
     res.render('../views/layout.ejs', {
         title: 'ForceCodes', 
-        user: null, 
+        user: req.user, 
         body : 'home',
         message_count : 0
     });

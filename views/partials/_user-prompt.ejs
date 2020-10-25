@@ -1,8 +1,12 @@
-<a href="/upobir"> <%= user %> </a> | <a href="/logout">log out</a>
+<a href="/<%= user.handle %>"> <%= user.handle %> </a> 
+| 
+<form action="/logout" method="POST" class="my-logout-form">
+    <input type="submit" value="log out" class="btn btn-link my-logout">
+</form>
 
-<% if(typeof user.messages !== undefined) { %>
+<% if (user.msgCount > 0) { %>
     <br>
     <span hidden>
-        <a href="/messages"><b>messages(<%= message_count %>)</b></a>
+        <a href="/messages"><b>messages(<%= user.msgCount %>)</b></a>
     </span>
 <% } %>

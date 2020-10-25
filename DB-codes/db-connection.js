@@ -14,6 +14,9 @@ async function run(callback){
 
     } catch (err) {
         console.error('ERROR (db-connection): ' + err);
+        if(connection){
+            await connection.close();
+        }
     }
 }
 
