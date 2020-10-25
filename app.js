@@ -4,10 +4,12 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-// middlewares/routers
-const router = require('./router/router');
+// middlewares/
 const errorHandling = require('./middlewares/errorHandling');
 const auth = require('./middlewares/auth');
+
+// router
+const router = require('./router/indexRouter');
 
 // app creation
 const app = express();
@@ -19,6 +21,7 @@ app.use(cookieParser());
 app.use(auth);
 app.use(morgan('tiny'));
 
+// setting ejs to be view engine
 app.set('view engine', 'ejs');
 
 // using router

@@ -1,8 +1,11 @@
+const database = require('./database');
+
 let options = {
     outFormat: oracledb.OUT_FORMAT_OBJECT
 }
 
-async function getUserIDByHandle(connection, handle){
+// function to get id from handle
+async function getUserIDByHandle(handle){
     let sql = `
         SELECT 
             ID
@@ -15,10 +18,11 @@ async function getUserIDByHandle(connection, handle){
         handle : handle
     }
 
-    return await connection.execute(sql, binds, options);
+    return (await database.execute(sql, binds, options)).rows;
 }
 
-async function getUserIDByEmail(connection, email){
+// function to get id from email
+async function getUserIDByEmail(email){
     let sql = `
         SELECT 
             ID
@@ -31,10 +35,13 @@ async function getUserIDByEmail(connection, email){
         email : email
     }
 
-    return await connection.execute(sql, binds, options);
+    return (await database.execute(sql, binds, options)).rows;
 }
 
-async function createNewUser(connection, user){
+// function to creat new user
+// user should have handle, email, pass, dob
+// {id} will be returned
+async function createNewUser(user){
     let sql = `
         BEGIN
             CREATE_NEW_USER(:handle, :email, :pass, :dob, :id);
@@ -46,15 +53,16 @@ async function createNewUser(connection, user){
         pass: user.password,
         dob: user.birthdate,
         id: {
-            dir: oracledb.BIND_OUT,
+            dir: oracledb.BIND_OUT, 
             type: oracledb.NUMBER
         }
     }
 
-    return await connection.execute(sql, binds);
+    return (await database.execute(sql, binds, {})).outBinds;
 }
 
-async function getLoginInfoByHandle(connection, handle){
+// return login info (id, handle, password) from handle
+async function getLoginInfoByHandle(handle){
     let sql = `
         SELECT 
             ID,
@@ -69,10 +77,12 @@ async function getLoginInfoByHandle(connection, handle){
         handle: handle
     }
 
-    return await connection.execute(sql, binds, options);
+    return (await database.execute(sql, binds, options)).rows;
 }
 
-async function updateUserTokenById(connection, id, token){
+// set new token in user table
+// empty rows are returned
+async function updateUserTokenById(id, token){
     let sql = `
         UPDATE
             USER_ACCOUNT
@@ -86,10 +96,11 @@ async function updateUserTokenById(connection, id, token){
         token: token
     };
     
-    return await connection.execute(sql, binds, options);
+    return (await database.execute(sql, binds, options)).rows;
 }
 
-async function getUserPromptById(connection, id){
+// return user prompt (handle, login_token, msgCount) from id
+async function getUserPromptById(id){
     let sql = `
         SELECT
             HANDLE,
@@ -111,7 +122,7 @@ async function getUserPromptById(connection, id){
         id: id
     }
     
-    return await connection.execute(sql, binds, options);
+    return (await database.execute(sql, binds, options)).rows;
 }
 
 
