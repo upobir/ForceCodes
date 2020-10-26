@@ -3,8 +3,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 
 // my modules
-const DB_user = require('../DB-codes/user_functions');
-const authUtils = require('../utils/auth-utils');
+const DB_user = require('../../DB-codes/DB-user-api');
+const authUtils = require('../../utils/auth-utils');
 
 // creating router
 const router = express.Router();

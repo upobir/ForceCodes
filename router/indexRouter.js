@@ -4,8 +4,9 @@ const express = require('express');
 const router = express.Router();
 
 // sub-routers
-const signupRouter = require('./signup');
-const loginRouter = require('./login');
+const signupRouter = require('./auth/signup');
+const loginRouter = require('./auth/login');
+const logoutRouter = require('./auth/logout');
 
 // ROUTE: home page
 router.get('/', (req, res) =>{
@@ -19,6 +20,7 @@ router.get('/', (req, res) =>{
 // setting up sub-routers
 router.use('/signup', signupRouter);
 router.use('/login', loginRouter);
+router.use('/logout', logoutRouter);
 
 
 module.exports = router
