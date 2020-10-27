@@ -1,12 +1,12 @@
 const database = require('./database');
 
-let options = {
+const options = {
     outFormat: oracledb.OUT_FORMAT_OBJECT
 }
 
 // function to get id from handle
 async function getUserIDByHandle(handle){
-    let sql = `
+    const sql = `
         SELECT 
             ID
         FROM 
@@ -14,7 +14,7 @@ async function getUserIDByHandle(handle){
         WHERE 
             HANDLE = :handle
         `;
-    let binds = {
+    const binds = {
         handle : handle
     }
 
@@ -23,7 +23,7 @@ async function getUserIDByHandle(handle){
 
 // function to get id from email
 async function getUserIDByEmail(email){
-    let sql = `
+    const sql = `
         SELECT 
             ID
         FROM 
@@ -31,7 +31,7 @@ async function getUserIDByEmail(email){
         WHERE 
             EMAIL = :email
         `;
-    let binds = {
+    const binds = {
         email : email
     }
 
@@ -42,12 +42,12 @@ async function getUserIDByEmail(email){
 // user should have handle, email, pass, dob
 // {id} will be returned
 async function createNewUser(user){
-    let sql = `
+    const sql = `
         BEGIN
             CREATE_NEW_USER(:handle, :email, :pass, :dob, :id);
         END;
     `;
-    let binds = {
+    const binds = {
         handle: user.handle,
         email: user.email,
         pass: user.password,
@@ -63,7 +63,7 @@ async function createNewUser(user){
 
 // return login info (id, handle, password) from handle
 async function getLoginInfoByHandle(handle){
-    let sql = `
+    const sql = `
         SELECT 
             ID,
             HANDLE,
@@ -73,7 +73,7 @@ async function getLoginInfoByHandle(handle){
         WHERE
             HANDLE = :handle
     `;
-    let binds = {
+    const binds = {
         handle: handle
     }
 
@@ -83,7 +83,7 @@ async function getLoginInfoByHandle(handle){
 // set new token in user table
 // empty rows are returned
 async function updateUserTokenById(id, token){
-    let sql = `
+    const sql = `
         UPDATE
             USER_ACCOUNT
         SET
@@ -91,7 +91,7 @@ async function updateUserTokenById(id, token){
         WHERE
             ID = :id
     `;
-    let binds = {
+    const binds = {
         id: id,
         token: token
     };
@@ -101,7 +101,7 @@ async function updateUserTokenById(id, token){
 
 // return user prompt (handle, login_token, msgCount) from id
 async function getUserPromptById(id){
-    let sql = `
+    const sql = `
         SELECT
             HANDLE,
             LOGIN_TOKEN,
@@ -118,7 +118,7 @@ async function getUserPromptById(id){
         WHERE
             ID = :id
     `;
-    let binds = {
+    const binds = {
         id: id
     }
     

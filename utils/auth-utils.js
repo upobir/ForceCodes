@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 
 // my modules
-const DB_user = require('../DB-codes/DB-user-api');
+const DB_auth = require('../DB-codes/DB-auth-api');
 
 // function to login user into a session
 async function loginUser(res, userId){
@@ -12,10 +12,10 @@ async function loginUser(res, userId){
     };
     let token = jwt.sign(payload, process.env.APP_SECRET);
     // put token in db
-    await DB_user.updateUserTokenById(userId, token);
+    await DB_auth.updateUserTokenById(userId, token);
     // set token in cookie
     let options = {
-        maxAge: 900000, 
+        maxAge: 90000000, 
         httpOnly: true
     }
     res.cookie('sessionToken', token, options);

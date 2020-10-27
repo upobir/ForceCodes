@@ -3,7 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 
 // my modules
-const DB_user = require('../../DB-codes/DB-user-api');
+const DB_auth = require('../../DB-codes/DB-auth-api');
 const authUtils = require('../../utils/auth-utils');
 
 // creating router
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
         const errors = [];
         res.render('layout.ejs', {
             title : 'Sign Up - ForceCodes',
-            body : 'signup',
+            body : ['signup'],
             user : null,
             errors : errors
         });
@@ -37,7 +37,7 @@ router.post('/', async (req, res) => {
         if(regex.test(req.body.handle)){
             // if valid, check if handle can be used
             // TODO restrict keywords
-            results = await DB_user.getUserIDByHandle(req.body.handle);
+            results = await DB_auth.getUserIDByHandle(req.body.handle);
             if(results.length > 0)
                 errors.push('Handle is already registered to a user');
         }
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
         }
 
         // check if email is alredy used or not
-        results = await DB_user.getUserIDByEmail(req.body.email);
+        results = await DB_auth.getUserIDByEmail(req.body.email);
         if(results.length > 0)
             errors.push('Email is already registered to a user');
 
@@ -69,7 +69,7 @@ router.post('/', async (req, res) => {
         if(errors.length > 0){
             res.render('layout.ejs', {
                 title : 'Sign Up - ForceCodes',
-                body : 'signup',
+                body : ['signup'],
                 user : null,
                 errors : errors,
                 form : {
@@ -96,7 +96,7 @@ router.post('/', async (req, res) => {
                 else{
                     // create user via db-api, id is returned
                     user.password = hash;
-                    let result = await DB_user.createNewUser(user);
+                    let result = await DB_auth.createNewUser(user);
                     console.log('New User Created');
                     // login the user too
                     await authUtils.loginUser(res, result.id)

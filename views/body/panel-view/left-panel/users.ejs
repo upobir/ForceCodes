@@ -1,0 +1,14 @@
+<div class="my-card-no-bottom">
+    <ul class="list-inline card-body p-0">
+        <li class="list-inline-item mx-1">
+            <a class="my-body-nav-link my-link <%= (body[2] == 'all')? 'current-link' : '' %>" href="/users">ALL</a>
+        </li>
+        <% if(user !== null){ %>
+            <li class="list-inline-item mx-1">
+                <a class="my-body-nav-link my-link <%= (body[2] == 'friends')? 'current-link' : '' %>" href="/users/friends">FRIENDS</a>
+            </li>
+        <% } %>
+    </ul>
+</div>
+
+<%- include('users/' + body[2]) %>

@@ -3,7 +3,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 
 // my modules
-const DB_user = require('../../DB-codes/DB-user-api');
+const DB_auth = require('../../DB-codes/DB-auth-api');
 const authUtils = require('../../utils/auth-utils');
 
 // creating router
@@ -16,7 +16,7 @@ router.get('/', (req, res) => {
         const errors = [];
         res.render('layout.ejs', {
             title : 'Login - ForceCodes',
-            body : 'login',
+            body : ['login'],
             user : null,
             errors : errors
         })
@@ -33,7 +33,7 @@ router.post('/', async (req, res) => {
     if(req.user == null){
         let results, errors = [];
         // get login info for handle (id, handle, password)
-        results = await DB_user.getLoginInfoByHandle(req.body.handle);
+        results = await DB_auth.getLoginInfoByHandle(req.body.handle);
 
         // if no result, there is no such user
         if(results.length == 0){
@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
         } else {
             res.render('layout.ejs', {
                 title : 'Login - ForceCodes',
-                body : 'login',
+                body : ['login'],
                 user : null,
                 errors : errors,
                 form: {

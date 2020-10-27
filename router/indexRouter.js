@@ -13,7 +13,7 @@ const userRouter = require('./users/users.js');
 router.get('/', (req, res) =>{
     res.render('layout.ejs', {
         title: 'ForceCodes', 
-        body : 'home',
+        body : ['panel-view', 'home'],
         user: req.user
     });
 });

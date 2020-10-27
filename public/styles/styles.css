@@ -13,7 +13,7 @@
     width: 16vw
 }
 
-.my-nav{
+.my-card-no-bottom{
     margin-bottom: 0 !important;
 }
 
@@ -24,6 +24,18 @@
 
 .my-nav-link{
     color: black !important;
+}
+
+.my-body-nav-link{
+    color: black !important;
+    font-weight: bold !important;    
+    padding: 1px 2px !important;
+    font-size: 12px !important;
+}
+
+.current-link{
+    background-color: #b9b9b9;
+    border-radius: 0.3rem;
 }
 
 .my-message-notification{
@@ -43,4 +55,16 @@
 
 .my-logout-form{
     display: inline !important;
+}
+
+.my-row-alter{
+    background-color: #f8f8f8 !important;
+}
+
+.my-link, .my-link:hover{
+    text-decoration: none;
+}
+
+.my-handle{
+    font-weight: bold;
 }

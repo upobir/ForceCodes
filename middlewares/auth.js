@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 
 // my modules
-const DB_user = require('../DB-codes/DB-user-api');
+const DB_auth = require('../DB-codes/DB-auth-api');
 
 function auth(req, res, next){
     req.user = null;
@@ -17,7 +17,7 @@ function auth(req, res, next){
             } else {
                 // get user prompt (id, handle, message count) from id
                 const decodedId = decoded.id;
-                let results = await DB_user.getUserPromptById(decodedId);
+                let results = await DB_auth.getUserPromptById(decodedId);
 
                 // if no such user or token doesn't match, do nothing
                 if(results.length == 0){

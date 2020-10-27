@@ -1,0 +1,43 @@
+<div class="card border">
+    <div class="card-header">
+        all users sorted according to rating
+    </div>
+    <table class="table table-sm table-bordered my-card-no-bottom">
+        <tr>
+            <th width="8%" class="text-center">#</th>
+            <th width="80%" class="pl-3">who</th>
+            <th width="13%" class="text-center">rating</th>
+        </tr>
+        <% for(let i = 0; i<userList.length; i++){ %>
+            <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %>" >
+                <td class="text-center">
+                    <%= userList[i].RANK_NO %>
+                </td>
+                <td class="pl-3" >
+                    <a href="/users/<%= userList[i].HANDLE %>" <%-'style="color:' + userList[i].COLOR + '"'%> class="my-link my-handle">
+                        <%= userList[i].HANDLE %>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <%= userList[i].RATING %>
+                </td>
+            </tr>
+        <% } %>
+        
+        <!-- <tr class="my-row-alter">
+            <td>all</td>
+            <td>all</td>
+            <td>all</td>
+        </tr>
+        <tr>
+            <td>all</td>
+            <td>all</td>
+            <td>all</td>
+        </tr>
+        <tr class="my-row-alter">
+            <td>all</td>
+            <td>all</td>
+            <td>all</td>
+        </tr> -->
+    </table>
+</div>
