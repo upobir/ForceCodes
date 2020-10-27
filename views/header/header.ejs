@@ -8,15 +8,15 @@
         <!-- Prompt -->
         <div class="ml-auto mr-0 my-auto my-site-font text-right">
             <% if(user === null){ %>
-                <%- include('_non-user-prompt') %>
+                <%- include('prompts/non-user-prompt') %>
             <% } else { %>
-                <%- include('_user-prompt') %>
+                <%- include('prompts/user-prompt') %>
             <% } %>
         </div>
     </div>
 
     <!-- nav bar -->
-    <div class="card">
+    <div class="card border-secondary">
         <ul class="list-inline card-body p-2 my-nav">
             <li class="list-inline-item mr-2 ml-3">
                 <a class="my-nav-link" href="/">Home</a>

@@ -12,7 +12,6 @@ async function loginUser(res, userId){
     };
     let token = jwt.sign(payload, process.env.APP_SECRET);
     // put token in db
-    console.log('token ' + typeof token + ' : ' + token);
     await DB_user.updateUserTokenById(userId, token);
     // set token in cookie
     let options = {

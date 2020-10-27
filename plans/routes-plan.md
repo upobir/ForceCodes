@@ -1,34 +1,33 @@
-* index @
-* signup @
-    * successful
-* login `post` @
+* index `done`
+* signup `done`
+* login `done`
 * (user)
     * blogs
-        * new `post`
-        * (id) `post`
+        * new
+        * (id)
 * teams/new
 * teams/(id)
-* settings `post`
+* settings
 * users
     * friends
     * countries/(id)
         * cities/(id)
     * organizations
-* talks `post`
+* talks
 * blogs
 * contests
     * registration
-    * new `post`
+    * new
     * (id)
         * problems/(number)
-            * submit `post`
+            * submit
             * edit
-                * tests `post`
+                * tests
         * submissions
             * my
         * status
             * friends
-        * announce `post`
+        * announce
         * add_problem
 * problems
 

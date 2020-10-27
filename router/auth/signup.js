@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
     // check if already logged in
     if(req.user == null){
         const errors = [];
-        res.render('../views/layout.ejs', {
+        res.render('layout.ejs', {
             title : 'Sign Up - ForceCodes',
             body : 'signup',
             user : null,
@@ -67,7 +67,7 @@ router.post('/', async (req, res) => {
 
         // if there are errors, redirect to sign up but with form informations
         if(errors.length > 0){
-            res.render('../views/layout.ejs', {
+            res.render('layout.ejs', {
                 title : 'Sign Up - ForceCodes',
                 body : 'signup',
                 user : null,

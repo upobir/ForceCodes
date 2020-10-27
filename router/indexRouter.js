@@ -7,10 +7,11 @@ const router = express.Router();
 const signupRouter = require('./auth/signup');
 const loginRouter = require('./auth/login');
 const logoutRouter = require('./auth/logout');
+const userRouter = require('./users/users.js');
 
 // ROUTE: home page
 router.get('/', (req, res) =>{
-    res.render('../views/layout.ejs', {
+    res.render('layout.ejs', {
         title: 'ForceCodes', 
         body : 'home',
         user: req.user
@@ -21,6 +22,7 @@ router.get('/', (req, res) =>{
 router.use('/signup', signupRouter);
 router.use('/login', loginRouter);
 router.use('/logout', logoutRouter);
+router.use('/users', userRouter);
 
 
 module.exports = router

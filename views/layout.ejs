@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- my stylesheet -->
     <link rel="stylesheet" href="styles\styles.css">
 
     <!-- Bootstrap -->
@@ -13,13 +14,16 @@
 </head>
 <body>
     <div class="container my-container my-main-body p-0 d-flex flex-column justify-content-between">
-        <%- include('partials/_header') %>
+        <!-- header -->
+        <%- include('header/header') %>
 
-        <div class="my-container container mx-auto my-1 px-4">
-            <%- include(body) %>    
+        <!-- body -->
+        <div class="my-container container mx-auto my-1 px-0 row">
+            <%- include('body/' + body) %>    
         </div>
 
-        <%- include('partials/_footer') %>
+        <!-- footer -->
+        <%- include('footer/footer') %>
     </div>
 
     <!-- Bootstrap -->

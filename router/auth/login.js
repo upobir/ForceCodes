@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
     // if not logged in take to login page
     if(req.user == null){
         const errors = [];
-        res.render('../views/layout.ejs', {
+        res.render('layout.ejs', {
             title : 'Login - ForceCodes',
             body : 'login',
             user : null,
@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
         if(errors.length == 0){
             res.redirect('/');
         } else {
-            res.render('../views/layout.ejs', {
+            res.render('layout.ejs', {
                 title : 'Login - ForceCodes',
                 body : 'login',
                 user : null,
