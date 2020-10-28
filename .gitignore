@@ -17,3 +17,6 @@ node_modules
 
 # js testing
 draft.js
+
+# public data like images
+public/public-images

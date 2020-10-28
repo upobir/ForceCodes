@@ -21,11 +21,13 @@ function auth(req, res, next){
 
                 // if no such user or token doesn't match, do nothing
                 if(results.length == 0){
-                    console.log('auth: invalid cookie');
+                    //console.log('auth: invalid cookie');
                 } else if(results[0].LOGIN_TOKEN != token){
-                    console.log('auth: invalid token');
+                    //console.log('auth: invalid token');
                 } else{
                     // set prompt in reqest object
+                    let time = new Date();
+                    await DB_auth.updateLoginTimeById(decodedId, time);
                     req.user = {
                         id: decodedId,
                         handle: results[0].HANDLE,

@@ -1,14 +1,41 @@
-<div class="my-card-no-bottom">
-    <ul class="list-inline card-body p-0">
-        <li class="list-inline-item mx-1">
-            <a class="my-body-nav-link my-link <%= (body[2] == 'all')? 'current-link' : '' %>" href="/users">ALL</a>
-        </li>
-        <% if(user !== null){ %>
-            <li class="list-inline-item mx-1">
-                <a class="my-body-nav-link my-link <%= (body[2] == 'friends')? 'current-link' : '' %>" href="/users/friends">FRIENDS</a>
-            </li>
-        <% } %>
-    </ul>
-</div>
+<!-- inner body navbar -->
+<% if(typeof(innerNav) != 'undefined'){ %>
+    <%- include('inner-body-nav-bar/inner-body-nav-bar') %>
+<% } %>
 
-<%- include('users/' + body[2]) %>
+<!-- user list -->
+<div class="card border">
+    <div class="card-header my-card-header">
+        <% if(body[2] == 'ALL') {%>
+            all users sorted according to rating
+        <% } else if(body[2] == 'FRIENDS') {%>
+            your friends and you sorted according to rating
+        <% } else { %>
+            ERROR
+        <% } %>
+    </div>
+    <table class="table table-sm table-bordered my-card-no-bottom">
+        <!-- list header -->
+        <tr>
+            <th width="8%" class="text-center">#</th>
+            <th width="80%" class="pl-3">who</th>
+            <th width="13%" class="text-center">rating</th>
+        </tr>
+        <!-- each row -->
+        <% for(let i = 0; i<userList.length; i++){ %>
+            <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %> <%= (user !== null && user.handle == userList[i].HANDLE)? 'my-row-selected' : '' %>" >
+                <td class="text-center">
+                    <%= userList[i].RANK_NO %>
+                </td>
+                <td class="pl-3" >
+                    <a href="/profile/<%= userList[i].HANDLE %>" <%-'style="color:' + userList[i].COLOR + '"'%> class="my-link my-handle">
+                        <%= userList[i].HANDLE %>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <%= userList[i].RATING %>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+</div>

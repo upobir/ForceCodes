@@ -1,0 +1,16 @@
+<div class="my-card-no-bottom">
+    <ul class="list-inline card-body p-0">
+    <% for(let i = 0; i<innerNav.length; i++){ %>
+        <li class="list-inline-item mx-1">
+            <a class="my-body-nav-link my-link <%= (body[2] == innerNav[i].name)? 'current-link' : '' %>" href="<%= innerNav[i].url %>">
+                <%= innerNav[i].name %>
+            </a>
+        </li>
+        <% ///if(user !== null){ %>
+            <!-- <li class="list-inline-item mx-1">
+                <a class="my-body-nav-link my-link <%= (body[2] == 'friends')? 'current-link' : '' %>" href="/users/friends">FRIENDS</a>
+            </li> -->
+        <% //} %>
+    <% } %>
+    </ul>
+</div>

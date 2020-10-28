@@ -61,10 +61,22 @@
     background-color: #f8f8f8 !important;
 }
 
+.my-row-selected{
+    background-color: #ddeeff !important;
+}
+
 .my-link, .my-link:hover{
     text-decoration: none;
 }
 
 .my-handle{
     font-weight: bold;
+}
+
+.my-card-header{
+    background-color: #e1e1e1 !important;
+}
+
+.my-handle-header{
+    font-size: large !important;
 }

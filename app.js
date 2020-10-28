@@ -24,11 +24,12 @@ app.use(morgan('tiny'));
 // setting ejs to be view engine
 app.set('view engine', 'ejs');
 
-// using router
-app.use('/', router);
-
 // allow public directory
 app.use(express.static('public'))
+
+//app.set('strict routing', true);
+// using router
+app.use('/', router);
 
 // using error handling middlware
 app.use(errorHandling.notFound);

@@ -96,7 +96,8 @@ async function updateUserTokenById(id, token){
         token: token
     };
     
-    return (await database.execute(sql, binds, options)).rows;
+    await database.execute(sql, binds, options);
+    return;
 }
 
 // return user prompt (handle, login_token, msgCount) from id
@@ -125,6 +126,23 @@ async function getUserPromptById(id){
     return (await database.execute(sql, binds, options)).rows;
 }
 
+async function updateLoginTimeById(id, time){
+    const sql = `
+        UPDATE
+            USER_ACCOUNT
+        SET
+            LOGIN_TIME = :time
+        WHERE
+            ID = :id
+    `;
+    const binds = {
+        id: id,
+        time: time
+    };
+    await database.execute(sql, binds, options);
+    return;
+}
+
 
 module.exports = {
     getUserIDByHandle,
@@ -132,5 +150,6 @@ module.exports = {
     createNewUser,
     getLoginInfoByHandle,
     updateUserTokenById,
-    getUserPromptById
+    getUserPromptById,
+    updateLoginTimeById
 }

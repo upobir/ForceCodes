@@ -21,3 +21,19 @@ AS
     FROM
         CONTESTANT "C" JOIN
         USER_ACCOUNT "U" ON (C.ID = U.ID);
+
+CREATE OR REPLACE VIEW
+    USER_LIST_VIEW
+AS
+    SELECT
+        ROWNUM "RANK_NO",
+        U.ID,
+        U.HANDLE,
+        U.RATING,
+        R.COLOR
+    FROM
+        USER_CONTESTANT_VIEW "U" JOIN
+        RANK "R" ON (U.RANK_ID = R.ID)
+    ORDER BY
+        U.RATING DESC;
+        
