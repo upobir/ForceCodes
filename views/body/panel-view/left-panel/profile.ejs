@@ -7,40 +7,57 @@
 <div class="card border-secondary px-3 py-2">
     <div class="row">
         <div class="col-9">
-            <div class="py-2">
-                rank
+            <div class="py-2 my-bold" <%-'style="color:' + profile.COLOR + '"'%> >
+                <%= profile.RANK_NAME %>
             </div> 
-            <div class="py-2 my-handle-header">
-                handle
-            </div> 
-            <div class="text-muted pt-2">
-                name, city, country
-            </div> 
-            <div class="text-muted pb-2">
-                From organization
+            <div class="py-2 my-handle-header my-bold" <%-'style="color:' + profile.COLOR + '"'%> >
+                <%= profile.HANDLE %>
             </div> 
             <div class="py-2">
-                contest rating: rating
+                <% if(profile.NAME !== '' || profile.CITY !== null || profile.COUTNRY !== null){ %>
+                    <div class="text-muted">
+                        <%= [profile.NAME, profile.CITY, profile.COUNTRY].filter(x => (x !== null && x !== '')).join(',') %>
+                    </div> 
+                <% } %>
+                <% if(profile.ORGANIZATION !== null) { %>
+                    <div class="text-muted">
+                        From <%= profile.ORGANIZATION %>
+                    </div> 
+                <% } %>
+            </div>
+            <% if(user !== null && user.handle != profile.HANDLE){ %>
+                <div class="py-2">
+                    <a href="/profile/<%= profile.HANDLE%>"> Add friend </a>
+                </div>
+            <% } %>
+            <div class="py-2">
+                Email: <%= profile.EMAIL %>
             </div> 
             <div class="py-2">
-                Friend of: count
+                Contest rating: <%= profile.RATING %>
             </div> 
             <div class="py-2">
-                last visit: 
+                Friend of: <%= profile.FRIEND_COUNT %>
             </div> 
             <div class="py-2">
-                registered:
+                Last visit: <%- profile.LAST_VISIT === 'now'? "<span class='text-success'>online now</span>" : profile.LAST_VISIT + ' ago' %>
             </div> 
             <div class="py-2">
-                blog entries
+                Registered: <%= profile.REGISTERED === 'now'? 'now' : profile.REGISTERED + ' ago' %>
+            </div> 
+            <div class="py-2">
+                <a href="<%= profile.HANDLE %>/blog" >Blog entries(<%= profile.BLOG_COUNT %>)</a>
             </div>
             <div class="py-2">
-                talks
+                <a href="/messeges"> Talks </a>
             </div>
         </div>
         <div class="col-3 mx-0 px-0 text-right">
             <div class="border text-center mx-3 my-2">
-                <img src="/images/no-profile-picture.jpg" alt="no picture" class=" img-fluid m-4">    
+                <img src="/images/no-profile-picture.jpg" alt="no picture" class=" img-fluid m-4">  
+                <% if(user !== null && user.handle == profile.HANDLE){ %>  
+                    change picture
+                <% } %>
             </div>
             
         </div>

@@ -1,9 +1,5 @@
 const database = require('./database');
 
-const options = {
-    outFormat: oracledb.OUT_FORMAT_OBJECT
-}
-
 // function to get id from handle
 async function getUserIDByHandle(handle){
     const sql = `
@@ -18,7 +14,7 @@ async function getUserIDByHandle(handle){
         handle : handle
     }
 
-    return (await database.execute(sql, binds, options)).rows;
+    return (await database.execute(sql, binds, database.options)).rows;
 }
 
 // function to get id from email
@@ -35,7 +31,7 @@ async function getUserIDByEmail(email){
         email : email
     }
 
-    return (await database.execute(sql, binds, options)).rows;
+    return (await database.execute(sql, binds, database.options)).rows;
 }
 
 // function to creat new user
@@ -77,7 +73,7 @@ async function getLoginInfoByHandle(handle){
         handle: handle
     }
 
-    return (await database.execute(sql, binds, options)).rows;
+    return (await database.execute(sql, binds, database.options)).rows;
 }
 
 // set new token in user table
@@ -96,7 +92,7 @@ async function updateUserTokenById(id, token){
         token: token
     };
     
-    await database.execute(sql, binds, options);
+    await database.execute(sql, binds, database.options);
     return;
 }
 
@@ -123,7 +119,7 @@ async function getUserPromptById(id){
         id: id
     }
     
-    return (await database.execute(sql, binds, options)).rows;
+    return (await database.execute(sql, binds, database.options)).rows;
 }
 
 async function updateLoginTimeById(id, time){
@@ -139,7 +135,7 @@ async function updateLoginTimeById(id, time){
         id: id,
         time: time
     };
-    await database.execute(sql, binds, options);
+    await database.execute(sql, binds, database.options);
     return;
 }
 

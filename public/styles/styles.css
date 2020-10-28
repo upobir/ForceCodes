@@ -80,3 +80,7 @@
 .my-handle-header{
     font-size: large !important;
 }
+
+.my-bold {
+    font-weight: bold;
+}

@@ -1,9 +1,5 @@
 const database = require('./database');
 
-const options = {
-    outFormat: oracledb.OUT_FORMAT_OBJECT
-}
-
 async function getRatingOrderedUsers(rowBegin, rowEnd){
     const sql = `
         SELECT
@@ -22,7 +18,7 @@ async function getRatingOrderedUsers(rowBegin, rowEnd){
         begin: rowBegin,
         end: rowEnd
     }
-    return (await database.execute(sql, binds, options)).rows;
+    return (await database.execute(sql, binds, database.options)).rows;
 }
 
 async function getRatingOrderedFriends(userId, rowBegin, rowEnd){
@@ -60,7 +56,7 @@ async function getRatingOrderedFriends(userId, rowBegin, rowEnd){
         begin: rowBegin,
         end: rowEnd
     }
-    return (await database.execute(sql, binds, options)).rows;
+    return (await database.execute(sql, binds, database.options)).rows;
 }
 
 module.exports = {

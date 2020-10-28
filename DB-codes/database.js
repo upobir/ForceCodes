@@ -50,8 +50,14 @@ async function execute(sql, binds, options){
     return results;
 }
 
+// options for execution sql
+const options = {
+    outFormat: oracledb.OUT_FORMAT_OBJECT
+}
+
 module.exports = { 
     startup,
     shutdown,
-    execute
+    execute,
+    options
 };
