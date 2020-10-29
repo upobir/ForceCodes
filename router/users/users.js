@@ -17,9 +17,10 @@ router.get('/', async (req, res) =>{
 
     res.render('layout.ejs', {
         title: 'Users - ForceCodes',
-        body: ['panel-view', 'users', 'ALL'],
+        body: ['panel-view', 'userList', 'ALL'],
         user: req.user,
         innerNav: innerNav,
+        listHeader: 'All users sorted according to rating',
         userList: userList
     });
 });
@@ -40,9 +41,10 @@ router.get('/friends', async (req, res) =>{
 
         res.render('layout.ejs', {
             title: 'Users - ForceCodes',
-            body: ['panel-view', 'users', 'FRIENDS'],
+            body: ['panel-view', 'userList', 'FRIENDS'],
             user: req.user,
             innerNav: innerNav,
+            listHeader: 'You and your friends sorted accoding to rating',
             userList: userList
         });
     }

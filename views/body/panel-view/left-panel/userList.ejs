@@ -6,13 +6,7 @@
 <!-- user list -->
 <div class="card border">
     <div class="card-header my-card-header">
-        <% if(body[2] == 'ALL') {%>
-            all users sorted according to rating
-        <% } else if(body[2] == 'FRIENDS') {%>
-            your friends and you sorted according to rating
-        <% } else { %>
-            ERROR
-        <% } %>
+        <%= listHeader %>
     </div>
     <table class="table table-sm table-bordered my-card-no-bottom">
         <!-- list header -->

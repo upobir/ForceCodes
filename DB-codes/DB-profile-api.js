@@ -3,6 +3,7 @@ const database = require('./database');
 async function getProfileByHandle(handle){
     let sql = `
         SELECT
+            U.ID,
             U.HANDLE,
             U.EMAIL,
             R.COLOR,
@@ -49,6 +50,73 @@ async function getProfileByHandle(handle){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+async function isFriendOfId(checkId, id){
+    let sql = `
+        SELECT
+            *
+        FROM
+            USER_USER_FOLLOW
+        WHERE
+            FOLLOWER_ID = :id AND
+            FOLLOWED_ID = :checkId
+    `;
+    let binds = {
+        id : id,
+        checkId : checkId
+    }
+    let results = (await database.execute(sql, binds, database.options));
+    return results.rows.length > 0;
+}
+
+async function addFriendByHandle(id, handle){
+    let sql = `
+        INSERT INTO
+            USER_USER_FOLLOW(
+                FOLLOWER_ID,
+                FOLLOWED_ID
+            )
+        SELECT
+            :id,
+            ID
+        FROM
+            USER_CONTESTANT_VIEW
+        WHERE
+            HANDLE = :handle
+    `;
+    let binds ={
+        id : id,
+        handle : handle
+    }
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
+async function removeFriendByHandle(id, handle){
+    let sql = `
+        DELETE FROM
+            USER_USER_FOLLOW
+        WHERE
+            FOLLOWER_ID = :id AND
+            FOLLOWED_ID = (
+                SELECT 
+                    ID
+                FROM
+                    USER_CONTESTANT_VIEW
+                WHERE
+                    HANDLE = :handle
+            )
+    `;
+    let binds ={
+        id : id,
+        handle : handle
+    }
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
 module.exports = {
-    getProfileByHandle
+    getProfileByHandle,
+    isFriendOfId,
+    addFriendByHandle,
+    removeFriendByHandle
 }
