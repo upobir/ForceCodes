@@ -1,5 +1,20 @@
 const database = require('./database');
 
+async function isHandleValid(handle){
+    let sql = `
+        SELECT
+            COUNT(*) "COUNT"
+        FROM
+            USER_CONTESTANT_VIEW
+        WHERE
+            HANDLE = :handle
+    `;
+    let binds = {
+        handle : handle
+    };
+    return (await database.execute(sql, binds, database.options)).rows[0].COUNT > 0;
+}
+
 async function getProfileByHandle(handle){
     let sql = `
         SELECT
@@ -114,9 +129,91 @@ async function removeFriendByHandle(id, handle){
     return;
 }
 
+async function getSettingsInfo(id){
+    let sql = `
+        SELECT
+            U.EMAIL,
+            U.FIRST_NAME,
+            U.LAST_NAME,
+            U.DATE_OF_BIRTH,
+            CO.NAME "COUNTRY",
+            CI.NAME "CITY",
+            O.NAME "ORGANIZATION"
+        FROM
+            USER_CONTESTANT_VIEW "U" LEFT JOIN
+            COUNTRY "CO" ON (U.COUNTRY_ID = CO.ID) LEFT JOIN
+            CITY "CI" ON (U.CITY_ID = CI.ID) LEFT JOIN
+            ORGANIZATION "O" ON (U.ORG_ID = O.ID)
+        WHERE
+            U.ID = :id
+    `;
+    let binds = {
+        id : id
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getPasswordById(id){
+    let sql = `
+        SELECT
+            PASSWORD
+        FROM
+            USER_ACCOUNT
+        WHERE
+            ID = :id
+    `;
+    let binds = {
+        id : id
+    }
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function updatePasswordById(id, password){
+    let sql = `
+        UPDATE
+            USER_ACCOUNT
+        SET
+            PASSWORD = :password
+        WHERE
+            ID = :id
+    `;
+    let binds = {
+        id : id,
+        password : password
+    };
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
+async function updateSettingsById(id, info){
+    let sql = `
+        BEGIN
+            UPDATE_SETTINGS(:id, :email, :fn, :ln, :dob, :cntry, :city, :org);
+        END;
+    `;
+
+    let binds = {
+        id : id,
+        email : info.email,
+        fn : info.firstName,
+        ln : info.lastName,
+        dob : info.birthdate,
+        cntry : info.country,
+        city : info.city,
+        org : info.organization
+    }
+    await database.execute(sql, binds, {});
+    return;
+}
+
 module.exports = {
     getProfileByHandle,
     isFriendOfId,
     addFriendByHandle,
-    removeFriendByHandle
+    removeFriendByHandle,
+    isHandleValid,
+    getSettingsInfo,
+    updatePasswordById,
+    getPasswordById,
+    updateSettingsById
 }

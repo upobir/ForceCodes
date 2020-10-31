@@ -1,5 +1,9 @@
 <!-- left panel -->
 <div class="col-9 pr-0">
+    <!-- inner body navbar -->
+    <% if(typeof(innerNav) != 'undefined'){ %>
+        <%- include('panel-view/left-panel/inner-body-nav-bar/inner-body-nav-bar') %>
+    <% } %>
     <%- include('panel-view/left-panel/' + body[1]) %>
 </div>
 

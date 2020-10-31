@@ -84,3 +84,8 @@
 .my-bold {
     font-weight: bold;
 }
+
+.my-dropdown {
+    overflow: scroll !important;
+    max-height: 50px !important;
+}

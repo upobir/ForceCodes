@@ -1,15 +1,15 @@
 * index `done`
 * signup `done`
 * login `done`
-* (user)
+* (user) `done`
     * blogs
         * new
         * (id)
 * teams/new
 * teams/(id)
 * settings
-* users
-    * friends
+* users `done`
+    * friends `done`
     * countries/(id)
         * cities/(id)
     * organizations

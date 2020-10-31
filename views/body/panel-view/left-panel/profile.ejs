@@ -1,8 +1,3 @@
-<!-- inner body navbar -->
-<% if(typeof(innerNav) != 'undefined'){ %>
-    <%- include('inner-body-nav-bar/inner-body-nav-bar') %>
-<% } %>
-
 <!-- profile -->
 <div class="card border-secondary px-3 py-2">
     <div class="row">
@@ -21,7 +16,7 @@
                 <!-- name, country, city -->
                 <% if(profile.NAME !== '' || profile.CITY !== null || profile.COUTNRY !== null){ %>
                     <div class="text-muted">
-                        <%= [profile.NAME, profile.CITY, profile.COUNTRY].filter(x => (x !== null && x !== '')).join(',') %>
+                        <%= [profile.NAME, profile.CITY, profile.COUNTRY].filter(x => (x !== null && x !== '')).join(', ') %>
                     </div> 
                 <% } %>
                 <!-- organization -->

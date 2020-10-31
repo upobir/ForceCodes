@@ -1,0 +1,109 @@
+<div class="card border-secondary px-3 py-2">
+    <form action="/profile/<%= user.handle %>/settings" method="POST" class="card-body">
+        <!-- old password -->
+        <div class="form-group row">
+            <label for="oldPassword" class="col-3 col-form-label text-right">Old Password</label>
+            <div class="col-9">
+                <input type="password" class="form-control" name="oldPassword">
+            </div>
+        </div>
+        <!-- new password -->
+        <div class="form-group row">
+            <label for="newPassword" class="col-3 col-form-label text-right">New Password</label>
+            <div class="col-9">
+                <input type="password" class="form-control" name="newPassword">
+            </div>
+        </div>
+        <!-- confirm password -->
+        <div class="form-group row">
+            <label for="newPassword2" class="col-3 col-form-label text-right">Confirm New Password</label>
+            <div class="col-9">
+                <input type="password" class="form-control" name="newPassword2">
+            </div>
+        </div>
+        <hr>
+        <!-- email -->
+        <div class="form-group row">
+            <label for="email" class="col-3 col-form-label text-right">Email</label>
+            <div class="col-9">
+                <input type="email" class="form-control" name="email" required 
+                value="<%= (typeof form != 'undefined')? form.email : '' %>" >
+            </div>
+        </div>
+        <!-- First Name -->
+        <div class="form-group row">
+            <label for="firstName" class="col-3 col-form-label text-right">First Name</label>
+            <div class="col-9">
+                <input type="text" class="form-control" name="firstName"
+                value="<%= (typeof form != 'undefined')? form.firstName : '' %>" >
+            </div>
+        </div>
+        <!-- Last Name -->
+        <div class="form-group row">
+            <label for="lastName" class="col-3 col-form-label text-right">Last Name</label>
+            <div class="col-9">
+                <input type="text" class="form-control" name="lastName"
+                value="<%= (typeof form != 'undefined')? form.lastName : '' %>" >
+            </div>
+        </div>
+        <!-- Date of Birth -->
+        <div class="form-group row">
+            <label for="birthdate" class="col-3 col-form-label text-right">Date of Birth</label>
+            <div class="pl-3">
+                <input type="date" class="form-control" name="birthdate" required
+                value="<%= (typeof form != 'undefined')? form.birthdate : '' %>" >
+            </div>
+        </div>
+        <!-- Country -->
+        <div class="form-group row">
+            <label for="country" class="col-3 col-form-label text-right">Country</label>
+            <div class="col-9">
+                <select name="country" class="form-control my-dropdown">
+                    <option value=""></option>
+                    <% for(let i = 0; i < countries.length; i++){ %>
+                        <option value="<%= countries[i].NAME %>" <%= (form.country == countries[i].NAME)? 'selected' : '' %>>
+                            <%= countries[i].NAME %>
+                        </option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+        <!-- City -->
+        <div class="form-group row">
+            <label for="city" class="col-3 col-form-label text-right">City</label>
+            <div class="col-9">
+                <select name="city" class="form-control my-dropdown">
+                    <option value=""></option>
+                    <% for(let i = 0; i < cities.length; i++){ %>
+                        <option value="<%= cities[i].NAME %>" <%= (form.city == cities[i].NAME)? 'selected' : '' %>>
+                            <%= cities[i].NAME %>
+                        </option>
+                    <% } %>
+                </select>
+            </div>
+        </div>
+        <!-- Organization -->
+        <div class="form-group row">
+            <label for="organization" class="col-3 col-form-label text-right">Organization</label>
+            <div class="col-9">
+                <input type="text" class="form-control" name="organization" 
+                value="<%= (typeof form != 'undefined')? form.organization : '' %>" >
+            </div>
+        </div>
+        <!-- error list -->
+        <% if (errors.length > 0) { %> 
+            <div class="row mx-0 pb-0 alert alert-danger">
+                <ul>
+                    <% for (e of errors) { %> 
+                        <li> <%= e %> </li>
+                    <% } %> 
+                </ul>
+            </div>
+        <% } %> 
+        <!-- update -->
+        <div class="form-group row">
+            <input type="submit" value="Update" class="btn btn-primary col-2 mx-auto">
+        </div>
+
+    </form>
+</div>

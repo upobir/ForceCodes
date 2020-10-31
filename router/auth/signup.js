@@ -7,7 +7,7 @@ const DB_auth = require('../../DB-codes/DB-auth-api');
 const authUtils = require('../../utils/auth-utils');
 
 // creating router
-const router = express.Router();
+const router = express.Router({mergeParams : true});
 
 // ROUTE: sign up (get)
 router.get('/', (req, res) => {

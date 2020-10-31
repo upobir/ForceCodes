@@ -3,7 +3,7 @@ const express = require('express');
 const DB_auth = require('../../DB-codes/DB-auth-api');
 
 // creating router
-const router = express.Router();
+const router = express.Router({mergeParams : true});
 
 router.post('/', async (req, res) =>{
     // if logged in, delete token from database
