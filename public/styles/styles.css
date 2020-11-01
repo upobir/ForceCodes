@@ -89,3 +89,42 @@
     overflow: scroll !important;
     max-height: 50px !important;
 }
+
+.my-blog-post::before{
+    content: " " !important;
+    width: 4px !important;
+    height: 100% !important;
+    background: #b9b9b9 !important;
+    float: left !important;
+    position: absolute !important;
+}
+
+.my-blog-post{
+    position: relative !important;
+    text-align: justify !important;
+}
+
+.my-small-text{
+    font-size: 14px !important;
+}
+
+.my-autocomplete{
+    position: relative !important;
+}
+
+.my-autocomplete-items {
+    position: absolute;
+    border: 1px solid #101010;
+    z-index: 99; 
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding: 2px 10px;
+    cursor: pointer;
+    background-color: #fff; 
+    width: 30%;
+}
+
+.my-button{
+    border-radius: 5px;
+}

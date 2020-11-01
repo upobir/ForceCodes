@@ -1,0 +1,93 @@
+<h2 class="text-primary mt-5">
+    New topic
+</h2>
+<form action="/blog/new" method="POST">
+    <div class="form-group">
+        <label for="title">Title</label>
+        <input type="text" class="form-control" name="title" required>
+    </div>
+    <div class="form-group">
+        <label for="body">Content</label>
+        <textarea class="form-control" name="body" rows="20" required></textarea>
+    </div>
+    <div class="form-group">
+        <input type="hidden" id="tagList" name="tagList" value="">
+        <label for="tag">Tags:</label>
+        <div class="my-autocomplete">
+            <div class="row pl-3">
+                <input type="text" class="form-control" name="tag" id="tag" autocomplete="off" style="width:30%;">
+                <button class="ml-2 px-4 my-button" type="button" onclick="addTag()"> Add tag </button>
+            </div>
+        </div>
+        
+        <ul style="list-style-type: none;" class="px-0" id="tags">  
+        </ul>
+    </div>
+    <div class="form-group row">
+        <input type="submit" value="Post" class="btn btn-primary col-1 mx-auto">
+    </div>
+    
+    <%- '<script>var tags = '+JSON.stringify(tags)+'; </script>' %>
+
+    <script>
+        function autocomplete(inp, arr) {
+            inp.addEventListener("input", function(e) {
+                var a, b, i, val = this.value;
+                closeAllLists();
+                if (!val) { return false;}
+                currentFocus = -1;
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "my-autocomplete-items");
+                this.parentNode.appendChild(a);
+                for (i = 0; i < arr.length; i++) {
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                    b = document.createElement("DIV");
+                    b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                    b.innerHTML += arr[i].substr(val.length);
+                    b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                    b.addEventListener("click", function(e) {
+                        inp.value = this.getElementsByTagName("input")[0].value;
+                        closeAllLists();
+                    });
+                    a.appendChild(b);
+                    }
+                }
+            });
+            function closeAllLists(elmnt) {
+                var x = document.getElementsByClassName("my-autocomplete-items");
+                for (var i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) {
+                        x[i].parentNode.removeChild(x[i]);
+                    }
+                }
+            }
+            document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+            });
+        }
+        function addTag(){
+            let inp = document.getElementById('tag');
+            let t = inp.value;
+            inp.value = '';
+            let h = document.getElementById('tagList');
+            if(t == '' || t.includes(' ') || h.value.includes(',' + t))
+                return;
+                
+            h.value += ','+t;
+            let tagsElmnt = document.getElementById('tags');
+            let l = document.createElement('LI');
+            l.className = 'my-1';
+            l.innerHTML =`<button type="button" onclick="removeTag('` + t + `')" id="tag_`+ t +`">⨉ ` + t + `</button>`;
+            tagsElmnt.appendChild(l);
+        }
+        function removeTag(t){
+            let h = document.getElementById('tagList');
+            h.value = h.value.replace(',' + t);
+            let l = document.getElementById('tag_' + t);
+            l.parentNode.removeChild(l);
+        }
+        autocomplete(document.getElementById('tag'), tags);
+    </script>
+    
+</form>

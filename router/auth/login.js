@@ -3,8 +3,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 
 // my modules
-const DB_auth = require('../../DB-codes/DB-auth-api');
-const authUtils = require('../../utils/auth-utils');
+const DB_auth = require(process.env.ROOT + '/DB-codes/DB-auth-api');
+const authUtils = require(process.env.ROOT + '/utils/auth-utils');
 
 // creating router
 const router = express.Router({mergeParams : true});

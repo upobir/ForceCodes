@@ -21,6 +21,7 @@ async function getRatingOrderedUsers(rowBegin, rowEnd){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+//TODO fix order
 async function getRatingOrderedFriends(userId, rowBegin, rowEnd){
     const sql = `
         SELECT
@@ -49,7 +50,7 @@ async function getRatingOrderedFriends(userId, rowBegin, rowEnd){
         WHERE
             NEW_RANK BETWEEN :begin AND :end
         ORDER BY
-            NEW_RANK ASC
+            RANK_NO ASC
     `;
     const binds = {
         id: userId,

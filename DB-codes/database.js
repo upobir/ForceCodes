@@ -50,6 +50,29 @@ async function execute(sql, binds, options){
     return results;
 }
 
+// code to execute many sql
+async function executeMany(sql, binds, options){
+    let connection;
+    try {
+        // Get a connection from the default pool
+        connection = await oracledb.getConnection();
+        await connection.executeMany(sql, binds, options);
+    } catch (err) {
+        console.log("ERROR executing sql: " + err.message);
+    } finally {
+        if (connection) {
+            try {
+                // Put the connection back in the pool
+                await connection.close();
+            } catch (err) {
+                console.log("ERROR closing connection: " + err);
+            }
+        }
+    }
+
+    return;
+}
+
 // options for execution sql
 const options = {
     outFormat: oracledb.OUT_FORMAT_OBJECT
@@ -59,5 +82,6 @@ module.exports = {
     startup,
     shutdown,
     execute,
+    executeMany,
     options
 };

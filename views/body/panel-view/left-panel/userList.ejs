@@ -17,9 +17,7 @@
                     <%= userList[i].RANK_NO %>
                 </td>
                 <td class="pl-3" >
-                    <a href="/profile/<%= userList[i].HANDLE %>" <%-'style="color:' + userList[i].COLOR + '"'%> class="my-link my-handle">
-                        <%= userList[i].HANDLE %>
-                    </a>
+                    <%- include('../../../partials/handle', {handle : userList[i].HANDLE, color : userList[i].COLOR}) %>
                 </td>
                 <td class="text-center">
                     <%= userList[i].RATING %>

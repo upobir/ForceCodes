@@ -1,0 +1,61 @@
+<div class="pl-2">
+    <div class="list-inline">
+        <h3 class="list-inline-item">
+            <b>
+                <%= handle %>'s Blog
+            </b>
+        </h3>
+        <% if(user !== null && user.handle == handle){ %>
+            <div class="list-inline-item float-right my-small-text mt-2">
+                <a href="/blog/new" class="my-link">
+                    Add new blog entry
+                </a>
+            </div>
+        <% } %>
+    </div>
+
+    <% if(blogs.length == 0){ %>
+        No blog entries written.
+    <% } %>
+
+    <% blogs.forEach((blog) => { %>
+        <div class="mb-4">
+            <h3>
+                <a href="/profile/<%= blog.author %>" class="my-link"> <%= blog.TITLE %> </a>
+            </h3>
+            <ul class="list-inline">
+                <li class="list-inline-item my-small-text">
+                    By <%- include('../../../partials/handle', {handle : blog.AUTHOR, color : blog.COLOR}) %>, <%= blog.CREATION_TIME %>
+                </li>
+                <li class="list-inline-item my-small-text float-right">
+                    edit text
+                </li>
+            </ul>
+            <div class="my-blog-post">
+                <p class="px-3">
+                    <%= blog.BODY %>
+                </p>
+            </div>
+            <div class="card">
+                <ul class="list-inline card-body py-1 my-card-no-bottom">
+                    <li class="list-inline-item text-muted">
+                        <b>
+                            <%= blog.VOTE_CNT %>
+                        </b>
+                    </li>
+                    <li class="list-inline-item">
+                        upvote
+                    </li>
+                    <li class="list-inline-item">
+                        downvote
+                    </li>
+                    <li class="list-inline-item float-right">
+                        <%= blog.CMNT_CNT %> comments
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <% }) %>
+
+    
+</div>
