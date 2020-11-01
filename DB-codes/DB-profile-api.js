@@ -21,6 +21,7 @@ async function getProfileByHandle(handle){
             U.ID,
             U.HANDLE,
             U.EMAIL,
+            U.PICTURE,
             R.COLOR,
             R.NAME "RANK_NAME",
             U.RATING,
@@ -135,6 +136,7 @@ async function getSettingsInfo(id){
             U.EMAIL,
             U.FIRST_NAME,
             U.LAST_NAME,
+            U.PICTURE,
             U.DATE_OF_BIRTH,
             CO.NAME "COUNTRY",
             CI.NAME "CITY",
@@ -206,6 +208,36 @@ async function updateSettingsById(id, info){
     return;
 }
 
+async function changePictureById(id, url){
+    console.log("id " + id + " url " + url);
+    let sql = `
+        SELECT
+            PICTURE
+        FROM
+            USER_ACCOUNT
+        WHERE
+            ID = :id
+    `;
+    let binds = {
+        id : id
+    };
+    const oldUrl = (await database.execute(sql, binds, database.options)).rows[0].PICTURE;
+    sql = `
+        UPDATE
+            USER_ACCOUNT
+        SET
+            PICTURE = :url
+        WHERE
+            ID = :id
+    `;
+    binds = {
+        id : id,
+        url : url
+    }
+    await database.execute(sql, binds, database.options);
+    return oldUrl;
+}
+
 module.exports = {
     getProfileByHandle,
     isFriendOfId,
@@ -215,5 +247,6 @@ module.exports = {
     getSettingsInfo,
     updatePasswordById,
     getPasswordById,
-    updateSettingsById
+    updateSettingsById,
+    changePictureById
 }

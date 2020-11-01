@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     const id = (req.user === null)? null : req.user.id;
     const blogs = await DB_blog.getBlogInfosByHandle(handle, id);
     for(let i = 0; i<blogs.length; i++){
-        blogs[i].CREATION_TIME = timeUtils.timeAgo(blogs[i].CREATION_TIME) + ' ago';
+        blogs[i].CREATION_TIME = timeUtils.timeAgo(blogs[i].CREATION_TIME);
     }
 
     res.render('layout.ejs', {

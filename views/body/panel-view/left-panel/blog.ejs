@@ -21,11 +21,11 @@
     <% blogs.forEach((blog) => { %>
         <div class="mb-4">
             <h3>
-                <a href="/profile/<%= blog.author %>" class="my-link"> <%= blog.TITLE %> </a>
+                <a href="/blog/entry/<%= blog.ID %>" class="my-link"> <%= blog.TITLE %> </a>
             </h3>
             <ul class="list-inline">
                 <li class="list-inline-item my-small-text">
-                    By <%- include('../../../partials/handle', {handle : blog.AUTHOR, color : blog.COLOR}) %>, <%= blog.CREATION_TIME %>
+                    By <%- include('../../../partials/handle', {handle : blog.AUTHOR, color : blog.COLOR}) %>, <%= blog.CREATION_TIME %> <%= (blog.CREATION_TIME == 'now')? '' : ' ago' %>
                 </li>
                 <li class="list-inline-item my-small-text float-right">
                     edit text

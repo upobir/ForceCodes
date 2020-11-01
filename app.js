@@ -15,6 +15,7 @@ const router = require('./router/indexRouter');
 const app = express();
 
 // using libraries
+// app.use(fileUpload({ createParentPath : true }));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());

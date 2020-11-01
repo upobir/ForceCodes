@@ -50,6 +50,7 @@ async function addBlogTags(blog, tags){
 async function getBlogInfosByHandle(handle, id){
     let sql = `
         SELECT
+            B.ID,
             B.TITLE,
             U.HANDLE "AUTHOR",
             U.COLOR,
@@ -94,6 +95,8 @@ async function getBlogInfosByHandle(handle, id){
             ) "UV" ON (UV.BLOG_ID = B.ID)
         WHERE
             U.HANDLE = :handle
+        ORDER BY
+            B.CREATION_TIME DESC
     `;
     let binds = {
         handle : handle,

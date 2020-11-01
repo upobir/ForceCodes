@@ -1,13 +1,25 @@
 // libraries
 const express = require('express');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const fs = require('fs');
+var path = require('path')
 
-const DB_profile = require('../../../../DB-codes/DB-profile-api');
-const DB_global = require('../../../../DB-codes/DB-global-api');
-const DB_auth = require('../../../../DB-codes/DB-auth-api');
+const DB_profile = require(process.env.ROOT+'/DB-codes/DB-profile-api');
+const DB_global = require(process.env.ROOT+'/DB-codes/DB-global-api');
+const DB_auth = require(process.env.ROOT+'/DB-codes/DB-auth-api');
 
-const innerNavUtils = require('../../../../utils/innerNav-utils');
+const innerNavUtils = require(process.env.ROOT+'/utils/innerNav-utils');
 
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, process.env.ROOT + '/public/public-images/')
+    },
+    filename: function (req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname))
+    }
+});
+const upload = multer({storage : storage});
 const router = express.Router({mergeParams : true});
 
 router.get('/', async(req, res) =>{
@@ -37,13 +49,14 @@ router.get('/', async(req, res) =>{
                 birthdate : settingsInfo.DATE_OF_BIRTH.toJSON().slice(0, 10),
                 country : settingsInfo.COUNTRY,
                 city : settingsInfo.CITY,
-                organization : settingsInfo.ORGANIZATION
+                organization : settingsInfo.ORGANIZATION,
+                picture : settingsInfo.PICTURE
             }
         });
     }
 });
 
-router.post('/', async(req, res) =>{
+router.post('/', upload.single('picture'),  async(req, res) =>{
     const handle = req.params.handle;
 
     if(req.user == null || req.user.handle != handle){
@@ -104,6 +117,16 @@ router.post('/', async(req, res) =>{
                 organization : req.body.organization == ''? null : req.body.organization
             };
             await DB_profile.updateSettingsById(req.user.id, info);
+            // upload picture
+            if(req.file){
+                const picture = req.file;
+                const url = picture.filename;
+                console.log('picture was posted, url:' + url);
+                const oldUrl = await DB_profile.changePictureById(req.user.id, url);
+                if(oldUrl != null){
+                    fs.unlinkSync(process.env.ROOT + '/public/public-images/' + oldUrl);
+                }
+            }
             res.redirect(`/profile/${handle}/settings`);
         }
         else{

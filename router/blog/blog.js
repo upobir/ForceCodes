@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 
 const DB_blog = require(process.env.ROOT + '/DB-codes/DB-blog-api');
+const entryRouter = require('./entry/entry');
 
 const router = express.Router({mergeParams : true});
 
@@ -49,5 +50,8 @@ router.post('/new', async (req, res, next)=>{
         res.redirect(`/profile/${req.user.handle}/blog`);
     }
 });
+
+router.use('/entry', entryRouter);
+
 
 module.exports = router;

@@ -128,3 +128,8 @@
 .my-button{
     border-radius: 5px;
 }
+
+.my-image{
+    height: auto !important;
+    max-width: 95% !important;
+}
