@@ -6,6 +6,8 @@ const innerNavUtils = require(process.env.ROOT + '/utils/innerNav-utils');
 
 const DB_blog = require(process.env.ROOT + '/DB-codes/DB-blog-api');
 
+const editRouter = require('./edit/edit');
+
 const router = express.Router({mergeParams : true});
 
 router.use('/', async (req, res, next) =>{
@@ -19,12 +21,10 @@ router.use('/', async (req, res, next) =>{
 router.get('/', async (req, res) =>{
     const blogId = req.params.id;
     let results = await DB_blog.getBlogInfoById(blogId, req.user == null? null : req.user.id);
-    console.log('blog fetch cool');
     if(results.length == 0){
         res.redirect('/');
     } else {
         let blog = results[0];
-        console.log(blog);
         await blogUtils.blogProcess(blog);
 
         const innerNav = innerNavUtils.getProfileInnerNav(req.user, blog.AUTHOR);
@@ -38,10 +38,6 @@ router.get('/', async (req, res) =>{
             blog : blog
         });
     }
-    // res.json({
-    //     id : req.params.id,
-    //     message : 'working'
-    // });
 });
 
 router.post('/vote', async (req, res) =>{
@@ -51,5 +47,7 @@ router.post('/vote', async (req, res) =>{
         await DB_blog.addVote(req.body.user, req.params.id, req.body.vote);
     }
 });
+
+router.use('/edit', editRouter);
 
 module.exports = router;

@@ -118,7 +118,6 @@ async function getTagsByBlogId(id){
 }
 
 async function isBlogIdValid(id){
-    console.log(id);
     let sql = `
         SELECT
             COUNT(*) "CNT"
@@ -171,6 +170,87 @@ async function addVote(user, blogId, type){
     return;
 }
 
+async function getAuthorId(blogId){
+    let sql = `
+        SELECT
+            AUTHOR_ID
+        FROM
+            BLOG_POST
+        WHERE
+            ID = :blogId
+    `;
+    let binds = {
+        blogId : blogId
+    };
+    return (await database.execute(sql, binds, database.options)).rows[0].AUTHOR_ID;
+}
+
+async function getBlogSettingsInfo(blogId){
+    let sql = `
+        SELECT
+            ID,
+            TITLE,
+            BODY,
+            CREATION_TIME
+        FROM
+            BLOG_POST
+        WHERE
+            ID = :blogId
+    `;
+    let binds = {
+        blogId : blogId
+    };
+
+    return (await database.execute(sql, binds, database.options)).rows[0];
+}
+
+async function updateBlogById(blogId, blog){
+    let sql = `
+        UPDATE
+            BLOG_POST
+        SET
+            TITLE = :title,
+            BODY = :body
+        WHERE
+            ID = :blogId
+    `;
+    let binds = {
+        blogId : blogId,
+        title : blog.title,
+        body : blog.body
+    };
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
+async function deleteAllTags(blogId){
+    let sql = `
+        DELETE FROM
+            BLOG_TAG
+        WHERE
+            BLOG_ID = :blogId
+    `;
+    let binds = {
+        blogId : blogId
+    };
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
+async function deleteBlog(blogId){
+    let sql = `
+        DELETE FROM
+            BLOG_POST
+        WHERE
+            ID = :blogId
+    `;
+    let binds = {
+        blogId : blogId
+    };
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
 module.exports = {
     getAllBlogTags,
     createBlog,
@@ -180,5 +260,10 @@ module.exports = {
     removeVote,
     addVote,
     getTagsByBlogId,
-    getBlogInfoById
+    getBlogInfoById,
+    getAuthorId,
+    getBlogSettingsInfo,
+    updateBlogById,
+    deleteAllTags,
+    deleteBlog
 };

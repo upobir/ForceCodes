@@ -18,9 +18,10 @@ router.get('/new', async (req, res) =>{
         }
         res.render('layout.ejs', {
             title: `New Blog Entry - Codeforces`,
-            body: ['panel-view', 'newBlog'],
+            body: ['panel-view', 'blogForm'],
             user: req.user,
-            tags : tags
+            tags : tags,
+            postURL : '/blog/new'
         });   
     }
 });
@@ -30,7 +31,6 @@ router.post('/new', async (req, res, next)=>{
     if(req.user == null)
         next();
     else{
-        //res.json(req.body);
         const blog = {
             title : req.body.title,
             body : req.body.body,
@@ -43,7 +43,8 @@ router.post('/new', async (req, res, next)=>{
         tags = tags.sort().filter((item, pos, ar) => {
             return item != '' && (pos == 0 || item != ar[pos-1]);
         });
-
+        
+        console.log(tags);
         if(tags.length > 0){
             await DB_blog.addBlogTags(blogId, tags);
             console.log('tags added');

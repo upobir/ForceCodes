@@ -17,9 +17,12 @@
             <li class="list-inline-item my-small-text">
                 By <%- include('../../../partials/handle', {handle : blog.AUTHOR, color : blog.COLOR}) %>, <%= blog.CREATION_TIME %> <%= (blog.CREATION_TIME == 'now')? '' : ' ago' %>
             </li>
-            <li class="list-inline-item my-small-text float-right">
-                edit text
-            </li>
+            <!-- Edit option -->
+            <% if(user !== null && user.handle == blog.AUTHOR) { %>
+                <li class="list-inline-item my-small-text float-right">
+                    <a href="/blog/entry/<%= blog.ID %>/edit">edit text</a> 
+                </li>
+            <% } %>
         </ul>
         <!-- body -->
         <div class="my-blog-post">

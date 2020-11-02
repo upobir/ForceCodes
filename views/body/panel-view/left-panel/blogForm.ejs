@@ -1,17 +1,20 @@
 <h2 class="text-primary mt-5">
     New topic
 </h2>
-<form action="/blog/new" method="POST">
+<form action="<%= postURL %>" method="POST">
+    <!-- title input -->
     <div class="form-group">
         <label for="title">Title</label>
-        <input type="text" class="form-control" name="title" required>
+        <input type="text" class="form-control" name="title" required value="<%= (typeof form != 'undefined')? form.title : '' %>">
     </div>
+    <!-- content input -->
     <div class="form-group">
         <label for="body">Content</label>
-        <textarea class="form-control" name="body" rows="20" required></textarea>
+        <textarea class="form-control" name="body" rows="20" required><%= (typeof form != 'undefined')? form.body : '' %></textarea>
     </div>
+    <!-- tags input -->
     <div class="form-group">
-        <input type="hidden" id="tagList" name="tagList" value="">
+        <input type="hidden" id="tagList" name="tagList" value="<%= typeof form == 'undefined'? '' : (',' + form.tags.join(',')) %>">
         <label for="tag">Tags:</label>
         <div class="my-autocomplete">
             <div class="row pl-3">
@@ -19,16 +22,47 @@
                 <button class="ml-2 px-4 my-button" type="button" onclick="addTag()"> Add tag </button>
             </div>
         </div>
-        
+        <!-- tag list -->
         <ul style="list-style-type: none;" class="px-0" id="tags">  
+            <% if(typeof form != 'undefined') { %>
+                <% for(let i = 0; i<form.tags.length; i++){ %>
+                    <li class="my-1">
+                        <button type="button" onclick="removeTag( '<%= form.tags[i] %>' )" id="tag_<%= form.tags[i] %>">
+                            ⨉ <%= form.tags[i] %>
+                        </button>
+                    </li>
+                <% } %>
+            <% } %>
         </ul>
     </div>
+    <!-- buttons -->
     <div class="form-group row">
-        <input type="submit" value="Post" class="btn btn-primary col-1 mx-auto">
+        <div class="col mx-auto text-center">
+            <!-- submit -->
+            <input type="submit" value="Post" class="btn btn-primary">
+            <% if(postURL !== '/blog/new') { %>
+                <!-- delete -->
+                <button type="button" onclick="deletePost('<%= form.id %>')" class="btn btn-danger ml-5"> Delete </button>
+            <% } %>
+        </div>
     </div>
+
+    <% if(postURL !== '/blog/new') { %>
+        <%- `<script> let user = '` + user.handle + `'</script>` %>
+        <script>
+            function deletePost(blogId){
+                let xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    //console.log(this.responseText);
+                    window.location.href = `/profile/${user}/blog`;    
+                };
+                xhttp.open("DELETE", "/blog/entry/" + blogId + "/edit", true);
+                xhttp.send();
+            }
+        </script>
+    <% } %>
     
     <%- '<script>var tags = '+JSON.stringify(tags)+'; </script>' %>
-
     <script>
         function autocomplete(inp, arr) {
             inp.addEventListener("input", function(e) {
@@ -83,7 +117,7 @@
         }
         function removeTag(t){
             let h = document.getElementById('tagList');
-            h.value = h.value.replace(',' + t);
+            h.value = h.value.replace(',' + t, '');
             let l = document.getElementById('tag_' + t);
             l.parentNode.removeChild(l);
         }

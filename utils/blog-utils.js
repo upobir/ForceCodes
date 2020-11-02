@@ -7,6 +7,16 @@ async function blogProcess(blog){
     return;
 }
 
+async function getAllTags(){
+    let tagsObj = await DB_blog.getAllBlogTags();
+    let tags = [];
+    for(let i = 0; i<tagsObj.length; i++){
+        tags.push(tagsObj[i].NAME);
+    }
+    return tags;
+}
+
 module.exports = {
-    blogProcess
+    blogProcess,
+    getAllTags
 }
