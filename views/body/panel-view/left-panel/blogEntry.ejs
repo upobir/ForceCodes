@@ -1,0 +1,80 @@
+<div class="pl-2">
+    <div class="list-inline">
+        <h3 class="list-inline-item">
+            <b>
+                <%= handle %>'s Blog
+            </b>
+        </h3>
+    </div>
+
+    <div class="mb-4">
+        <!-- blog title -->
+        <h3>
+            <a href="/blog/entry/<%= blog.ID %>" class="my-link"> <%= blog.TITLE %> </a>
+        </h3>
+        <!-- author + time -->
+        <ul class="list-inline">
+            <li class="list-inline-item my-small-text">
+                By <%- include('../../../partials/handle', {handle : blog.AUTHOR, color : blog.COLOR}) %>, <%= blog.CREATION_TIME %> <%= (blog.CREATION_TIME == 'now')? '' : ' ago' %>
+            </li>
+            <li class="list-inline-item my-small-text float-right">
+                edit text
+            </li>
+        </ul>
+        <!-- body -->
+        <div class="my-blog-post">
+            <p class="px-3">
+                <%= blog.BODY %>
+            </p>
+        </div>
+        <div class="mb-1">
+            <span class="text-info">tags: </span>
+            <span class="text-muted"><%= blog.TAGS.map(x=>'#'+x).join(', ') %></span>
+        </div>
+        <!-- info -->
+        <div class="card">
+            <ul class="list-inline card-body py-1 my-card-no-bottom">
+                <!-- votes -->
+                <li class="list-inline-item my-vote-cnt <%= blog.VOTE_CNT == 0? 'text-muted' : (blog.VOTE_CNT > 0? 'text-success' : 'text-danger')%>">
+                    <b>
+                        <%= (blog.VOTE_CNT > 0? '+' : '') + blog.VOTE_CNT %>
+                    </b>
+                </li>
+                <!-- upvote -->
+                <% if(blog.VOTED == 'UP'){ %>
+                    <li class="list-inline-item" >
+                        <button id='<%= blog.ID  %>_up' class="btn btn-link my-non-btn" <%-'onclick="removeBlogVote(' + blog.ID + ')"'%>>
+                            <b>upvoted</b> 
+                        </button>
+                    </li>
+                <% } else { %>
+                    <li class="list-inline-item" >
+                        <button id='<%= blog.ID %>_up' class="btn btn-link my-non-btn" <%-'onclick="addBlogVote(' + blog.ID + ', true)"'%>>
+                            upvote
+                        </button>
+                    </li>
+                <% } %>
+                <!-- downvote -->
+                <% if(blog.VOTED == 'DOWN'){ %>
+                    <li class="list-inline-item" >
+                        <button id='<%= blog.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="removeBlogVote(' + blog.ID + ')"'%>>
+                            <b>downvoted</b>  
+                        </button>
+                    </li>
+                <% } else { %>
+                    <li class="list-inline-item" >
+                        <button id='<%= blog.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="addBlogVote(' + blog.ID + ', false)"'%>>
+                            downvote
+                        </button>
+                    </li>
+                <% } %>
+                <!-- comments -->
+                <li class="list-inline-item float-right">
+                    <a href="/blog/entry/<%= blog.ID %>" class="my-link"> <%= blog.CMNT_CNT %> comments </a>
+                </li>
+            </ul>
+        </div>
+    </div>    
+</div>
+
+<%- include('../../../partials/voteScript') %>

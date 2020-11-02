@@ -1,7 +1,7 @@
 <a href="/profile/<%= user.handle %>"> <%= user.handle %> </a> 
 | 
 <form action="/logout" method="POST" class="my-logout-form">
-    <input type="submit" value="log out" class="btn btn-link my-logout">
+    <input type="submit" value="log out" class="btn btn-link my-non-btn">
 </form>
 
 <% if (user.msgCount > 0) { %>

@@ -3,9 +3,10 @@
 * login `done`
 * logout `done`
 * (user) `done`
-    * blogs 
+    * blogs `done`
         * new `done`
-        * (id)
+        * (id) `done`
+            * edit
 * teams/new
 * teams/(id)
 * settings `done`

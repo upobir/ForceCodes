@@ -2,7 +2,7 @@ const express = require('express');
 
 const DB_blog = require(process.env.ROOT + '/DB-codes/DB-blog-api');
 const innerNavUtils = require(process.env.ROOT + '/utils/innerNav-utils');
-const timeUtils = require(process.env.ROOT + '/utils/time-utils');
+const blogUtils = require(process.env.ROOT + '/utils/blog-utils');
 
 const router = express.Router({mergeParams : true});
 
@@ -13,8 +13,9 @@ router.get('/', async (req, res) => {
     const id = (req.user === null)? null : req.user.id;
     const blogs = await DB_blog.getBlogInfosByHandle(handle, id);
     for(let i = 0; i<blogs.length; i++){
-        blogs[i].CREATION_TIME = timeUtils.timeAgo(blogs[i].CREATION_TIME);
+        await blogUtils.blogProcess(blogs[i]);
     }
+
 
     res.render('layout.ejs', {
         title: `${handle} - ForceCodes`,

@@ -44,14 +44,16 @@ router.post('/new', async (req, res, next)=>{
             return item != '' && (pos == 0 || item != ar[pos-1]);
         });
 
-        await DB_blog.addBlogTags(blogId, tags);
-        console.log('tags added');
+        if(tags.length > 0){
+            await DB_blog.addBlogTags(blogId, tags);
+            console.log('tags added');
+        }
 
-        res.redirect(`/profile/${req.user.handle}/blog`);
+        res.redirect(`/blog/entry/${blogId}`);
     }
 });
 
-router.use('/entry', entryRouter);
+router.use('/entry/:id', entryRouter);
 
 
 module.exports = router;

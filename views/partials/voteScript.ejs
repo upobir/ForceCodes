@@ -1,0 +1,36 @@
+<% if(user !== null){ %>
+    <%- '<script> let user = "' + user.handle + '"</script>' %>
+    <script>
+        function addBlogVote(blogId, vote) {
+            let a = blogId + (vote? '_up' : '_down');
+            let b = blogId + (vote? '_down' : '_up');
+            let A = document.getElementById(a);
+            let B = document.getElementById(b);
+
+            let xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/blog/entry/" + blogId + "/vote", true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ user : user , vote : vote}));
+
+
+            A.innerHTML = '<b>' + (vote? 'up' : 'down') + 'voted </b>';
+            A.setAttribute('onclick', 'removeBlogVote(' + blogId + ')');
+            B.innerHTML = (!vote? 'up' : 'down') + 'vote';
+            B.setAttribute('onclick', 'addBlogVote(' + blogId + ',' + !vote + ')');
+        }
+        function removeBlogVote(blogId) {
+            let A = document.getElementById(blogId + '_up');
+            let B = document.getElementById(blogId + '_down');
+
+            let xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/blog/entry/" + blogId + "/vote", true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ user : user , vote : null}));
+
+            A.innerHTML = 'upvote';
+            A.setAttribute('onclick', 'addBlogVote(' + blogId + ',true)');
+            B.innerHTML = 'downvote';
+            B.setAttribute('onclick', 'addBlogVote(' + blogId + ',false)');
+        }
+    </script>
+<% } %>

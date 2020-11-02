@@ -90,4 +90,67 @@ BEGIN
     END IF;
 END;
 
+CREATE OR REPLACE PROCEDURE UPDATE_VOTE(
+    U_HANDLE IN USER_CONTESTANT_VIEW.HANDLE%TYPE,
+    B_ID IN BLOG_POST.ID%TYPE,
+    V_TYPE IN BLOG_USER_VOTE.TYPE%TYPE
+) IS
+    CNT NUMBER;
+    U_ID USER_ACCOUNT.ID%TYPE;
+BEGIN
+    SELECT
+        COUNT(*)
+    INTO
+        CNT
+    FROM
+        USER_CONTESTANT_VIEW
+    WHERE
+        HANDLE = U_HANDLE;
+    
+    IF(CNT > 0) THEN
+        SELECT
+            ID
+        INTO
+            U_ID
+        FROM
+            USER_CONTESTANT_VIEW
+        WHERE
+            HANDLE = U_HANDLE;
+
+        SELECT
+            COUNT(*)
+        INTO
+            CNT
+        FROM
+            BLOG_USER_VOTE
+        WHERE
+            USER_ID = U_ID AND
+            BLOG_ID = B_ID;
+
+        IF (CNT > 0) THEN
+            UPDATE
+                BLOG_USER_VOTE
+            SET
+                TYPE = V_TYPE
+            WHERE
+                USER_ID = U_ID AND
+                BLOG_ID = B_ID;
+        ELSE
+            INSERT INTO
+                BLOG_USER_VOTE(
+                    USER_ID,
+                    BLOG_ID,
+                    TYPE
+                )
+            VALUES(
+                U_ID,
+                B_ID,
+                V_TYPE
+            );
+        END IF;
+
+    END IF;
+
+END;
+
 SHOW ERRORS;

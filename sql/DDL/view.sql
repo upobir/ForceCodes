@@ -37,3 +37,41 @@ AS
     ORDER BY
         U.RATING DESC;
         
+
+CREATE OR REPLACE VIEW
+    BLOG_INFO_VIEW
+AS
+    SELECT
+        B.ID,
+        B.TITLE,
+        U.HANDLE "AUTHOR",
+        U.COLOR,
+        B.CREATION_TIME,
+        B.BODY,
+        NVL(V.VOTES, 0) "VOTE_CNT",
+        NVL(C.CNT, 0) "CMNT_CNT"
+    FROM
+        BLOG_POST "B" JOIN
+        USER_LIST_VIEW "U" ON (B.AUTHOR_ID = U.ID) LEFT JOIN
+        (
+            SELECT
+                BLOG_ID,
+                COUNT(*) "CNT"
+            FROM
+                POST_COMMENT
+            GROUP BY 
+                BLOG_ID
+        ) "C" ON (C.BLOG_ID = B.ID) LEFT JOIN
+        (
+            SELECT
+                BLOG_ID,
+                SUM(CASE WHEN TYPE = 'UP' THEN
+                        1
+                    ELSE
+                        -1
+                    END) "VOTES"
+            FROM
+                BLOG_USER_VOTE
+            GROUP BY
+                BLOG_ID
+        ) "V" ON (V.BLOG_ID = B.ID) 

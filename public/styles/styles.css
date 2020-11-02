@@ -42,13 +42,13 @@
     font-weight: bold;
 }
 
-.my-logout{
+.my-non-btn{
     padding: 0px 0px !important;
     border: none !important;
     margin-bottom: 3px !important;
 }
 
-.my-logout:active,.my-logout:focus{
+.my-non-btn:active,.my-non-btn:focus{
     box-shadow: none !important;
     outline: none !important;
 }
@@ -97,6 +97,7 @@
     background: #b9b9b9 !important;
     float: left !important;
     position: absolute !important;
+    margin-left: 1px;
 }
 
 .my-blog-post{
@@ -132,4 +133,9 @@
 .my-image{
     height: auto !important;
     max-width: 95% !important;
+}
+
+.my-vote-cnt{
+    position: relative !important;
+    bottom: -2px !important;
 }

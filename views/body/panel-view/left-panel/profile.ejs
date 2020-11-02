@@ -29,11 +29,9 @@
             <!-- add friend/remove friend -->
             <% if(user !== null && user.handle != profile.HANDLE){ %>
                 <div class="py-2">
-                    <form action="/profile/<%= user.handle%>/friends" method="POST" class="my-logout-form">
-                        <input type="hidden" name="addFriend" value="<%= !profile.IS_FRIEND %>">
-                        <input type="hidden" name="handle" value="<%= profile.HANDLE %>">
-                        <input type="submit" value="<%= (profile.IS_FRIEND)? 'Remove friend' : 'Add friend' %>" class="btn btn-link my-logout">
-                    </form>
+                    <button class="btn btn-link my-non-btn" id="friendBtn" <%- `onclick="updateFriend('` +  profile.HANDLE + `')"` %> >
+                        <%= (profile.IS_FRIEND)? 'Remove friend' : 'Add friend' %>
+                    </button>
                 </div>
             <% } %>
             <!-- email -->
@@ -80,3 +78,19 @@
         </div>
     </div>
 </div>
+<% if(user !== null) { %>
+<%- `<script> let userHandle = '` + user.handle +  `'</script>` %>
+    <script>
+        function updateFriend(handle){
+            let btn = document.getElementById('friendBtn');
+            let add = (btn.innerHTML.trim() == 'Add friend');
+
+            let xhttp = new XMLHttpRequest();
+            xhttp.open("POST", "/profile/" + userHandle + "/friends", true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({ addFriend : add, handle : handle}));
+
+            btn.innerHTML = ((add)? 'Remove friend' : 'Add friend');
+        }
+    </script>
+<% } %>

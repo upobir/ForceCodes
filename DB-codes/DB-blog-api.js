@@ -50,40 +50,10 @@ async function addBlogTags(blog, tags){
 async function getBlogInfosByHandle(handle, id){
     let sql = `
         SELECT
-            B.ID,
-            B.TITLE,
-            U.HANDLE "AUTHOR",
-            U.COLOR,
-            B.CREATION_TIME,
-            B.BODY,
-            NVL(V.VOTES, 0) "VOTE_CNT",
-            UV.TYPE "VOTED",
-            NVL(C.CNT, 0) "CMNT_CNT"
+            B.*,
+            UV.TYPE "VOTED"
         FROM
-            BLOG_POST "B" JOIN
-            USER_LIST_VIEW "U" ON (B.AUTHOR_ID = U.ID) LEFT JOIN
-            (
-                SELECT
-                    BLOG_ID,
-                    COUNT(*) "CNT"
-                FROM
-                    POST_COMMENT
-                GROUP BY 
-                    BLOG_ID
-            ) "C" ON (C.BLOG_ID = B.ID) LEFT JOIN
-            (
-                SELECT
-                    BLOG_ID,
-                    SUM(CASE WHEN TYPE = 'UP' THEN
-                            1
-                        ELSE
-                            -1
-                        END) "VOTES"
-                FROM
-                    BLOG_USER_VOTE
-                GROUP BY
-                    BLOG_ID
-            ) "V" ON (V.BLOG_ID = B.ID) LEFT JOIN
+            BLOG_INFO_VIEW "B" LEFT JOIN
             (
                 SELECT
                     BLOG_ID,
@@ -94,7 +64,7 @@ async function getBlogInfosByHandle(handle, id){
                     USER_ID = :id
             ) "UV" ON (UV.BLOG_ID = B.ID)
         WHERE
-            U.HANDLE = :handle
+            B.AUTHOR = :handle
         ORDER BY
             B.CREATION_TIME DESC
     `;
@@ -105,9 +75,110 @@ async function getBlogInfosByHandle(handle, id){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+async function getBlogInfoById(blogId, userId){
+    let sql = `
+        SELECT
+            B.*,
+            UV.TYPE "VOTED"
+        FROM
+            BLOG_INFO_VIEW "B" LEFT JOIN
+            (
+                SELECT
+                    BLOG_ID,
+                    TYPE
+                FROM
+                    BLOG_USER_VOTE
+                WHERE
+                    USER_ID = :userId
+            ) "UV" ON (UV.BLOG_ID = B.ID)
+        WHERE
+            B.ID = :blogId
+    `;
+    let binds = {
+        blogId : blogId,
+        userId : userId
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getTagsByBlogId(id){
+    let sql = `
+        SELECT
+            T.NAME
+        FROM
+            BLOG_TAG "B" LEFT JOIN
+            TAG "T" ON (B.TAG_ID = T.ID)
+        WHERE
+            B.BLOG_ID = :id
+    `;
+    let binds = {
+        id : id
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function isBlogIdValid(id){
+    console.log(id);
+    let sql = `
+        SELECT
+            COUNT(*) "CNT"
+        FROM
+            BLOG_POST
+        WHERE
+            ID = :id
+    `;
+    let binds = {
+        id : id
+    };
+    return (await database.execute(sql, binds, database.options)).rows[0].CNT;
+}
+
+async function removeVote(user, blog){
+    let sql = `
+        DELETE FROM
+            BLOG_USER_VOTE
+        WHERE
+            BLOG_ID = :blogId AND
+            USER_ID = (
+                SELECT
+                    ID
+                FROM
+                    USER_CONTESTANT_VIEW
+                WHERE
+                    HANDLE = :handle
+            )
+    `;
+    let binds = {
+        handle : user,
+        blogId : blog
+    };
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
+async function addVote(user, blogId, type){
+    let sql =`
+        BEGIN
+            UPDATE_VOTE(:user, :blog, :type);
+        END;
+    `;
+    let binds = {
+        user : user,
+        blog : blogId,
+        type : type? 'UP' : 'DOWN'
+    }
+    await database.execute(sql, binds, {});
+    return;
+}
+
 module.exports = {
     getAllBlogTags,
     createBlog,
     addBlogTags,
-    getBlogInfosByHandle
+    getBlogInfosByHandle,
+    isBlogIdValid,
+    removeVote,
+    addVote,
+    getTagsByBlogId,
+    getBlogInfoById
 };

@@ -42,7 +42,7 @@ router.post('/', async(req, res) =>{
     if(req.user == null || req.user.handle != handle){
         res.redirect(`/profile/${handle}`);
     } else {
-        if(req.body.addFriend == 'true'){
+        if(req.body.addFriend){
             console.log("adding friend");
             await DB_profile.addFriendByHandle(req.user.id, req.body.handle);
         } else {
