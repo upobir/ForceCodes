@@ -7,7 +7,7 @@
         </h3>
     </div>
 
-    <div class="mb-4">
+    <div class="mb-2">
         <!-- blog title -->
         <h3>
             <a href="/blog/entry/<%= blog.ID %>" class="my-link"> <%= blog.TITLE %> </a>
@@ -46,13 +46,13 @@
                 <!-- upvote -->
                 <% if(blog.VOTED == 'UP'){ %>
                     <li class="list-inline-item" >
-                        <button id='<%= blog.ID  %>_up' class="btn btn-link my-non-btn" <%-'onclick="removeBlogVote(' + blog.ID + ')"'%>>
+                        <button id='<%= blog.ID %>_null_up' class="btn btn-link my-non-btn" <%-'onclick="removeVote(' + blog.ID + ', null)"'%>>
                             <b>upvoted</b> 
                         </button>
                     </li>
                 <% } else { %>
                     <li class="list-inline-item" >
-                        <button id='<%= blog.ID %>_up' class="btn btn-link my-non-btn" <%-'onclick="addBlogVote(' + blog.ID + ', true)"'%>>
+                        <button id='<%= blog.ID %>_null_up' class="btn btn-link my-non-btn" <%-'onclick="addVote(' + blog.ID + ', true, null)"'%>>
                             upvote
                         </button>
                     </li>
@@ -60,24 +60,54 @@
                 <!-- downvote -->
                 <% if(blog.VOTED == 'DOWN'){ %>
                     <li class="list-inline-item" >
-                        <button id='<%= blog.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="removeBlogVote(' + blog.ID + ')"'%>>
+                        <button id='<%= blog.ID %>_null_down' class="btn btn-link my-non-btn" <%-'onclick="removeVote(' + blog.ID + ', null)"'%>>
                             <b>downvoted</b>  
                         </button>
                     </li>
                 <% } else { %>
                     <li class="list-inline-item" >
-                        <button id='<%= blog.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="addBlogVote(' + blog.ID + ', false)"'%>>
+                        <button id='<%= blog.ID %>_null_down' class="btn btn-link my-non-btn" <%-'onclick="addVote(' + blog.ID + ', false, null)"'%>>
                             downvote
                         </button>
                     </li>
                 <% } %>
-                <!-- comments -->
+                <!-- comment cnt -->
                 <li class="list-inline-item float-right">
                     <a href="/blog/entry/<%= blog.ID %>" class="my-link"> <%= blog.CMNT_CNT %> comments </a>
                 </li>
             </ul>
         </div>
-    </div>    
+    </div>  
+    <div class="mb-2">
+        <button onclick="replyPrompt(this, null)" class="my-non-btn btn btn-link"> 
+            write comment
+        </button>
+    </div>
+    <!-- comments -->
+    <% comments.forEach(x =>{ %>
+        <%- include('../../../partials/comment', {cmnt : x}) %>
+    <% }) %>
+    
 </div>
 
 <%- include('../../../partials/voteScript') %>
+
+<script>
+    function replyPrompt(node, cmntId){
+        let parent = node.parentNode;
+        parent.innerHTML = `
+            <form method="POST">
+                <input name="id" type="hidden" value=${cmntId}>
+                <textarea name="body" id="" rows="3" class="form-control" required ></textarea>
+                <input type="submit" value="post" class="btn btn-primary py-1 mt-1">
+                <button type="button" onclick="cancelPrompt(this, ${cmntId})" class="btn btn-danger py-1 mt-1"> cancel </button>
+            </form>`;
+    }
+    function cancelPrompt(node, cmntId){
+        let parent = node.parentNode;
+        parent.innerHTML = `
+            <button onclick="replyPrompt(this, ${cmntId})" class="my-non-btn btn btn-link"> 
+                ${cmntId == null? 'write comment' : 'reply'}
+            </button>`;
+    }
+</script>

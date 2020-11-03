@@ -132,38 +132,31 @@ async function isBlogIdValid(id){
     return (await database.execute(sql, binds, database.options)).rows[0].CNT;
 }
 
-async function removeVote(user, blog){
+async function removeVote(userId, blogId){
     let sql = `
         DELETE FROM
             BLOG_USER_VOTE
         WHERE
             BLOG_ID = :blogId AND
-            USER_ID = (
-                SELECT
-                    ID
-                FROM
-                    USER_CONTESTANT_VIEW
-                WHERE
-                    HANDLE = :handle
-            )
+            USER_ID = :userId
     `;
     let binds = {
-        handle : user,
-        blogId : blog
+        userId : userId,
+        blogId : blogId
     };
     await database.execute(sql, binds, database.options);
     return;
 }
 
-async function addVote(user, blogId, type){
+async function addVote(userId, blogId, type){
     let sql =`
         BEGIN
-            UPDATE_VOTE(:user, :blog, :type);
+            UPDATE_BLOG_VOTE(:userId, :blogId, :type);
         END;
     `;
     let binds = {
-        user : user,
-        blog : blogId,
+        userId : userId,
+        blogId: blogId,
         type : type? 'UP' : 'DOWN'
     }
     await database.execute(sql, binds, {});

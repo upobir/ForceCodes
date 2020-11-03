@@ -52,13 +52,13 @@
                     <!-- upvote -->
                     <% if(blog.VOTED == 'UP'){ %>
                         <li class="list-inline-item" >
-                            <button id='<%= blog.ID  %>_up' class="btn btn-link my-non-btn" <%-'onclick="removeBlogVote(' + blog.ID + ')"'%>>
+                            <button id='<%= blog.ID  %>_null_up' class="btn btn-link my-non-btn" <%-`onclick="removeVote(` + blog.ID + `, null)"`%>>
                                 <b>upvoted</b> 
                             </button>
                         </li>
                     <% } else { %>
                         <li class="list-inline-item" >
-                            <button id='<%= blog.ID %>_up' class="btn btn-link my-non-btn" <%-'onclick="addBlogVote(' + blog.ID + ', true)"'%>>
+                            <button id='<%= blog.ID %>_null_up' class="btn btn-link my-non-btn" <%-'onclick="addVote(' + blog.ID + ', true, null)"'%>>
                                 upvote
                             </button>
                         </li>
@@ -66,13 +66,13 @@
                     <!-- downvote -->
                     <% if(blog.VOTED == 'DOWN'){ %>
                         <li class="list-inline-item" >
-                            <button id='<%= blog.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="removeBlogVote(' + blog.ID + ')"'%>>
+                            <button id='<%= blog.ID %>_null_down' class="btn btn-link my-non-btn" <%-'onclick="removeVote(' + blog.ID + ', null)"'%>>
                                 <b>downvoted</b>  
                             </button>
                         </li>
                     <% } else { %>
                         <li class="list-inline-item" >
-                            <button id='<%= blog.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="addBlogVote(' + blog.ID + ', false)"'%>>
+                            <button id='<%= blog.ID %>_null_down' class="btn btn-link my-non-btn" <%-'onclick="addVote(' + blog.ID + ', false, null)"'%>>
                                 downvote
                             </button>
                         </li>

@@ -1,0 +1,70 @@
+<div>
+    <!-- main comment -->
+    <table class="mb-2" style="width: 100%;">
+        <tr>
+            <!-- author -->
+            <td class="my-commenter" >
+                <%- include('./handle', {handle : cmnt.HANDLE, color : cmnt.COLOR}) %>
+            </td>
+            <td>
+                <!-- time and votes -->
+                <ul class="list-inline py-1 my-card-no-bottom">
+                    <li class="list-inline-item text-muted my-small-text">
+                        <%= cmnt.CREATION_TIME + (cmnt.CREATION_TIME == 'now'? '' : ' ago') %>
+                    </li>
+                    <!-- votes -->
+                    <li class="float-right ml-auto my-small-text list-inline-item my-vote-cnt <%= cmnt.VOTE_CNT == 0? 'text-muted' : (cmnt.VOTE_CNT > 0? 'text-success' : 'text-danger')%>">
+                        <b>
+                            <%= (cmnt.VOTE_CNT > 0? '+' : '') + cmnt.VOTE_CNT %>
+                        </b>
+                    </li>
+                    <!-- downvote -->
+                    <% if(cmnt.VOTED == 'DOWN'){ %>
+                        <li class="list-inline-item mx-2 float-right">
+                            <button id='<%= blog.ID %>_<%= cmnt.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="removeVote(' + blog.ID + ',' + cmnt.ID + ')"'%>>
+                                <b>downvoted</b>  
+                            </button>
+                        </li>
+                    <% } else { %>
+                        <li class="list-inline-item mx-2 float-right">
+                            <button id='<%= blog.ID %>_<%= cmnt.ID %>_down' class="btn btn-link my-non-btn" <%-'onclick="addVote(' + blog.ID + ', false,'+ cmnt.ID + ')"'%>>
+                                downvote
+                            </button>
+                        </li>
+                    <% } %>
+                    <!-- upvote -->
+                    <% if(cmnt.VOTED == 'UP'){ %>
+                        <li class="list-inline-item float-right">
+                            <button id='<%= blog.ID %>_<%= cmnt.ID %>_up' class="btn btn-link my-non-btn" <%-'onclick="removeVote(' + blog.ID + ',' + cmnt.ID + ')"'%>>
+                                <b>upvoted</b> 
+                            </button>
+                        </li>
+                    <% } else { %>
+                        <li class="list-inline-item float-right">
+                            <button id='<%= blog.ID %>_<%= cmnt.ID %>_up' class="btn btn-link my-non-btn" <%-'onclick="addVote(' + blog.ID + ', true, '+ cmnt.ID + ')"'%>>
+                                upvote
+                            </button>
+                        </li>
+                    <% } %>
+                </ul>
+                <%= cmnt.BODY %>
+                <br>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <div>
+                    <button <%- `onclick="replyPrompt(this, ${cmnt.ID})"`%> class="my-non-btn btn btn-link"> 
+                        reply
+                    </button>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="ml-5">
+        <% cmnt.CHILDS.forEach(x => { %>
+            <%- include('./comment', {cmnt : x}) %>
+        <% }) %>
+    </div>
+</div>

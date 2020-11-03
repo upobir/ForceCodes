@@ -1,36 +1,37 @@
 <% if(user !== null){ %>
     <%- '<script> let user = "' + user.handle + '"</script>' %>
     <script>
-        function addBlogVote(blogId, vote) {
-            let a = blogId + (vote? '_up' : '_down');
-            let b = blogId + (vote? '_down' : '_up');
+        function addVote(blogId, vote, cmntId) {
+            let a = blogId + `_${cmntId}_` + (vote? 'up' : 'down');
+            let b = blogId + `_${cmntId}_` + (vote? 'down' : 'up');
             let A = document.getElementById(a);
             let B = document.getElementById(b);
 
             let xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/blog/entry/" + blogId + "/vote", true);
             xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhttp.send(JSON.stringify({ user : user , vote : vote}));
+            xhttp.send(JSON.stringify({vote : vote, cmntId : cmntId}));
 
 
             A.innerHTML = '<b>' + (vote? 'up' : 'down') + 'voted </b>';
-            A.setAttribute('onclick', 'removeBlogVote(' + blogId + ')');
+            A.setAttribute('onclick', 'removeVote(' + blogId + `, ${cmntId})`);
             B.innerHTML = (!vote? 'up' : 'down') + 'vote';
-            B.setAttribute('onclick', 'addBlogVote(' + blogId + ',' + !vote + ')');
+            B.setAttribute('onclick', 'addVote(' + blogId + ',' + !vote + `, ${cmntId})`);
         }
-        function removeBlogVote(blogId) {
-            let A = document.getElementById(blogId + '_up');
-            let B = document.getElementById(blogId + '_down');
+        function removeVote(blogId, cmntId) {
+            console.log(blogId + `_${cmntId}_` + '_up');
+            let A = document.getElementById(blogId + `_${cmntId}_up`);
+            let B = document.getElementById(blogId + `_${cmntId}_down`);
 
             let xhttp = new XMLHttpRequest();
             xhttp.open("POST", "/blog/entry/" + blogId + "/vote", true);
             xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhttp.send(JSON.stringify({ user : user , vote : null}));
+            xhttp.send(JSON.stringify({vote : null, cmntId : cmntId}));
 
             A.innerHTML = 'upvote';
-            A.setAttribute('onclick', 'addBlogVote(' + blogId + ',true)');
+            A.setAttribute('onclick', 'addVote(' + blogId + `,true, ${cmntId})`);
             B.innerHTML = 'downvote';
-            B.setAttribute('onclick', 'addBlogVote(' + blogId + ',false)');
+            B.setAttribute('onclick', 'addVote(' + blogId + `,false, ${cmntId})`);
         }
     </script>
 <% } %>

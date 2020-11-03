@@ -137,5 +137,10 @@
 
 .my-vote-cnt{
     position: relative !important;
-    bottom: -2px !important;
+    bottom: -0.15rem !important;
+}
+
+.my-commenter{
+    width: 90px !important;
+    text-align: center !important; 
 }
