@@ -101,7 +101,7 @@ router.post('/', async (req, res) => {
                     // login the user too
                     await authUtils.loginUser(res, result.id)
                     // redirect to home page
-                    res.redirect('/');
+                    res.redirect(`/profile/${user.handle}/settings`);
                 }
             });
         }

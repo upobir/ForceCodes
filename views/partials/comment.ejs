@@ -55,9 +55,14 @@
             <td></td>
             <td>
                 <div>
-                    <button <%- `onclick="replyPrompt(this, ${cmnt.ID})"`%> class="my-non-btn btn btn-link"> 
+                    <button class="my-non-btn btn btn-link" onclick="replyBtn(this)" data-target="#_<%= cmnt.ID %>_cmnt" data-toggle="collapse"> 
                         reply
                     </button>
+                    <form method="POST" class="collapse" id="_<%= cmnt.ID %>_cmnt">
+                        <input name="id" type="hidden" value="<%= cmnt.ID %>">
+                        <textarea name="body" id="" rows="3" class="form-control" required ></textarea>
+                        <input type="submit" value="post" class="btn btn-primary py-1 mt-1">
+                    </form>
                 </div>
             </td>
         </tr>

@@ -79,9 +79,17 @@
         </div>
     </div>  
     <div class="mb-2">
-        <button onclick="replyPrompt(this, null)" class="my-non-btn btn btn-link"> 
+        <!-- <button onclick="replyPrompt(this, null)" class="my-non-btn btn btn-link"> 
             write comment
+        </button> -->
+        <button class="my-non-btn btn btn-link" onclick="replyBtn(this)" data-target="#_null_cmnt" data-toggle="collapse"> 
+            reply
         </button>
+        <form method="POST" class="collapse" id="_null_cmnt">
+            <input name="id" type="hidden" value="null">
+            <textarea name="body" id="" rows="3" class="form-control" required ></textarea>
+            <input type="submit" value="post" class="btn btn-primary py-1 mt-1">
+        </form>
     </div>
     <!-- comments -->
     <% comments.forEach(x =>{ %>
@@ -93,21 +101,10 @@
 <%- include('../../../partials/voteScript') %>
 
 <script>
-    function replyPrompt(node, cmntId){
-        let parent = node.parentNode;
-        parent.innerHTML = `
-            <form method="POST">
-                <input name="id" type="hidden" value=${cmntId}>
-                <textarea name="body" id="" rows="3" class="form-control" required ></textarea>
-                <input type="submit" value="post" class="btn btn-primary py-1 mt-1">
-                <button type="button" onclick="cancelPrompt(this, ${cmntId})" class="btn btn-danger py-1 mt-1"> cancel </button>
-            </form>`;
-    }
-    function cancelPrompt(node, cmntId){
-        let parent = node.parentNode;
-        parent.innerHTML = `
-            <button onclick="replyPrompt(this, ${cmntId})" class="my-non-btn btn btn-link"> 
-                ${cmntId == null? 'write comment' : 'reply'}
-            </button>`;
+    function replyBtn(node){
+        if(node.innerHTML.trim() == 'reply')
+            node.innerHTML = 'cancel';
+        else
+            node.innerHTML = 'reply';
     }
 </script>
