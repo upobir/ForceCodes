@@ -27,15 +27,26 @@ CREATE OR REPLACE VIEW
 AS
     SELECT
         ROWNUM "RANK_NO",
-        U.ID,
-        U.HANDLE,
-        U.RATING,
-        R.COLOR
+        ID,
+        HANDLE,
+        RATING,
+        COLOR
     FROM
-        USER_CONTESTANT_VIEW "U" JOIN
-        RANK "R" ON (U.RANK_ID = R.ID)
-    ORDER BY
-        U.RATING DESC;
+    (
+        SELECT
+            U.ID,
+            U.HANDLE,
+            U.RATING,
+            R.COLOR
+        FROM
+            USER_CONTESTANT_VIEW "U" JOIN
+            RANK "R" ON (U.RANK_ID = R.ID)
+        WHERE
+            U.RATING IS NOT NULL
+        ORDER BY
+            U.RATING DESC,
+            U.ID ASC
+    );
         
 
 CREATE OR REPLACE VIEW

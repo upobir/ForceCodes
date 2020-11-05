@@ -14,7 +14,7 @@ router.get('/', async(req, res) =>{
     if(req.user == null || req.user.handle != handle){
         res.redirect(`/profile/${handle}`);
     } else {
-        let userList = await DB_users.getRatingOrderedFriends(req.user.id, 1, 50);
+        let userList = await DB_users.getRatingOrderedFriends(req.user.id);
 
         userList = userList.filter(x => (x.HANDLE != handle));
         for(let i = 0; i<userList.length; i++){

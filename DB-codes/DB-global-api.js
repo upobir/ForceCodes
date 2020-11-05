@@ -26,6 +26,21 @@ async function getCityList(){
     return (await database.execute(sql, {}, database.options)).rows;
 }
 
+async function isValidCountry(country){
+    const sql = `
+        SELECT
+            COUNT(*) "CNT"
+        FROM
+            COUNTRY
+        WHERE
+            NAME = :country
+    `;
+    const binds = {
+        country : country
+    };
+    return (await database.execute(sql, binds, database.options)).rows[0].CNT > 0;
+}
+
 async function isValidCityCountry(city, country){
     let sql = `
         SELECT
@@ -60,8 +75,83 @@ async function isValidCityCountry(city, country){
     return true;
 }
 
+async function getAllCountriesSorted(){
+    let sql = `
+        SELECT
+            ROWNUM "RANK_NO",
+            NAME,
+            AVG
+        FROM
+        (
+            SELECT
+                C.NAME,
+                ROUND(NVL(U.AVG_R, 0), 2) "AVG"
+            FROM
+                COUNTRY "C" LEFT JOIN
+                (
+                    SELECT
+                        AVG(RATING) "AVG_R",
+                        COUNTRY_ID
+                    FROM
+                        USER_ACCOUNT
+                    GROUP BY
+                        COUNTRY_ID
+                ) "U" ON (U.COUNTRY_ID = C.ID)
+            ORDER BY
+                NVL(U.AVG_R, -1) DESC,
+                C.NAME ASC
+        )
+    `;
+    return (await database.execute(sql, {}, database.options)).rows;
+}
+
+async function getAllCitiesSorted(country){
+    let sql = `
+        SELECT
+            ROWNUM "RANK_NO",
+            NAME,
+            AVG
+        FROM
+        (
+            SELECT
+                C.NAME,
+                ROUND(NVL(U.AVG_R, 0), 2) "AVG"
+            FROM
+                CITY "C" LEFT JOIN
+                (
+                    SELECT
+                        AVG(RATING) "AVG_R",
+                        CITY_ID
+                    FROM
+                        USER_ACCOUNT
+                    GROUP BY
+                        CITY_ID
+                ) "U" ON (U.CITY_ID = C.ID)
+            WHERE
+                C.COUNTRY_ID = (
+                    SELECT
+                        ID
+                    FROM
+                        COUNTRY
+                    WHERE
+                        NAME = :country
+                )
+            ORDER BY
+                NVL(U.AVG_R, -1) DESC,
+                C.NAME ASC
+        )
+    `;
+    const binds = {
+        country : country
+    }
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
 module.exports = {
     getCountryList,
     getCityList,
-    isValidCityCountry
+    isValidCityCountry,
+    getAllCountriesSorted,
+    getAllCitiesSorted,
+    isValidCountry
 };

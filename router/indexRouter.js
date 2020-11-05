@@ -10,6 +10,7 @@ const logoutRouter = require('./auth/logout');
 const userRouter = require('./users/users.js');
 const profileRouter = require('./profile/profile');
 const blogRouter = require('./blog/blog');
+const countryRouter = require('./country/countryAll');
 
 // ROUTE: home page
 router.get('/', (req, res) =>{
@@ -27,6 +28,7 @@ router.use('/logout', logoutRouter);
 router.use('/users', userRouter);
 router.use('/profile', profileRouter);
 router.use('/blog', blogRouter);
+router.use('/country', countryRouter);
 
 
 module.exports = router

@@ -1,0 +1,30 @@
+<!-- user list -->
+<div class="card border">
+    <div class="card-header my-card-header">
+        <%= listHeader %>
+    </div>
+    <table class="table table-sm table-bordered my-card-no-bottom">
+        <!-- list header -->
+        <tr>
+            <th width="8%" class="text-center">#</th>
+            <th width="80%" class="pl-3">name</th>
+            <th width="13%" class="text-center">avg rating</th>
+        </tr>
+        <!-- each row -->
+        <% for(let i = 0; i<list.length; i++){ %>
+            <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %>">
+                <td class="text-center">
+                    <%= list[i].RANK_NO %>
+                </td>
+                <td class="pl-3" >
+                    <a style="color: black;" class="my-link my-bold" href="<%= list[i].URL %>">
+                        <%= list[i].NAME %> 
+                    </a>
+                </td>
+                <td class="text-center">
+                    <%= list[i].AVG %>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+</div>

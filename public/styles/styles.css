@@ -69,6 +69,10 @@
     text-decoration: none;
 }
 
+.my-link:hover{
+    cursor: pointer;
+}
+
 .my-handle{
     font-weight: bold;
 }

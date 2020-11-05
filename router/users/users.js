@@ -7,10 +7,10 @@ const DB_users = require('./../../DB-codes/DB-users-api');
 const router = express.Router();
 
 router.get('/', async (req, res) =>{
-    const userList = await DB_users.getRatingOrderedUsers(1, 50);
+    const userList = await DB_users.getRatingOrderedUsers();
     let innerNav = [
         {url: '/users', name: 'ALL'}
-    ]
+    ];
     if(req.user !== null){
         innerNav.push({url: '/users/friends', name: 'FRIENDS'});
     }
@@ -29,7 +29,7 @@ router.get('/friends', async (req, res) =>{
     if(req.user === null){
         res.redirect('/users');
     } else {
-        const userList = await DB_users.getRatingOrderedFriends(req.user.id, 1, 50);
+        const userList = await DB_users.getRatingOrderedFriends(req.user.id);
         for(let i = 0; i<userList.length; i++){
             userList[i].RANK_NO = (i+1) + "(" + userList[i].RANK_NO + ")";
         }
