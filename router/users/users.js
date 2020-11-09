@@ -13,6 +13,9 @@ router.get('/', async (req, res) =>{
     ];
     if(req.user !== null){
         innerNav.push({url: '/users/friends', name: 'FRIENDS'});
+        if(req.user.isAdmin){
+            innerNav.push({url: '/users/admins', name: 'ADMINS'});
+        }
     }
 
     res.render('layout.ejs', {
@@ -37,7 +40,10 @@ router.get('/friends', async (req, res) =>{
         let innerNav = [
             {url: '/users', name: 'ALL'},
             {url: '/users/friends', name: 'FRIENDS'}
-        ]
+        ];
+        if(req.user.isAdmin){
+            innerNav.push({url: '/users/admins', name: 'ADMINS'});
+        }
 
         res.render('layout.ejs', {
             title: 'Users - ForceCodes',
@@ -45,6 +51,32 @@ router.get('/friends', async (req, res) =>{
             user: req.user,
             innerNav: innerNav,
             listHeader: 'You and your friends sorted accoding to rating',
+            userList: userList
+        });
+    }
+});
+
+router.get('/admins', async (req, res) =>{
+    if(req.user === null || !req.user.isAdmin){
+        res.redirect('/users');
+    } else {
+        const userList = await DB_users.getAllAdmins();
+        for(let i = 0; i<userList.length; i++){
+            userList[i].RANK_NO = (i+1);
+        }
+
+        let innerNav = [
+            {url: '/users', name: 'ALL'},
+            {url: '/users/friends', name: 'FRIENDS'},
+            {url: '/users/admins', name: 'ADMINS'}
+        ]
+
+        res.render('layout.ejs', {
+            title: 'Users - ForceCodes',
+            body: ['panel-view', 'userList', 'ADMINS'],
+            user: req.user,
+            innerNav: innerNav,
+            listHeader: 'All admins',
             userList: userList
         });
     }

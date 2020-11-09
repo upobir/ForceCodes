@@ -97,9 +97,26 @@ async function getRatingOrderedFriends(userId){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+async function getAllAdmins(){
+    const sql = `
+        SELECT
+            U.RANK_NO,
+            U.HANDLE,
+            U.COLOR
+        FROM
+            USER_LIST_VIEW "U"
+        WHERE
+            U.RATING IS NULL
+        ORDER BY
+            RANK_NO
+    `;
+    return (await database.execute(sql, {}, database.options)).rows;
+}
+
 module.exports = {
     getRatingOrderedUsers,
     getRatingOrderedFriends,
     getAllUserByCountry,
-    getAllUsersByCity
+    getAllUsersByCity,
+    getAllAdmins
 }

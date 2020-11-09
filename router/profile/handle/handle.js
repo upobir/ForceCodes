@@ -39,6 +39,17 @@ router.get('/', async(req, res) =>{
     });    
 });
 
+router.post('/admin', async (req, res) =>{
+    let handle = req.params.handle;
+    console.log("here");
+    if(req.user !== null && req.user.isAdmin && req.user.handle !== handle){
+        await DB_profile.updateAdminship(handle);
+    }
+    res.json({
+        message : 'done'
+    });
+})
+
 router.use('/friends', friendsRouter);
 router.use('/settings', settingsRouter);
 router.use('/blog', blogRouter);

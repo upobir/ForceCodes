@@ -1,0 +1,54 @@
+<% if(typeof adminAccess != 'undefined' && adminAccess !== null) {%>
+    <div class="card border-secondary px-3 py-2 mt-4">
+        <div class="card-header bg-info text-center">
+            <span class='my-clickable' data-target="#controls" data-toggle="collapse">
+                Admin Controls
+            </span>
+        </div>
+        <form action="" method="POST" class="card-body pb-0 collapse" id='controls'>
+            <!--  -->
+            <div class="form-group row">
+                <label for="adminAccess" class="col-3 col-form-label text-right text-center">
+                    <%= adminAccess[0] %> <%= adminAccess[1] %>
+                </label>
+                <% if(adminAccess[0] == 'ADD') { %>
+                    <div class="col-6">
+                        <input type="text" autocomplete="off" class="form-control" id="adminAccess" name="adminAccess" required>
+                    </div>
+                <% } %>
+                <button <%- `onclick="updateGlobal('${adminAccess[0]}','${adminAccess[1]}')"` %> type="button"  class="col-3 btn <%= adminAccess[0] == 'ADD'? 'btn-success' : 'btn-danger' %>">
+                    <%= adminAccess[0] %>
+                </button>
+            </div>
+        </form>
+    </div>
+    <script>
+        function updateGlobal(action, type){
+            let node = document.getElementById('adminAccess');
+            if(node != undefined && node.value.trim() == '')
+                return;
+
+            let str = `You are about to ${action} a ${type}. are you sure?`;
+            if(confirm('ADMIN ACTION\n' + str.toUpperCase())){
+                let url = window.location.href;
+                
+                let xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function(){
+                    //console.log(this.responseText);
+                    let result = JSON.parse(this.responseText);
+                    window.location.href = result.url;
+                };
+                let method = (action == 'ADD')? 'POST': 'DELETE';
+                xhttp.open(method, url, true);
+                xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                if(node == undefined){
+                    xhttp.send();
+                } else {
+                    xhttp.send(JSON.stringify({name : node.value}));
+                }
+                    
+                
+            }
+        }
+    </script>
+<% } %>

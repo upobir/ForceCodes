@@ -9,36 +9,9 @@ const router = express.Router({mergeParams : true});
 router.get('/', async (req, res) =>{
     let countryURL = req.params.country;
     let country = countryURL.replace('_', ' ');
-
-    let cityList = await DB_global.getAllCitiesSorted(country);
-
-    for(let i = 0; i<cityList.length; i++){
-        cityList[i].URL = `/country/${countryURL}/city/${cityList[i].NAME.replace(' ', '_')}`;
-    }
-
-    let innerNav = [
-        {url: '/country/' + countryURL, name: country.toUpperCase()},
-        {url: '/country/' + countryURL + '/city', name: 'CITIES'}
-    ];
-    res.render('layout.ejs', {
-        title: 'Cities - ForceCodes',
-        body: ['panel-view', 'globalList', 'CITIES'],
-        user: req.user,
-        innerNav: innerNav,
-        listHeader: `Cities of ${country}`,
-        list : cityList
-    });
-});
-
-router.get('/:city', async (req, res) =>{
-    let countryURL = req.params.country;
-    let country = countryURL.replace('_', ' ');
     
     let cityURL = req.params.city;
     let city = cityURL.replace('_', ' ');
-
-    console.log(city);
-    console.log(country);
 
     if(!(await DB_global.isValidCityCountry(city, country))){
         res.redirect(`/country/${countryURL}`);
@@ -51,19 +24,40 @@ router.get('/:city', async (req, res) =>{
         }
 
         let innerNav = [
+            {url: `/country/${countryURL}`, name : country.toUpperCase()},
             {url: '/country/' + countryURL + '/city/' + cityURL, name: city.toUpperCase()},
         ];
+
+        if(req.user == null || !req.user.isAdmin){
+            var adminAccess = null;
+        }
+        else{
+            var adminAccess = ['DELETE', 'CITY'];
+        }
         res.render('layout.ejs', {
             title: `${city} - ForceCodes`,
             body: ['panel-view', 'userList', city.toUpperCase()],
             user: req.user,
             innerNav: innerNav,
             listHeader: `users of ${city}, ${country}`,
-            userList : userList
+            userList : userList,
+            adminAccess : adminAccess
         });
     }
+});
 
-    
+router.delete('/', async (req, res) =>{
+    let countryURL = req.params.country;
+    let country = countryURL.replace('_', ' ');
+    let cityURL = req.params.city;
+    let city = cityURL.replace('_', ' ');
+
+    if(req.user != null && req.user.isAdmin)
+        await DB_global.deleteCity(city, country);
+    res.json({
+        message : 'done',
+        url : `/country/${countryURL}/city`
+    });
 });
 
 module.exports = router;

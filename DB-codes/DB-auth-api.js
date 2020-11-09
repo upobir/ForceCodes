@@ -102,6 +102,7 @@ async function getUserPromptById(id){
         SELECT
             HANDLE,
             LOGIN_TOKEN,
+            RATING,
             (SELECT
                 COUNT(*)
             FROM

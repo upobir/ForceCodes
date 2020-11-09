@@ -103,3 +103,53 @@ BEGIN
             ID = U_ID;
     END IF;
 END;
+
+CREATE OR REPLACE PROCEDURE UPDATE_ADMINSHIP(
+    U_HANDLE IN USER_CONTESTANT_VIEW.HANDLE%TYPE
+) IS
+    U_ID NUMBER;
+    U_RATING NUMBER;
+BEGIN
+    SELECT 
+        ID
+    INTO
+        U_ID
+    FROM
+        USER_CONTESTANT_VIEW
+    WHERE
+        HANDLE = U_HANDLE;
+
+    SELECT
+        RATING
+    INTO
+        U_RATING
+    FROM
+        USER_ACCOUNT
+    WHERE
+        ID = U_ID;
+    
+    IF U_RATING IS NULL THEN
+        UPDATE
+            USER_ACCOUNT
+        SET
+            RATING = (
+                SELECT
+                    NVL(500+SUM(RATING_CHANGE), 0)
+                FROM
+                    CONTEST_REGISTRATION
+                WHERE
+                    CONTESTANT_ID = ID
+            )
+        WHERE
+            ID = U_ID;
+    ELSE
+        UPDATE
+            USER_ACCOUNT
+        SET
+            RATING = NULL
+        WHERE
+            ID = U_ID;
+    END IF;
+END;
+
+SHOW ERRORS;

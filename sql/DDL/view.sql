@@ -41,10 +41,8 @@ AS
         FROM
             USER_CONTESTANT_VIEW "U" JOIN
             RANK "R" ON (U.RANK_ID = R.ID)
-        WHERE
-            U.RATING IS NOT NULL
         ORDER BY
-            U.RATING DESC,
+            NVL(U.RATING, -1) DESC,
             U.ID ASC
     );
         

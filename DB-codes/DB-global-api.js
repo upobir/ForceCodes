@@ -147,11 +147,75 @@ async function getAllCitiesSorted(country){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+async function addCountry(country){
+    let sql = `
+        BEGIN
+            ADD_COUNTRY(:country);
+        END;
+    `;
+    let binds = {
+        country : country
+    };
+    await database.execute(sql, binds, database.options);
+}
+
+async function deleteCountry(country){
+    let sql = `
+        DELETE FROM
+            COUNTRY
+        WHERE
+            LOWER(NAME) = LOWER(:country)
+    `;
+    let binds = {
+        country : country
+    };
+    await database.execute(sql, binds, database.options);
+}
+
+async function addCity(city, country){
+    let sql = `
+        BEGIN
+            ADD_CITY(:city, :country);
+        END;
+    `;
+    let binds = {
+        city : city,
+        country : country
+    };
+    await database.execute(sql, binds, database.options);
+}
+
+async function deleteCity(city, country){
+    let sql = `
+        DELETE FROM
+            CITY
+        WHERE
+            LOWER(NAME) = LOWER(:city) AND
+            COUNTRY_ID = (
+                SELECT
+                    ID
+                FROM
+                    COUNTRY
+                WHERE
+                    LOWER(NAME) = LOWER(:country)
+            )
+    `;
+    let binds = {
+        city : city,
+        country : country
+    };
+    await database.execute(sql, binds, database.options);
+}
+
 module.exports = {
     getCountryList,
     getCityList,
     isValidCityCountry,
     getAllCountriesSorted,
     getAllCitiesSorted,
-    isValidCountry
+    isValidCountry,
+    addCountry,
+    deleteCountry,
+    addCity,
+    deleteCity
 };

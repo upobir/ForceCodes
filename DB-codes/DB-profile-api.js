@@ -238,6 +238,19 @@ async function changePictureById(id, url){
     return oldUrl;
 }
 
+async function updateAdminship(handle){
+    const sql = `
+        BEGIN
+            UPDATE_ADMINSHIP(:handle);
+        END;
+    `;
+    const binds = {
+        handle : handle
+    }
+    await database.execute(sql, binds, database.options);
+    return;
+}
+
 module.exports = {
     getProfileByHandle,
     isFriendOfId,
@@ -248,5 +261,6 @@ module.exports = {
     updatePasswordById,
     getPasswordById,
     updateSettingsById,
-    changePictureById
+    changePictureById,
+    updateAdminship
 }

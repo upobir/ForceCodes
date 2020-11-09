@@ -3,12 +3,14 @@
     <div class="card-header my-card-header">
         <%= listHeader %>
     </div>
-    <table class="table table-sm table-bordered my-card-no-bottom">
+    <table width="100%" class="table table-sm table-bordered my-card-no-bottom">
         <!-- list header -->
         <tr>
             <th width="8%" class="text-center">#</th>
-            <th width="80%" class="pl-3">who</th>
-            <th width="13%" class="text-center">rating</th>
+            <th width="*" class="pl-3">who</th>
+            <% if(body[2] != 'ADMINS') { %>
+                <th width="13%" class="text-center">rating</th>
+            <% } %>
         </tr>
         <!-- each row -->
         <% for(let i = 0; i<userList.length; i++){ %>
@@ -19,10 +21,13 @@
                 <td class="pl-3" >
                     <%- include('../../../partials/handle', {handle : userList[i].HANDLE, color : userList[i].COLOR}) %>
                 </td>
-                <td class="text-center">
-                    <%= userList[i].RATING %>
-                </td>
+                <% if(typeof userList[i].RATING != 'undefined'){ %>
+                    <td class="text-center">
+                        <%= userList[i].RATING %>
+                    </td>
+                <% } %>
             </tr>
         <% } %>
     </table>
 </div>
+<%- include('../../../partials/adminGlobalControls') %>

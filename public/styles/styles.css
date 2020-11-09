@@ -148,3 +148,7 @@
     width: 90px !important;
     text-align: center !important; 
 }
+
+.my-clickable:hover{
+    cursor: pointer;
+}

@@ -39,9 +39,11 @@
                 Email: <%= profile.EMAIL %>
             </div> 
             <!-- rating -->
-            <div class="py-2">
-                Contest rating: <%= profile.RATING %>
-            </div> 
+            <% if(profile.RATING !== null){ %>
+                <div class="py-2">
+                    Contest rating: <%= profile.RATING %>
+                </div> 
+            <% } %>
             <!-- friend count -->
             <div class="py-2">
                 Friend of: <%= profile.FRIEND_COUNT %>
@@ -62,6 +64,15 @@
             <div class="py-2">
                 <a href="/messeges"> Talks </a>
             </div>
+            <!-- admin button -->
+            <% if(user.isAdmin && user.handle !== profile.HANDLE) { %>
+                <div class="py-2">
+                        <button <%- `onclick="updateAdmin(${ profile.RATING !== null }, '${profile.HANDLE}')"`%> class="btn <%= profile.RATING == null?'btn-danger' : 'btn-success'%>"> 
+                            <%= profile.RATING == null? 'Remove Admin' : 'Make Admin' %>
+                        </button>
+                    </form>
+                </div>
+            <% } %>
         </div>
         <!-- right side -->
         <div class="col-4 mx-0 px-0 text-right">
@@ -91,6 +102,23 @@
             xhttp.send(JSON.stringify({ addFriend : add, handle : handle}));
 
             btn.innerHTML = ((add)? 'Remove friend' : 'Add friend');
+        }
+        function updateAdmin(type, handle){
+            let str;
+            if(type)
+                str = 'You are about to make this user an admin. Are you sure?';
+            else
+                str = 'You are about to make this user a regular user. Are you sure?';
+            if(confirm('ADMIN ACTION\n' + str.toUpperCase())){
+                let xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function(){
+                    window.location.href = "/profile/"+handle;
+                }
+                xhttp.open("POST", "/profile/" + handle + "/admin", true);
+                xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                xhttp.send();
+                
+            }
         }
     </script>
 <% } %>

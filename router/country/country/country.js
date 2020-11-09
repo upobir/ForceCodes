@@ -3,7 +3,7 @@ const express = require('express');
 
 const DB_user = require(process.env.ROOT + '/DB-codes/DB-users-api');
 const DB_global = require(process.env.ROOT + '/DB-codes/DB-global-api');
-const cityRouter = require('./city/city');
+const cityRouter = require('./city/cityAll');
 
 const router = express.Router({mergeParams : true});
 
@@ -16,6 +16,7 @@ router.get('/', async (req, res) =>{
     }
     else{
         let innerNav = [
+            {url: '/country', name : 'COUNTRIES'},
             {url: '/country/'+countryURL, name: country.toUpperCase()},
             {url: '/country/' + countryURL + '/city', name: 'CITIES'}
         ];
@@ -24,6 +25,13 @@ router.get('/', async (req, res) =>{
         for(let i = 0; i<userList.length; i++){
             userList[i].RANK_NO = (i+1) + `(${userList[i].RANK_NO})`;
         }
+
+        if(req.user == null || !req.user.isAdmin){
+            var adminAccess = null;
+        }
+        else{
+            var adminAccess = ['DELETE', 'COUNTRY'];
+        }
     
         res.render('layout.ejs', {
             title: `${country.toUpperCase()} - ForceCodes`,
@@ -31,9 +39,22 @@ router.get('/', async (req, res) =>{
             user: req.user,
             innerNav: innerNav,
             listHeader: `Users from ${country}`,
-            userList : userList
+            userList : userList,
+            adminAccess : adminAccess
         });
     }
+});
+
+router.delete('/', async(req, res) => {
+    let countryURL = req.params.country;
+    let country = countryURL.replace('_', ' ');
+
+    if(req.user != null && req.user.isAdmin)
+        await DB_global.deleteCountry(country);
+    res.json({
+        message : 'done',
+        url : '/country'
+    });
 });
 
 router.use('/city', cityRouter);

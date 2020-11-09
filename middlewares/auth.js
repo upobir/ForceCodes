@@ -31,7 +31,8 @@ function auth(req, res, next){
                     req.user = {
                         id: decodedId,
                         handle: results[0].HANDLE,
-                        msgCount: results[0].MESSAGE_COUNT
+                        msgCount: results[0].MESSAGE_COUNT,
+                        isAdmin : (results[0].RATING == null)
                     }
                 }
                 next();

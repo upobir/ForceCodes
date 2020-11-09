@@ -16,13 +16,32 @@ router.get('/', async (req, res) =>{
     let innerNav = [
         {url : '/country', name : 'COUNTRIES'}
     ];
+    if(req.user == null || !req.user.isAdmin){
+        var adminAccess = null;
+    }
+    else{
+        var adminAccess = ['ADD', 'COUNTRY'];
+    }
+    adminAcess = null;
     res.render('layout.ejs', {
         title: 'Countries - ForceCodes',
         body: ['panel-view', 'globalList', 'COUNTRIES'],
         user: req.user,
         innerNav: innerNav,
         listHeader: 'All Countries',
-        list : cntryList
+        list : cntryList,
+        adminAccess : adminAccess
+    });
+});
+
+router.post('/', async(req, res) =>{
+    let name = req.body.name;
+    name = name.trim();
+    if(req.user != null && req.user.isAdmin)
+        await DB_global.addCountry(name);
+    res.json({
+        message : 'done',
+        url : `/country/${name.replace(' ' , '_')}`
     });
 });
 

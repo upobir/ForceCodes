@@ -6,14 +6,14 @@
     * blogs `done`
         * new `done`
         * (id) `done`
-            * edit
+            * edit `done`
 * teams/new
 * teams/(id)
 * settings `done`
 * users `done`
     * friends `done`
-    * countries/(id)
-        * cities/(id)
+    * countries/(id) `done`
+        * cities/(id) `done`
     * organizations
 * talks
 * blogs
