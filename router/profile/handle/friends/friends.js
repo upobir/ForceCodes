@@ -37,16 +37,13 @@ router.get('/', async(req, res) =>{
 // TODO add checking
 router.post('/', async(req, res) =>{
     const handle = req.params.handle;
-    console.log(req.body);
 
     if(req.user == null || req.user.handle != handle){
         res.redirect(`/profile/${handle}`);
     } else {
         if(req.body.addFriend){
-            console.log("adding friend");
             await DB_profile.addFriendByHandle(req.user.id, req.body.handle);
         } else {
-            console.log("removing friend");
             await DB_profile.removeFriendByHandle(req.user.id, req.body.handle);
         }
         res.redirect(`/profile/${req.body.handle}`);

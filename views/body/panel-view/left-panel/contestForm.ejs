@@ -1,0 +1,116 @@
+<h2 class="text-primary mt-5">
+    New Contest
+</h2>
+<form method="POST">
+    <!-- title input -->
+    <div class="form-group">
+        <label for="title"><b>Title</b></label>
+        <input type="text" class="form-control" name="title" required value="<%= (typeof form != 'undefined')? form.title : '' %>">
+    </div>
+    <!-- start time -->
+    <div class="form-group">
+        <label for="start"><b>Start Time</b></label>
+        <input type="datetime-local" class="form-control" name="start" required value="<%= (typeof form != 'undefined')? form.start : '' %>">
+    </div>
+    <!-- duration -->
+    <div class="form-group">
+        <label for="duration"><b>Duration (HH:MM)</b></label>
+        <input type="text" class="form-control" name="duration" required value="<%= (typeof form != 'undefined')? form.duration : '' %>">
+    </div>
+    <!-- Rated range -->
+    <div class="form-group">
+        <div>
+            <label ><b>Rated range</b></label>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <input type="number" class="form-control" name="min_rating" value="<%= (typeof form != 'undefined')? form.min_rating : '' %>" class="col-4">
+            </div>
+            <div class="col-1 text-center">
+                to
+            </div>
+            <div class="col">
+                <input type="number" class="form-control" name="max_rating" value="<%= (typeof form != 'undefined')? form.max_rating : '' %>" width="col-4">
+            </div>
+        </div>
+    </div>
+    <!-- admins -->
+    <div>
+        <label for="adminInput"><b>Admins</b></label>
+        <div class="form-row" width="100%">
+            <div class="col-9">
+                <input type="text" class="form-control" id="adminInput" name="adminInput" value="" autocomplete="off">
+            </div>
+            <button type="button" class="btn btn-primary col-3 py-1" onclick="addAdmin()">Add Contest Admin</button>
+        </div>
+        <input type="hidden" id="admins" name="admins" value="<%= ',' + admins.map(x =>x.HANDLE).join(',') %>">
+        <ul class="px-4 mt-2" id="adminList">
+            <% for(let i = 0; i<admins.length; i++){ %>
+                <li <%- admins[i].AUTHOR == 'true'? 'class="pb-1"' : '' %>>
+                    <%- include('../../../partials/handle', {handle : admins[i].HANDLE, color : admins[i].COLOR}) %>
+                    <%- admins[i].AUTHOR == 'true'? '(Author)' : `<button type="button" class="btn btn-link my-non-btn" onclick="removeAdmin(this)">(Remove)</button>` %>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+    <!-- error list -->
+    <% if (errors.length > 0) {     %> 
+        <div class="row mx-0 pb-0 alert alert-danger">
+            <ul>
+                <% for (e of errors) { %> 
+                    <li> <%= e %> </li>
+                <% } %> 
+            </ul>
+        </div>
+    <% } %> 
+    <!-- buttons -->
+    <div class="form-group row">
+        <div class="col mx-auto text-center">
+            <!-- submit -->
+            <input type="submit" value="Create" class="btn btn-success">
+            <% if(postURL != 'contest/new'){ %>
+                <button type="button" class="btn btn-danger ml-5"> Delete </button>
+            <% } %>
+        </div>
+    </div>
+</form>
+
+<script>
+    function addAdmin(){
+        let node = document.getElementById('adminInput');
+        let handle = node.value;
+        node.value = '';
+        if(handle.indexOf(' ') >= 0 || handle == '') 
+            return;
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function(){
+            if(this.responseText != ''){
+                let result = JSON.parse(this.responseText);
+                let user = result.user;
+                let admins = document.getElementById('admins');
+                if(admins.value.indexOf(',' + user.HANDLE) < 0){
+                    admins.value += ',' + user.HANDLE;
+                    let newNode = document.createElement('LI');
+                    newNode.innerHTML = `<a href="/profile/${user.HANDLE}" class="my-link my-handle">
+                        ${user.HANDLE}
+                    </a>
+                    <button type="button" class="btn btn-link my-non-btn" onclick="removeAdmin(this)">
+                        (Remove)
+                    </button>`;
+                    newNode.firstChild.style.color = user.COLOR;
+                    document.getElementById('adminList').appendChild(newNode);
+                }
+            }
+        };
+        xhttp.open('GET', '/api/users/'+handle, true);
+        xhttp.send();
+    }
+
+    function removeAdmin(node){
+        let liNode = node.parentNode;
+        let handle = liNode.firstChild.innerText.trim();
+        let admins = document.getElementById('admins');
+        admins.value = admins.value.replace(','+handle, '');
+        liNode.remove();
+    }
+</script>

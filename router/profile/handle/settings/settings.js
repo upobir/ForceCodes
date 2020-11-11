@@ -62,7 +62,6 @@ router.post('/', upload.single('picture'),  async(req, res) =>{
     if(req.user == null || req.user.handle != handle){
         res.redirect(`/profile/${handle}`);
     } else {
-        console.log("starting checkups");
         let errors = [];
 
         let results = await DB_auth.getUserIDByEmail(req.body.email);
@@ -92,14 +91,10 @@ router.post('/', upload.single('picture'),  async(req, res) =>{
                 errors.push('Password must be at least 6 characters');
             }
 
-            console.log(passwords[0].PASSWORD);
             if(bcrypt.compareSync(req.body.oldPassword, passwords[0].PASSWORD)){
-                console.log("password match");
                 if(errors.length == 0){
-                    console.log("calling hash");
                     const hash = bcrypt.hashSync(req.body.newPassword, 8);
                     await DB_profile.updatePasswordById(req.user.id, hash);
-                    console.log('password updated with ' + req.body.newPassword);
                 }
             } else {
                 errors.push('wrong password');
@@ -121,7 +116,6 @@ router.post('/', upload.single('picture'),  async(req, res) =>{
             if(req.file){
                 const picture = req.file;
                 const url = picture.filename;
-                console.log('picture was posted, url:' + url);
                 const oldUrl = await DB_profile.changePictureById(req.user.id, url);
                 if(oldUrl != null){
                     fs.unlinkSync(process.env.ROOT + '/public/public-images/' + oldUrl);

@@ -73,6 +73,7 @@ async function executeMany(sql, binds, options){
     return;
 }
 
+
 // options for execution sql
 const options = {
     outFormat: oracledb.OUT_FORMAT_OBJECT

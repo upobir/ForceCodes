@@ -19,7 +19,6 @@
             B.setAttribute('onclick', 'addVote(' + blogId + ',' + !vote + `, ${cmntId})`);
         }
         function removeVote(blogId, cmntId) {
-            console.log(blogId + `_${cmntId}_` + '_up');
             let A = document.getElementById(blogId + `_${cmntId}_up`);
             let B = document.getElementById(blogId + `_${cmntId}_down`);
 

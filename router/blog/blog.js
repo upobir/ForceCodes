@@ -37,17 +37,14 @@ router.post('/new', async (req, res, next)=>{
             author : req.user.id
         };
         const blogId = await DB_blog.createBlog(blog);
-        console.log('blog created');
 
         let tags = req.body.tagList.toLowerCase().split(',');
         tags = tags.sort().filter((item, pos, ar) => {
             return item != '' && (pos == 0 || item != ar[pos-1]);
         });
         
-        console.log(tags);
         if(tags.length > 0){
             await DB_blog.addBlogTags(blogId, tags);
-            console.log('tags added');
         }
 
         res.redirect(`/blog/entry/${blogId}`);

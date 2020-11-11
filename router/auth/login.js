@@ -21,7 +21,6 @@ router.get('/', (req, res) => {
             errors : errors
         })
     } else {
-        console.log('already logged in');
         res.redirect('/');
     }
 });
@@ -42,7 +41,6 @@ router.post('/', async (req, res) => {
             // match passwords
             const match = await bcrypt.compare(req.body.password, results[0].PASSWORD);
             if(match){
-                console.log("login successful");
                 // if successful login the user
                 await authUtils.loginUser(res, results[0].ID);
             }
@@ -67,7 +65,6 @@ router.post('/', async (req, res) => {
             });
         }
     } else {
-        console.log('already logged in');
         res.redirect('/');
     }
 });

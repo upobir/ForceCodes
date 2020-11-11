@@ -21,7 +21,6 @@ router.get('/', (req, res) => {
             errors : errors
         });
     } else {
-        console.log("already logged in");
         res.redirect('/');
     }
 });
@@ -97,7 +96,6 @@ router.post('/', async (req, res) => {
                     // create user via db-api, id is returned
                     user.password = hash;
                     let result = await DB_auth.createNewUser(user);
-                    console.log('New User Created');
                     // login the user too
                     await authUtils.loginUser(res, result.id)
                     // redirect to home page
@@ -106,7 +104,6 @@ router.post('/', async (req, res) => {
             });
         }
     } else {
-        console.log('already logged in');
         res.redirect('/');
     }
 });

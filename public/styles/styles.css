@@ -150,5 +150,10 @@
 }
 
 .my-clickable:hover{
-    cursor: pointer;
+    cursor: pointer !important;
+}
+
+.my-td-center{
+    text-align: center !important;
+    vertical-align: middle !important;
 }

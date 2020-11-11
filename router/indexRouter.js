@@ -11,6 +11,8 @@ const userRouter = require('./users/users.js');
 const profileRouter = require('./profile/profile');
 const blogRouter = require('./blog/blog');
 const countryRouter = require('./country/countryAll');
+const contestRouter = require('./contest/contest');
+const apiRouter = require('./api/api');
 
 // ROUTE: home page
 router.get('/', (req, res) =>{
@@ -29,6 +31,8 @@ router.use('/users', userRouter);
 router.use('/profile', profileRouter);
 router.use('/blog', blogRouter);
 router.use('/country', countryRouter);
+router.use('/contest', contestRouter);
+router.use('/api', apiRouter);
 
 
 module.exports = router

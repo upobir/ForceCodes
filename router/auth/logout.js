@@ -10,7 +10,6 @@ router.post('/', async (req, res) =>{
     if(req.user !== null){
         // set null in token
         await DB_auth.updateUserTokenById(req.user.id, null);
-        console.log('token deleted from database');
     }
     res.redirect('/');
 });

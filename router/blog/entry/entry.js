@@ -46,7 +46,6 @@ router.get('/', async (req, res) =>{
                 allCmnts[comments[i].PARENT_ID].CHILDS.push(comments[i]);
             }
         }
-        //console.log(rootCmnts);
 
         const innerNav = innerNavUtils.getProfileInnerNav(req.user, blog.AUTHOR);
 
@@ -68,7 +67,6 @@ router.post('/', async(req, res) =>{
         res.redirect(`/blog/entry/${blogId}`);
     }
     else{
-        console.log('adding comment');
         let cmntId = req.body.id;
         if(cmntId == 'null') cmntId = null;
         else cmntId = parseInt(cmntId);

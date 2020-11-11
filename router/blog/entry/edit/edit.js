@@ -57,7 +57,6 @@ router.post('/', async (req, res) =>{
 });
 
 router.delete('/', async (req, res) =>{
-    console.log('deleting');
     await DB_blog.deleteBlog(req.params.id);
     res.json({
         message : 'done'

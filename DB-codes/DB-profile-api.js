@@ -209,7 +209,6 @@ async function updateSettingsById(id, info){
 }
 
 async function changePictureById(id, url){
-    console.log("id " + id + " url " + url);
     let sql = `
         SELECT
             PICTURE

@@ -41,7 +41,6 @@ router.get('/', async(req, res) =>{
 
 router.post('/admin', async (req, res) =>{
     let handle = req.params.handle;
-    console.log("here");
     if(req.user !== null && req.user.isAdmin && req.user.handle !== handle){
         await DB_profile.updateAdminship(handle);
     }

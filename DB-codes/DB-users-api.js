@@ -113,10 +113,48 @@ async function getAllAdmins(){
     return (await database.execute(sql, {}, database.options)).rows;
 }
 
+async function getUserInfoByHandles(handles){
+    let sql = `
+        SELECT
+            HANDLE,
+            COLOR
+        FROM
+            USER_LIST_VIEW
+        WHERE
+            HANDLE IN (`;
+
+        
+    let binds = [];
+    for(let i = 0; i<handles.length; i++){
+        binds.push( handles[i]);
+        sql += (i > 0) ? ", :" + i : ":" + i;
+    }
+    sql += ')'
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getUserInfoByHandle(handle){
+    const sql = `
+        SELECT
+            HANDLE,
+            COLOR
+        FROM
+            USER_LIST_VIEW
+        WHERE
+            HANDLE = :handle
+    `;
+    const binds = {
+        handle : handle
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
 module.exports = {
     getRatingOrderedUsers,
     getRatingOrderedFriends,
     getAllUserByCountry,
     getAllUsersByCity,
-    getAllAdmins
+    getAllAdmins,
+    getUserInfoByHandles,
+    getUserInfoByHandle
 }
