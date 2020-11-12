@@ -1,5 +1,6 @@
 // libraries
 const express = require('express');
+const rightPanelUtils = require('../../utils/rightPanel-utils');
 
 // my modules
 const DB_users = require('./../../DB-codes/DB-users-api');
@@ -18,13 +19,16 @@ router.get('/', async (req, res) =>{
         }
     }
 
+    let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
     res.render('layout.ejs', {
         title: 'Users - ForceCodes',
         body: ['panel-view', 'userList', 'ALL'],
         user: req.user,
         innerNav: innerNav,
         listHeader: 'All users sorted according to rating',
-        userList: userList
+        userList: userList,
+        rightPanel : rightPanel
     });
 });
 
@@ -45,13 +49,16 @@ router.get('/friends', async (req, res) =>{
             innerNav.push({url: '/users/admins', name: 'ADMINS'});
         }
 
+        let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
         res.render('layout.ejs', {
             title: 'Users - ForceCodes',
             body: ['panel-view', 'userList', 'FRIENDS'],
             user: req.user,
             innerNav: innerNav,
             listHeader: 'You and your friends sorted accoding to rating',
-            userList: userList
+            userList: userList,
+            rightPanel : rightPanel
         });
     }
 });
@@ -69,7 +76,9 @@ router.get('/admins', async (req, res) =>{
             {url: '/users', name: 'ALL'},
             {url: '/users/friends', name: 'FRIENDS'},
             {url: '/users/admins', name: 'ADMINS'}
-        ]
+        ];
+
+        let rightPanel = await rightPanelUtils.getRightPanel(req.user);
 
         res.render('layout.ejs', {
             title: 'Users - ForceCodes',
@@ -77,7 +86,8 @@ router.get('/admins', async (req, res) =>{
             user: req.user,
             innerNav: innerNav,
             listHeader: 'All admins',
-            userList: userList
+            userList: userList,
+            rightPanel : rightPanel
         });
     }
 });

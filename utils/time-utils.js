@@ -6,21 +6,27 @@ const MONTH = 30*DAY;
 const YEAR = 365*DAY;
 
 function timeAgo(time){
-    let interval = new Date() - time;
-    if(interval < 2*MINUTE){
+    let interval = (new Date() > time)? (new Date() - time) : (time - new Date());
+    if(interval < MINUTE){
         return 'now';
     } else if(interval < HOUR) {
-        return Math.floor(interval/MINUTE) + ' minutes';
+        let x = Math.floor(interval/MINUTE)
+        return x + ' minute' + (x > 1? 's' : '');
     } else if(interval < DAY) {
-        return Math.floor(interval/HOUR) + ' hours';
+        let x = Math.floor(interval/HOUR); 
+        return x  + ' hour' + (x > 1? 's' : '');
     } else if(interval < WEEK) {
-        return Math.floor(interval/DAY) + ' days';
+        let x = Math.floor(interval/DAY);
+        return x + ' day' + (x > 1? 's' : '');
     } else if(interval < MONTH) {
-        return Math.floor(interval/WEEK) + ' weeks';
+        let x = Math.floor(interval/WEEK);
+        return x + ' week' + (x > 1? 's' : '');
     } else if(interval < YEAR) {
-        return Math.floor(interval/MONTH) + ' months';
+        let x = Math.floor(interval/MONTH);
+        return x + ' month' + (x > 1? 's' : '');
     } else{
-        return Math.floor(interval/YEAR) + ' years';
+        let x = Math.floor(interval/YEAR);
+        return x + ' year' + (x > 1? 's' : '');
     }
 }
 

@@ -3,7 +3,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const fs = require('fs');
-var path = require('path')
+var path = require('path');
+const rightPanelUtils = require('../../../../utils/rightPanel-utils');
 
 const DB_profile = require(process.env.ROOT+'/DB-codes/DB-profile-api');
 const DB_global = require(process.env.ROOT+'/DB-codes/DB-global-api');
@@ -34,6 +35,8 @@ router.get('/', async(req, res) =>{
 
         innerNav = innerNavUtils.getProfileInnerNav(req.user, handle);
 
+        let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
         res.render('layout.ejs', {
             title: `${handle} - ForceCodes`,
             body: ['panel-view', 'settings', 'SETTINGS'],
@@ -51,7 +54,8 @@ router.get('/', async(req, res) =>{
                 city : settingsInfo.CITY,
                 organization : settingsInfo.ORGANIZATION,
                 picture : settingsInfo.PICTURE
-            }
+            },
+            rightPanel : rightPanel
         });
     }
 });
@@ -129,6 +133,8 @@ router.post('/', upload.single('picture'),  async(req, res) =>{
             const countries = await DB_global.getCountryList();
             const cities = await DB_global.getCityList();
     
+            let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
             res.render('layout.ejs', {
                 title: `${handle} - ForceCodes`,
                 body: ['panel-view', 'settings', 'SETTINGS'],
@@ -145,7 +151,8 @@ router.post('/', upload.single('picture'),  async(req, res) =>{
                     country : req.body.country,
                     city : req.body.city,
                     organization : req.body.organization
-                }
+                },
+                rightPanel : rightPanel
             });
         }
     }

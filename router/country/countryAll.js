@@ -1,5 +1,6 @@
 // libraries
 const express = require('express');
+const rightPanelUtils = require('../../utils/rightPanel-utils');
 
 const countryRouter = require('./country/country');
 const DB_global = require(process.env.ROOT + '/DB-codes/DB-global-api');
@@ -23,6 +24,9 @@ router.get('/', async (req, res) =>{
         var adminAccess = ['ADD', 'COUNTRY'];
     }
     adminAcess = null;
+
+    let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
     res.render('layout.ejs', {
         title: 'Countries - ForceCodes',
         body: ['panel-view', 'globalList', 'COUNTRIES'],
@@ -30,7 +34,8 @@ router.get('/', async (req, res) =>{
         innerNav: innerNav,
         listHeader: 'All Countries',
         list : cntryList,
-        adminAccess : adminAccess
+        adminAccess : adminAccess,
+        rightPanel : rightPanel
     });
 });
 

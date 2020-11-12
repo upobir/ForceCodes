@@ -7,6 +7,7 @@ const DB_profile = require(process.env.ROOT+'/DB-codes/DB-profile-api');
 const friendsRouter = require('./friends/friends');
 const settingsRouter = require('./settings/settings');
 const blogRouter = require('./blog/blog');
+const rightPanelUtils = require('../../../utils/rightPanel-utils');
 
 const innerNavUtils = require(process.env.ROOT+'/utils/innerNav-utils');
 const timeUtils = require(process.env.ROOT+'/utils/time-utils');
@@ -30,12 +31,15 @@ router.get('/', async(req, res) =>{
 
     const innerNav = innerNavUtils.getProfileInnerNav(req.user, handle);
 
+    let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
     res.render('layout.ejs', {
         title: `${handle} - ForceCodes`,
         body: ['panel-view', 'profile', handle.toUpperCase()],
         user: req.user,
         innerNav: innerNav,
-        profile: profile        
+        profile: profile,
+        rightPanel : rightPanel     
     });    
 });
 

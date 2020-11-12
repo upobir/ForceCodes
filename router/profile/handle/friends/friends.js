@@ -5,6 +5,7 @@ const DB_users = require('../../../../DB-codes/DB-users-api');
 const DB_profile = require('../../../../DB-codes/DB-profile-api');
 
 const innerNavUtils = require('../../../../utils/innerNav-utils');
+const rightPanelUtils = require('../../../../utils/rightPanel-utils');
 
 const router = express.Router({mergeParams : true});
 
@@ -23,13 +24,16 @@ router.get('/', async(req, res) =>{
 
         innerNav = innerNavUtils.getProfileInnerNav(req.user, handle);
 
+        let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
         res.render('layout.ejs', {
             title: `${handle} - ForceCodes`,
             body: ['panel-view', 'userList', 'FRIENDS'],
             user: req.user,
             innerNav: innerNav,
             listHeader: 'Your friends',
-            userList: userList
+            userList: userList,
+            rightPanel : rightPanel
         });
     }
 });

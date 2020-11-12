@@ -1,6 +1,7 @@
 // libraries
 require('dotenv').config();
 const express = require('express');
+const rightPanelUtils = require('../../../utils/rightPanel-utils');
 const blogUtils = require(process.env.ROOT + '/utils/blog-utils');
 const innerNavUtils = require(process.env.ROOT + '/utils/innerNav-utils');
 const timeUtils = require(process.env.ROOT + '/utils/time-utils');
@@ -49,6 +50,8 @@ router.get('/', async (req, res) =>{
 
         const innerNav = innerNavUtils.getProfileInnerNav(req.user, blog.AUTHOR);
 
+        let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
         res.render('layout.ejs', {
             title: `${blog.TITLE} - ForceCodes`,
             body: ['panel-view', 'blogEntry', 'BLOG'],
@@ -56,7 +59,8 @@ router.get('/', async (req, res) =>{
             innerNav: innerNav,
             handle : blog.AUTHOR,
             blog : blog,
-            comments : rootCmnts
+            comments : rootCmnts,
+            rightPanel : rightPanel
         });
     }
 });

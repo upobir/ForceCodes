@@ -1,6 +1,7 @@
 // libraries
 require('dotenv').config();
 const express = require('express');
+const rightPanelUtils = require('../../../../utils/rightPanel-utils');
 const blogUtils = require(process.env.ROOT + '/utils/blog-utils');
 
 const DB_blog = require(process.env.ROOT + '/DB-codes/DB-blog-api');
@@ -20,6 +21,9 @@ router.get('/', async (req, res) =>{
     let tags = await blogUtils.getAllTags();
     let blog = await DB_blog.getBlogSettingsInfo(req.params.id);
     await blogUtils.blogProcess(blog);
+
+    let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
     res.render('layout.ejs', {
         title: `Edit Blog - Codeforces`,
         body: ['panel-view', 'blogForm'],
@@ -31,7 +35,8 @@ router.get('/', async (req, res) =>{
             title : blog.TITLE,
             body : blog.BODY,
             tags : blog.TAGS
-        }
+        },
+        rightPanel : rightPanel
     });
 });
 

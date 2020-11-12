@@ -13,13 +13,17 @@ const blogRouter = require('./blog/blog');
 const countryRouter = require('./country/countryAll');
 const contestRouter = require('./contest/contest');
 const apiRouter = require('./api/api');
+const rightPanelUtils = require('../utils/rightPanel-utils');
 
 // ROUTE: home page
-router.get('/', (req, res) =>{
+router.get('/', async (req, res) =>{
+    let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
     res.render('layout.ejs', {
         title: 'ForceCodes', 
         body : ['panel-view', 'home'],
-        user: req.user
+        user: req.user,
+        rightPanel : rightPanel
     });
 });
 

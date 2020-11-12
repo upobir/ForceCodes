@@ -64,6 +64,80 @@ async function createContest(contest){
     return contestId;
 }
 
+async function getFutureContests(){
+    let sql = `
+        SELECT
+            C.ID,
+            C.NAME,
+            C.TIME_START, 
+            C.DURATION,
+            NVL(R.REG_CNT, 0) "REG_CNT"
+        FROM
+            CONTEST "C" LEFT JOIN
+            (
+                SELECT 
+                    CONTEST_ID,
+                    COUNT(*) "REG_CNT"
+                FROM
+                    CONTEST_REGISTRATION
+                GROUP BY
+                    CONTEST_ID
+            ) "R" ON (R.CONTEST_ID = C.ID)
+        WHERE 
+            TIME_START + NUMTODSINTERVAL(DURATION, 'MINUTE') >= SYSDATE
+        ORDER BY
+            TIME_START ASC
+    `;
+    return (await database.execute(sql, {}, database.options)).rows;
+}
+
+async function getAllContestAdmins(){
+    let sql = `
+        SELECT
+            A.CONTEST_ID,
+            U.HANDLE,
+            U.COLOR
+        FROM
+            USER_CONTEST_ADMIN "A" JOIN
+            USER_LIST_VIEW "U" ON (A.USER_ID = U.ID)
+        ORDER BY
+            U.HANDLE ASC
+    `;
+    return (await database.execute(sql, {}, database.options)).rows;
+}
+
+async function getPastContests(){
+    let sql = `
+        SELECT
+            C.ID,
+            C.NAME,
+            C.TIME_START, 
+            C.DURATION,
+            NVL(R.PART_CNT, 0) "PART_CNT"
+        FROM
+            CONTEST "C" LEFT JOIN
+            (
+                SELECT 
+                    CONTEST_ID,
+                    COUNT(*) "PART_CNT"
+                FROM
+                    CONTEST_REGISTRATION
+                WHERE
+                    STANDING IS NOT NULL
+                GROUP BY
+                    CONTEST_ID
+            ) "R" ON (R.CONTEST_ID = C.ID)
+        WHERE 
+            TIME_START + NUMTODSINTERVAL(DURATION, 'MINUTE') < SYSDATE
+        ORDER BY
+            TIME_START DESC
+    `;
+    return (await database.execute(sql, {}, database.options)).rows;
+}
+
 module.exports = {
-    createContest
+    createContest,
+    getFutureContests,
+    getAllContestAdmins,
+    getPastContests
 }

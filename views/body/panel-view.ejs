@@ -9,10 +9,7 @@
 
 <!-- right panel -->
 <div class="col-3">
-    <div class="card border-secondary">
-        <p class="card-text p-2">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam non metus in ligula placerat lacinia. Fusce consectetur nisl ac vestibulum pretium. Sed consequat turpis ac dui luctus, a sollicitudin ante blandit. In rhoncus metus eu fermentum faucibus. Maecenas efficitur purus neque, eget vulputate velit pretium ut. Fusce faucibus nunc vel dolor lacinia, id cursus ipsum cursus. Cras volutpat tellus nec elit dapibus cursus. Proin volutpat eget eros non posuere. Nunc rutrum, nunc eu elementum elementum, justo nunc euismod nulla, eu suscipit elit odio in leo. In vehicula ut diam non ornare. Suspendisse facilisis diam eu sodales venenatis. Proin odio diam, posuere quis pretium ut, tempus vitae metus. In eget elit vitae ligula aliquam maximus. Nulla rutrum massa sed rhoncus efficitur.
-        </p>
-    </div>
-    <%- //include('right-panel/' + body) %>
+    <% rightPanel.forEach(panel => { %>
+        <%- include('panel-view/right-panel/' + panel.file, {panel : panel}) %>
+    <% }) %>
 </div>

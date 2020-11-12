@@ -1,4 +1,5 @@
 const express = require('express');
+const rightPanelUtils = require('../../../../utils/rightPanel-utils');
 
 const DB_blog = require(process.env.ROOT + '/DB-codes/DB-blog-api');
 const innerNavUtils = require(process.env.ROOT + '/utils/innerNav-utils');
@@ -16,6 +17,7 @@ router.get('/', async (req, res) => {
         await blogUtils.blogProcess(blogs[i]);
     }
 
+    let rightPanel = await rightPanelUtils.getRightPanel(req.user);
 
     res.render('layout.ejs', {
         title: `${handle} - ForceCodes`,
@@ -23,7 +25,8 @@ router.get('/', async (req, res) => {
         user: req.user,
         innerNav: innerNav,
         handle : handle,
-        blogs : blogs
+        blogs : blogs,
+        rightPanel : rightPanel
     })
 });
 

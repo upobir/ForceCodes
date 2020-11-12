@@ -1,5 +1,6 @@
 // libraries
 const express = require('express');
+const rightPanelUtils = require('../../../../../utils/rightPanel-utils');
 
 const DB_global = require(process.env.ROOT + '/DB-codes/DB-global-api');
 const DB_user = require(process.env.ROOT + '/DB-codes/DB-users-api');
@@ -34,6 +35,9 @@ router.get('/', async (req, res) =>{
         else{
             var adminAccess = ['DELETE', 'CITY'];
         }
+
+        let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
         res.render('layout.ejs', {
             title: `${city} - ForceCodes`,
             body: ['panel-view', 'userList', city.toUpperCase()],
@@ -41,7 +45,8 @@ router.get('/', async (req, res) =>{
             innerNav: innerNav,
             listHeader: `users of ${city}, ${country}`,
             userList : userList,
-            adminAccess : adminAccess
+            adminAccess : adminAccess,
+            rightPanel : rightPanel
         });
     }
 });

@@ -5,48 +5,69 @@
 <% } %>
 
 <!-- upcoming contest -->
-<div class="card border my-3">
-    <div class="card-header my-card-header">
-        Upcoming or ongoing contests
+<% if(contestsFuture.length > 0) { %>
+    <div class="card border my-3" >
+        <div class="card-header my-card-header">
+            Upcoming or ongoing contests
+        </div>
+        <table width="100%" class="table table-sm table-bordered my-card-no-bottom" style="font-size: 14px;">
+            <!-- list header -->
+            <tr>
+                <th width="29%" class="text-center">Name</th>
+                <th width="14%" class="text-center">Admins</th>
+                <th width="15%" class="text-center">Start</th>
+                <th width="10%" class="text-center">Length</th>
+                <th width="12%" class="text-center"></th>
+                <th width="26%" class="text-center"></th>
+            </tr>
+            <% contestsFuture.forEach(contest => { %>
+                <% let bg = (user != null && contest.ADMINS.filter(x => x.HANDLE == user.handle).length > 0)? 'alert-success' : ''; %>
+                <tr>
+                    <td class="my-td-center <%= bg %>">
+                        <%= contest.NAME %>
+                    </td>
+                    <td class="my-td-center <%= bg %>">
+                        <% contest.ADMINS.forEach(admin => { %>
+                            <%- include('../../../partials/handle', {handle : admin.HANDLE, color : admin.COLOR}) %> <br>
+                        <% }) %>
+                    </td>
+                    <td class="my-td-center <%= bg %>">
+                        <!-- TODO change this format -->
+                        <%= contest.TIME_START.toLocaleString('en-GB') %>
+                    </td>
+                    <td class="my-td-center <%= bg %>">
+                        <%= Math.floor(contest.DURATION/60) + ':' + String(contest.DURATION%60).padStart(2, '0') %>
+                    </td>
+                    <td class="my-td-center <%= bg %>">
+                        <% if(new Date() < contest.TIME_START) { %>
+                            Before Start 
+                            <span class="text-muted">
+                                <%= contest.TIME_LEFT %>
+                            </span>
+                        <% } else { %>
+                            Running
+                        <% } %>
+                    </td>
+                    <td class="my-td-center <%= bg %>">
+                        <a href="/contest/<%= contest.ID %>">
+                            <% if(bg == '') { %>
+                                <%= new Date() < contest.TIME_START ? 'Register' : 'Enter' %>
+                            <% } else { %>
+                                Edit
+                            <% } %>
+                        </a> (<%= contest.REG_CNT %>)
+                    </td>
+                </tr>
+            <% }) %>
+        </table>
     </div>
-    <table width="100%" class="table table-sm table-bordered my-card-no-bottom">
-        <!-- list header -->
-        <tr>
-            <th width="29%" class="text-center">Name</th>
-            <th width="14%" class="text-center">Admins</th>
-            <th width="11%" class="text-center">Start</th>
-            <th width="10%" class="text-center">Length</th>
-            <th width="14%" class="text-center"></th>
-            <th width="28%" class="text-center"></th>
-        </tr>
-        <tr>
-            <td class="my-td-center">
-                Contest #1
-            </td>
-            <td class="my-td-center">
-                upobir <br>
-            </td>
-            <td class="my-td-center">
-                10/Nov/2020 20:30
-            </td>
-            <td class="my-td-center">
-                2:00
-            </td>
-            <td class="my-td-center">
-                Before Start <span class="text-muted">3 days</span>
-            </td>
-            <td class="my-td-center">
-                Register (23)
-            </td>
-        </tr>
-    </table>
-</div>
+<% } %>
 <!-- old contests -->
 <div class="card border my-3">
     <div class="card-header my-card-header">
         Past Contests
     </div>
-    <table width="100%" class="table table-sm table-bordered my-card-no-bottom">
+    <table width="100%" class="table table-sm table-bordered my-card-no-bottom" style="font-size: 14px;">
         <!-- list header -->
         <tr>
             <th width="32%" class="text-center">Name</th>
@@ -55,22 +76,28 @@
             <th width="11%" class="text-center">Length</th>
             <th width="12%" class="text-center">Participants</th>
         </tr>
-        <tr>
-            <td class="my-td-center">
-                Contest #1
-            </td>
-            <td class="my-td-center">
-                upobir <br>
-            </td>
-            <td class="my-td-center">
-                10/Nov/2020 20:30
-            </td>
-            <td class="my-td-center">
-                2:00
-            </td>
-            <td class="my-td-center">
-                23
-            </td>
-        </tr>
+        <% contestsPast.forEach(contest => { %>
+            <% let bg = (user != null && contest.ADMINS.filter(x => x.HANDLE == user.handle).length > 0)? 'alert-success' : ''; %>
+            <tr>
+                <td class="my-td-center <%= bg %>">
+                    <% contest.NAME %>
+                </td>
+                <td class="my-td-center <%= bg %>">
+                    <% contest.ADMINS.forEach(admin => { %>
+                        <%- include('../../../partials/handle', {handle : admin.HANDLE, color : admin.COLOR}) %> <br>
+                    <% }) %>
+                </td>
+                <td class="my-td-center <%= bg %>">
+                    <!-- TODO change this format -->
+                    <%= contest.TIME_START.toLocaleString('en-GB') %>
+                </td>
+                <td class="my-td-center <%= bg %>">
+                    <%= Math.floor(contest.DURATION/60) + ':' + String(contest.DURATION%60).padStart(2, '0') %>
+                </td>
+                <td class="my-td-center <%= bg %>">
+                    <% contest.PART_CNT %>
+                </td>
+            </tr>
+        <% }) %>
     </table>
 </div>

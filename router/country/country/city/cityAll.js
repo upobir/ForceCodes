@@ -1,5 +1,6 @@
 // libraries
 const express = require('express');
+const rightPanelUtils = require('../../../../utils/rightPanel-utils');
 
 const DB_global = require(process.env.ROOT + '/DB-codes/DB-global-api');
 
@@ -27,6 +28,9 @@ router.get('/', async (req, res) =>{
     else{
         var adminAccess = ['ADD', 'CITY'];
     }
+
+    let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+
     res.render('layout.ejs', {
         title: 'Cities - ForceCodes',
         body: ['panel-view', 'globalList', 'CITIES'],
@@ -34,7 +38,8 @@ router.get('/', async (req, res) =>{
         innerNav: innerNav,
         listHeader: `Cities of ${country}`,
         list : cityList,
-        adminAccess : adminAccess
+        adminAccess : adminAccess,
+        rightPanel : rightPanel
     });
 });
 

@@ -65,7 +65,7 @@
                 <a href="/messeges"> Talks </a>
             </div>
             <!-- admin button -->
-            <% if(user.isAdmin && user.handle !== profile.HANDLE) { %>
+            <% if(user != null && user.isAdmin && user.handle !== profile.HANDLE) { %>
                 <div class="py-2">
                         <button <%- `onclick="updateAdmin(${ profile.RATING !== null }, '${profile.HANDLE}')"`%> class="btn <%= profile.RATING == null?'btn-danger' : 'btn-success'%>"> 
                             <%= profile.RATING == null? 'Remove Admin' : 'Make Admin' %>
