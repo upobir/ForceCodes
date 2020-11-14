@@ -1,0 +1,79 @@
+<h4>
+    Registration Page for
+</h4>
+
+<h1>
+    <%= contest.NAME %>
+</h1>
+<h6 class="text-muted">
+    scheduled on <%= contest.TIME_START.toLocaleString('en-GB') %>
+</h6>
+<div>
+    <form method="POST" class="mr-1">
+        <div class="row mt-5">
+            <div class="col-3 text-right">
+                Notice
+            </div>
+            <div class="col-8 text-danger">
+                The contest is rated for range <%= contest.MIN_RATED %> to <%= contest.MAX_RATED %> and is <%- (user.rating == null ||( contest.MIN_RATING <= user.rating && user.rating <= contest.MAX_RATING))? '<b>not</b>' : '' %> rated for you.
+            </div>
+        </div>
+    
+        <div class="row mt-3">
+            <div class="col-3 text-right">
+                Agreement
+            </div>
+            <div class="col-8 border alert-warning pr-0">
+                By registering, you agree to
+                <ul>
+                    <li>
+                        not use other's code.
+                    </li>
+                    <li>
+                        not cheat and discuss with others during contest.
+                    </li>
+                    <li>
+                        submit codes by only one person.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    
+        <div class="row mt-3">
+            <div class="col-3 text-right">
+                Register as
+            </div>
+            <div class="col-8 form-group">
+                <label>
+                    <input type="radio" name="type" value="user" data-target=".collapseOne.show" data-toggle="collapse" required checked>
+                    As a individual user
+                </label>
+                <% if(teams.length > 0){ %>
+                    <label>
+                        <input type="radio" name="type" value="team" data-target=".collapseOne:not(.show)" data-toggle="collapse">
+                        As a team
+                    </label>
+                <% } %>
+            </div>
+        </div>
+    
+        <div class="row mt-3 collapse collapseOne" id="teamSelect">
+            <div class="col-3 text-right">
+                Choose Team
+            </div>
+            <div class="col-9">
+                <select name="team" class="form-control my-dropdown">
+                    <% teams.forEach(team =>{ %>
+                        <option value="<%=team.ID %>"><%= team.NAME %></option>
+                    <% }) %>
+                </select>
+            </div>
+        </div>
+    
+        <div class="row mt-3">
+            <div class="col-2 offset-5 text-center">
+                <input type="submit" value="Register" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
+</div>

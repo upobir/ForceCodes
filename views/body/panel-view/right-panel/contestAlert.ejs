@@ -1,0 +1,14 @@
+<div class="card border-secondary mb-4">
+    <div class="card-header">
+        Upcoming Contest
+    </div>
+    <p class="card-text text-center p-2">
+        <a href="/contest/<%= panel.id %>">
+            <%= panel.title %>
+        </a>
+        <br>
+        <span class="text-muted">
+            <%= new Date() < panel.start? panel.start.toLocaleString('en-GB') : 'Running' %>
+        </span>
+    </p>
+</div>

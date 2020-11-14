@@ -135,9 +135,120 @@ async function getPastContests(){
     return (await database.execute(sql, {}, database.options)).rows;
 }
 
+async function getContestInfo(id){
+    let sql = `
+        SELECT
+            C.ID,
+            C.NAME,
+            C.TIME_START,
+            C.DURATION,
+            C.MIN_RATED,
+            C.MAX_RATED,
+            NVL(R.REG_CNT, 0) "REG_CNT"
+        FROM
+            CONTEST "C" LEFT JOIN
+            (
+                SELECT 
+                    CONTEST_ID,
+                    COUNT(*) "REG_CNT"
+                FROM
+                    CONTEST_REGISTRATION
+                GROUP BY
+                    CONTEST_ID
+            ) "R" ON (R.CONTEST_ID = C.ID)
+        WHERE
+            C.ID = :id
+    `;
+    let binds = {
+        id : id
+    };
+    let results = (await database.execute(sql, binds, database.options)).rows;
+    if(results.length == 0) return results;
+
+    sql = `
+        SELECT
+            U.HANDLE,
+            U.COLOR
+        FROM
+            USER_CONTEST_ADMIN "A" JOIN
+            USER_LIST_VIEW "U" ON (A.USER_ID = U.ID)
+        WHERE
+            A.CONTEST_ID = :id
+        ORDER BY
+            U.HANDLE
+    `;
+    results[0].ADMINS = (await database.execute(sql, binds, database.options)).rows;
+    return results;
+}
+
+//TODO add better checking
+async function registerForContest(contestId, userId, contestantId){
+    let sql = `
+        INSERT INTO
+            CONTEST_REGISTRATION(
+                CONTESTANT_ID,
+                CONTEST_ID
+            )
+        values(
+            :contestantId,
+            :contestId
+        )
+    `
+    let binds = {
+        contestId : contestId,
+        contestantId : contestantId
+    };
+
+    console.log(binds);
+    await database.execute(sql, binds, database.options);
+}
+
+async function checkRegistration(contestId, userId){
+    let sql = `
+        SELECT
+            CN.HANDLE
+        FROM
+            CONTEST_REGISTRATION "R" JOIN
+            CONTESTANT "CN" ON (R.CONTESTANT_ID = CN.ID) LEFT JOIN
+            USER_TEAM_MEMBER "U" ON(U.TEAM_ID = CN.ID)
+        WHERE
+            (U.USER_ID = :userId OR
+            CN.ID = :userId) AND
+            R.CONTEST_ID = :contestId
+    `;
+    let binds = {
+        userId : userId,
+        contestId : contestId
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getAllRegistered(contestId){
+    let sql = `
+        SELECT
+            C.ID,
+            C.HANDLE,
+            U.COLOR
+        FROM
+            CONTEST_REGISTRATION "R" JOIN
+            CONTESTANT "C" ON (C.ID = R.CONTESTANT_ID) LEFT JOIN
+            USER_LIST_VIEW "U" ON (C.ID = U.ID)
+        WHERE
+            R.CONTEST_ID = :contestId
+    `
+    let binds = {
+        contestId : contestId
+    }
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
 module.exports = {
     createContest,
     getFutureContests,
     getAllContestAdmins,
-    getPastContests
+    getPastContests,
+    getContestInfo,
+    registerForContest,
+    checkRegistration,
+    getAllRegistered
 }

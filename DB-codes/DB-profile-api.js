@@ -250,6 +250,23 @@ async function updateAdminship(handle){
     return;
 }
 
+async function getTeamsById(id){
+    let sql = `
+        SELECT
+            C.ID,
+            C.HANDLE "NAME"
+        FROM
+            CONTESTANT "C" JOIN
+            USER_TEAM_MEMBER "U" ON (C.ID = U.TEAM_ID)
+        WHERE
+            U.USER_ID = :id
+    `;
+    let binds = {
+        id : id
+    }
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
 module.exports = {
     getProfileByHandle,
     isFriendOfId,
@@ -261,5 +278,6 @@ module.exports = {
     getPasswordById,
     updateSettingsById,
     changePictureById,
-    updateAdminship
+    updateAdminship,
+    getTeamsById
 }

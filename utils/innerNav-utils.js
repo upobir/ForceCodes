@@ -13,6 +13,18 @@ function getProfileInnerNav(user, handle){
     return innerNav;
 };
 
+function getContestInnerNav(contest){
+    let innerNav = [
+        {url : `/contest/${contest.ID}`, name: 'PROBLEMS'},
+        {url : `/contest/${contest.ID}/submit`, name: 'SUBMIT CODE'},
+        {url : `/contest/${contest.ID}/submissions/my`, name: 'MY SUBMISSIONS'},
+        {url : `/contest/${contest.ID}/submissions`, name: 'STATUS'},
+        {url : `/contest/${contest.ID}/standing`, name: 'STANDINGS'},
+    ];
+    return innerNav;
+}
+
 module.exports = {
-    getProfileInnerNav
+    getProfileInnerNav,
+    getContestInnerNav
 }

@@ -1,0 +1,72 @@
+<!-- user list -->
+<b class="text-danger pl-1">
+    You are administrating this contest
+</b>
+<div class="card border">
+    <div class="card-header my-card-header">
+        Problems
+    </div>
+    <table class="table table-sm table-bordered my-card-no-bottom">
+        <!-- list header -->
+        <tr>
+            <th width="8%" class="text-center">#</th>
+            <th width="62%" class="pl-3">name</th>
+            <th width="13%" class="text-center">limits</th>
+            <th width="10%"></th>
+            <th width="8%"></th>
+        </tr>
+        <!-- each row -->
+        <% for(let i = 0; i<3; i++){ %>
+            <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %>">
+                <td class="text-center">
+                    1
+                </td>
+                <td class="pl-3" >
+                    2
+                </td>
+                <td class="text-center">
+                    3
+                </td>
+                <td class="text-center">
+                    submit
+                </td>
+                <td class="text-center">
+                    3
+                </td>
+            </tr>
+        <% } %>
+        <tr>
+            <td colspan="5" class="text-center">
+                add new problem
+            </td>
+        </tr>
+    </table>
+</div>
+
+<!-- Announcements -->
+<div class="card border mt-5">
+    <div class="card-header my-card-header">
+        Announcements
+    </div>
+    <table class="table table-sm table-bordered my-card-no-bottom">
+        <!-- list header -->
+        <tr>
+            <th width="15%" class="text-center">When</th>
+            <th width="85%"></th>
+        </tr>
+        <!-- each row -->
+        <tr>
+            <td class="text-center">
+                1
+            </td>
+            <td class="pl-3" >
+                2
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="text-center">
+                add announcement
+            </td>
+        </tr>
+    </table>
+</div>

@@ -6,10 +6,9 @@ const DB_users = require(process.env.ROOT + '/DB-codes/DB-users-api');
 const DB_contest = require(process.env.ROOT + '/DB-codes/DB-contest-api');
 const timeUtils = require(process.env.ROOT + '/utils/time-utils');
 
+const contestRouter = require('./contestEntry/contestEntry.js');
+
 const router = express.Router({mergeParams : true});
-/*
-1. Get all names
-*/
 router.get('/', async (req, res) =>{
 
     let contestsMap = {}
@@ -149,5 +148,7 @@ router.post('/new', async(req, res) =>{
         }
     }
 })
+
+router.use('/:contestId', contestRouter);
 
 module.exports = router;

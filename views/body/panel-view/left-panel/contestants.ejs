@@ -1,0 +1,28 @@
+<!-- user list -->
+<div class="card border">
+    <div class="card-header my-card-header">
+        Contestants who registed for <b><%= contestName %></b>
+    </div>
+    <table width="100%" class="table table-sm table-bordered my-card-no-bottom">
+        <!-- list header -->
+        <tr>
+            <th width="8%" class="text-center">#</th>
+            <th width="*" class="pl-3">who</th>
+        </tr>
+        <!-- each row -->
+        <% for(let i = 0; i<users.length; i++){ %>
+            <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %> <%= (users[i].handle == registeredName)? 'my-row-selected' : '' %>" >
+                <td class="text-center">
+                    <%= i+1 %>
+                </td>
+                <td class="pl-3" >
+                    <% if(users[i].COLOR != null){ %>
+                        <%- include('../../../partials/handle', {handle : users[i].HANDLE, color : users[i].COLOR}) %>
+                    <% } else { %>
+                        <%- include('../../../partials/team', {handle : users[i].HANDLE, id : users[i].ID}) %>
+                    <% } %>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+</div>
