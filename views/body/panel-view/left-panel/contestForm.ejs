@@ -1,5 +1,5 @@
 <h2 class="text-primary mt-5">
-    New Contest
+    <%= postURL == 'contest/new'? 'New Contest' : 'Edit Contest' %>
 </h2>
 <form method="POST">
     <!-- title input -->
@@ -15,7 +15,7 @@
     <!-- duration -->
     <div class="form-group">
         <label for="duration"><b>Duration (HH:MM)</b></label>
-        <input type="text" class="form-control" name="duration" required value="<%= (typeof form != 'undefined')? form.duration : '' %>">
+        <input type="text" class="form-control" name="duration" required value="<%= (typeof form != 'undefined')? form.duration  : '' %>">
     </div>
     <!-- Rated range -->
     <div class="form-group">
@@ -67,13 +67,30 @@
     <div class="form-group row">
         <div class="col mx-auto text-center">
             <!-- submit -->
-            <input type="submit" value="Create" class="btn btn-success">
-            <% if(postURL != 'contest/new'){ %>
-                <button type="button" class="btn btn-danger ml-5"> Delete </button>
+            <input type="submit" value="<%= postURL == 'contest/new'? 'Create' : 'Update'%>" class="btn btn-success">
+            <% if(postURL != 'contest/new' && user.isAdmin){ %>
+                <button type="button" <%- 'onclick="deleteContest()"' %> class="btn btn-danger ml-5"> Delete </button>
             <% } %>
         </div>
     </div>
 </form>
+
+<% if(postURL !== '/contest/new' && user.isAdmin) { %>
+    <script>
+        function deleteContest(){
+            let str = 'ADMIN ACTION:\nYOU ARE ABOUT TO DELETE THIS CONTEST. ARE YOU SURE?';
+            if(confirm(str)){
+                let xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                    //console.log(this.responseText);
+                    window.location.href = `/contest`;    
+                };
+                xhttp.open("DELETE", window.location.href, true);
+                xhttp.send();
+            }
+        }
+    </script>
+<% } %>
 
 <script>
     function addAdmin(){
@@ -108,7 +125,7 @@
 
     function removeAdmin(node){
         let liNode = node.parentNode;
-        let handle = liNode.firstChild.innerText.trim();
+        let handle = liNode.firstElementChild.innerText.trim();
         let admins = document.getElementById('admins');
         admins.value = admins.value.replace(','+handle, '');
         liNode.remove();

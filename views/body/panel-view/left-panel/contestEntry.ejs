@@ -1,7 +1,22 @@
 <!-- user list -->
-<b class="text-danger pl-1">
-    You are administrating this contest
-</b>
+<% if(adminContest) { %>
+    <ul class="list-inline">
+        <li class="list-inline-item">
+            <b class="text-danger pl-1">
+                You are administrating this contest
+            </b>
+        </li>
+        <% if(contest.TIME_START > new Date()) { %>
+            <li class="list-inline-item my-small-text float-right">
+                <a href="/contest/<%= contest.ID %>/edit">
+                    Edit Contest Details
+                </a>
+            </li>
+        <% } %>
+    </ul>
+<% } %>
+
+<b class="float-left"></b>
 <div class="card border">
     <div class="card-header my-card-header">
         Problems
@@ -35,11 +50,15 @@
                 </td>
             </tr>
         <% } %>
-        <tr>
-            <td colspan="5" class="text-center">
-                add new problem
-            </td>
-        </tr>
+        <% if(adminContest && contest.TIME_START > new Date()) { %>
+            <tr>
+                <td colspan="5" class="text-center">
+                    <a href="/contest/<%= contest.ID %>/problem/new">
+                        add new problem
+                    </a> 
+                </td>
+            </tr>
+        <% } %>
     </table>
 </div>
 

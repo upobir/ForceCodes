@@ -1,0 +1,71 @@
+<a href="/contest/<%= contest.ID %>">
+    <h1 class="text-primary mt-2">
+        <%= contest.NAME %>
+    </h1>
+</a>
+<h2 class="text-primary mt-5">
+    <%= postURL == `problem/new`? 'New Problem' : 'Edit Problem' %>
+</h2>
+<form method="POST">
+    <!-- Prob num here -->
+    <div class="form-group">
+        <label for="prob_num"><b>Problem Number</b></label>
+        <select name="prob_num" class="form-control my-dropdown">
+            <% for(let i = 0; i<prob_cnt; i++){ %>
+                <option value="<%= i %>" <% ((typeof form == 'undefined' && i == prob_cnt-1) || (typeof form != 'undefined' && i == form.prob_num))? '' : 'selected' %>>
+                    <%= String.fromCharCode(65+i) %>
+                </option>
+            <% } %>
+        </select>
+    </div>
+    <!-- title -->
+    <div class="form-group">
+        <label for="title"><b>Title</b></label>
+        <input type="text" class="form-control" name="title" required value="<%= (typeof form != 'undefined')? form.title : '' %>">
+    </div>
+    <!-- body -->
+    <div class="form-group">
+        <label for="body"><b>Body</b></label>
+        <textarea class="form-control" name="body" rows="20" required><%= (typeof form != 'undefined')? form.body : '' %></textarea>
+    </div>
+    <!-- source limit -->
+    <div class="form-group">
+        <label for="SL"><b>Source Limit (in bytes)</b></label>
+        <input type="number" class="form-control" name="SL" required value="<%= (typeof form != 'undefined')? form.SL : '' %>">
+    </div>
+    <!-- time limit -->
+    <div class="form-group">
+        <label for="TL"><b>Time Limit (in millieseconds)</b></label>
+        <input type="number" class="form-control" name="TL" required value="<%= (typeof form != 'undefined')? form.TL : '' %>">
+    </div>
+    <!-- Memory limit -->
+    <div class="form-group">
+        <label for="ML"><b>Memory Limit (in Megabytes)</b></label>
+        <input type="number" class="form-control" name="ML" required value="<%= (typeof form != 'undefined')? form.ML : '' %>">
+    </div>
+    <!-- Rating -->
+    <div class="form-group">
+        <label for='rating'><b>Rating</b></label>
+        <input type="number" class="form-control" name="rating" required value="<%= (typeof form != 'undefined')? form.rating : '' %>">
+    </div>
+    <!-- error list -->
+    <% if (errors.length > 0) {     %> 
+        <div class="row mx-0 pb-0 alert alert-danger">
+            <ul>
+                <% for (e of errors) { %> 
+                    <li> <%= e %> </li>
+                <% } %> 
+            </ul>
+        </div>
+    <% } %> 
+    <!-- buttons -->
+    <div class="form-group row">
+        <div class="col mx-auto text-center">
+            <!-- submit -->
+            <input type="submit" value="<%= postURL == `problem/new`? 'Create' : 'Update'%>" class="btn btn-success">
+            <% if(postURL != 'problem/new' && user.isAdmin){ %>
+                <button type="button" <%- 'onclick="deleteContest()"' %> class="btn btn-danger ml-5"> Delete </button>
+            <% } %>
+        </div>
+    </div>
+</form>

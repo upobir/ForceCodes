@@ -4,7 +4,9 @@ const rightPanelUtils = require('../../utils/rightPanel-utils');
 
 const DB_users = require(process.env.ROOT + '/DB-codes/DB-users-api');
 const DB_contest = require(process.env.ROOT + '/DB-codes/DB-contest-api');
+
 const timeUtils = require(process.env.ROOT + '/utils/time-utils');
+const contestUtils = require(process.env.ROOT + '/utils/contest-utils');
 
 const contestRouter = require('./contestEntry/contestEntry.js');
 
@@ -74,42 +76,9 @@ router.post('/new', async(req, res) =>{
     else{
         let errors = [];
         let contest = {};
-        contest.title = req.body.title;
-        contest.start = new Date(req.body.start);
-        if(contest.start < new Date()){
-            errors.push('Invalid start time');
-        }
 
-        let re = /^[0-9]+:[0-9]+$/;
-        if(re.test(req.body.duration)){
-            let tmp = req.body.duration.split(':');
-            tmp[0] = parseInt(tmp[0]);
-            tmp[1] = parseInt(tmp[1]);
-            if(tmp[1] >= 60 || (tmp[1] == 0 && tmp[0] == 0)){
-                errors.push('Invalid duration');
-            }
-            else{
-                contest.duration = tmp[0]*60+tmp[1];
-            }
-        }
-        else{
-            errors.push('Invalid duration');
-        }
-
-        if(req.body.min_rating == '' && req.body.max_rating == ''){
-            contest.min_rating = null;
-            contest.max_rating = null;
-        }
-        else{
-            contest.min_rating = (req.body.min_rating == '')? 0 : parseInt(req.body.min_rating);
-            contest.max_rating = (req.body.max_rating == '')? 999999 : parseInt(req.body.max_rating);
-            if(contest.min_rating > contest.max_rating){
-                errors.push('Rating range is invalid')
-            }
-        }
-        
+        await contestUtils.processContest(req.body, contest, errors);
         contest.mainAdmin = req.user.handle;
-        contest.admins = req.body.admins.split(',').filter(x => x!='' && x!= req.user.handle);
 
         if(errors.length == 0){
             let contestId = await DB_contest.createContest(contest);

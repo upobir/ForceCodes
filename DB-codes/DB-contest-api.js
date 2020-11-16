@@ -1,4 +1,3 @@
-const { executeMany } = require('./database');
 const database = require('./database');
 
 async function createContest(contest){
@@ -47,21 +46,98 @@ async function createContest(contest){
                 HANDLE = :handle
         )
     `;
-    binds = [{
-        handle : contest.mainAdmin,
-        contestId : contestId,
-        type : 'MAIN'
-    }];
+    binds = [];
 
     for(let i = 0; i<contest.admins.length; i++){
         binds.push({
             handle : contest.admins[i],
             contestId : contestId,
-            type : 'REGULAR'
+            type : contest.mainAdmin == contest.admins[i]? 'MAIN' : 'REGULAR'
         })
     }
     await database.executeMany(sql, binds, {});
     return contestId;
+}
+
+async function updateContest(contest){
+    let sql = `
+        UPDATE
+            CONTEST
+        SET
+            NAME = :title,
+            TIME_START = :start_time,
+            DURATION = :duration,
+            MIN_RATED = :min_rating,
+            MAX_RATED = :max_rating
+        WHERE
+            ID = :id
+        `;
+    let binds = {
+        title : contest.title,
+        start_time : contest.start,
+        duration : contest.duration,
+        min_rating : contest.min_rating,
+        max_rating : contest.max_rating,
+        id : contest.id
+    };
+    await database.execute(sql, binds, {});
+
+    sql = `
+        DELETE FROM
+            USER_CONTEST_ADMIN
+        WHERE
+            CONTEST_ID = :id AND
+            TYPE = 'REGULAR'
+        `;
+    binds = {
+        id : contest.id
+    };
+
+    await database.execute(sql, binds, {});
+
+    sql = `
+        INSERT INTO
+            USER_CONTEST_ADMIN(
+                USER_ID,
+                CONTEST_ID,
+                TYPE
+            )
+        (
+            SELECT
+                ID,
+                :contestId,
+                'REGULAR'
+            FROM
+                USER_CONTESTANT_VIEW
+            WHERE
+                HANDLE = :handle
+        )
+    `;
+    binds = [];
+
+    contest.admins.forEach(handle =>{
+        binds.push({
+            contestId : contest.id,
+            handle : handle
+        });
+    })
+
+    await database.executeMany(sql, binds, {});
+    return;
+}
+
+async function deleteContest(id){
+    let sql = `
+        DELETE FROM
+            CONTEST
+        WHERE
+            ID = :id
+    `;
+    let binds = {
+        id : id
+    };
+    await database.execute(sql, binds, {});
+    return;
 }
 
 async function getFutureContests(){
@@ -168,14 +244,16 @@ async function getContestInfo(id){
     sql = `
         SELECT
             U.HANDLE,
-            U.COLOR
+            U.COLOR,
+            A.TYPE
         FROM
             USER_CONTEST_ADMIN "A" JOIN
             USER_LIST_VIEW "U" ON (A.USER_ID = U.ID)
         WHERE
             A.CONTEST_ID = :id
         ORDER BY
-            U.HANDLE
+            A.TYPE ASC, 
+            U.HANDLE ASC
     `;
     results[0].ADMINS = (await database.execute(sql, binds, database.options)).rows;
     return results;
@@ -250,5 +328,7 @@ module.exports = {
     getContestInfo,
     registerForContest,
     checkRegistration,
-    getAllRegistered
+    getAllRegistered,
+    updateContest,
+    deleteContest
 }
