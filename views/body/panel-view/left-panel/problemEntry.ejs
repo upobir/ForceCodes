@@ -1,0 +1,30 @@
+<% if(adminContest) { %>
+    <ul class="list-inline">
+        <li class="list-inline-item">
+            <b class="text-danger pl-1">
+                You are administrating this contest
+            </b>
+        </li>
+        <% if(contest.TIME_START > new Date()) { %>
+            <li class="list-inline-item my-small-text float-right">
+                <a href="/contest/<%= contest.ID %>/problem/<%= String.fromCharCode(problem.PROB_NUM + 65) %>/edit">
+                    Edit Problem
+                </a>
+            </li>
+        <% } %>
+    </ul>
+<% } %>
+
+<div class="text-center mt-4">
+    <h4>
+        <%= String.fromCharCode(problem.PROB_NUM + 65) %>. <%= problem.NAME %>
+    </h4>
+    Source Limit: <%= problem.SL %> bytes
+    <br>
+    Time Limit: <%= problem.TL/1000 %> second(s)
+    <br>
+    Memory Limit: <%= problem.ML %> Megabyte(s)
+</div>
+<div class="mt-4 pl-2">
+    <%- problem.BODY %>
+</div>

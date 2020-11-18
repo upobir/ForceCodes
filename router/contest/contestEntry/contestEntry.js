@@ -5,6 +5,7 @@ const timeUtils = require(process.env.ROOT + '/utils/time-utils');
 const innerNavUtils = require(process.env.ROOT + '/utils/innerNav-utils');
 
 const DB_contests = require(process.env.ROOT+'/DB-codes/DB-contest-api');
+const DB_problems = require(process.env.ROOT+'/DB-codes/DB-problem-api');
 
 const router = express.Router({mergeParams : true});
 
@@ -25,6 +26,7 @@ router.use('/', async(req, res, next) =>{
         }
         else{
             req.contest = contestInfo[0];
+            req.contest.IS_ADMIN = (req.user != null && req.contest.ADMINS.filter(x => x.HANDLE == req.user.handle).length > 0);
             next();
         }
     }
@@ -33,7 +35,7 @@ router.use('/', async(req, res, next) =>{
 router.get('/', async (req, res) =>{
     let contest = req.contest;
 
-    let adminContest = (req.user != null && contest.ADMINS.filter(x => x.HANDLE == req.user.handle).length > 0);
+    let adminContest = contest.IS_ADMIN;
 
     if(req.user == null || !adminContest){
         if(new Date() <= contest.TIME_START){
@@ -54,8 +56,9 @@ router.get('/', async (req, res) =>{
         }
     }
     
-    let innerNav = innerNavUtils.getContestInnerNav(contest);
+    let problems = await DB_problems.getContestProblems(contest.ID);
 
+    let innerNav = innerNavUtils.getContestInnerNav(contest);
     let rightPanel = await rightPanelUtils.getRightPanel(req.user);
 
     res.render('layout.ejs', {
@@ -65,6 +68,7 @@ router.get('/', async (req, res) =>{
         innerNav : innerNav,
         contest : contest,
         adminContest : adminContest,
+        problems : problems,
         rightPanel : rightPanel
     }); 
 });

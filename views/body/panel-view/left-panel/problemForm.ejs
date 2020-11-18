@@ -12,7 +12,7 @@
         <label for="prob_num"><b>Problem Number</b></label>
         <select name="prob_num" class="form-control my-dropdown">
             <% for(let i = 0; i<prob_cnt; i++){ %>
-                <option value="<%= i %>" <% ((typeof form == 'undefined' && i == prob_cnt-1) || (typeof form != 'undefined' && i == form.prob_num))? '' : 'selected' %>>
+                <option value="<%= i %>" <%= ((typeof form == 'undefined' && i == prob_cnt-1) || (typeof form != 'undefined' && i == form.prob_num))? 'selected' : ''%>>
                     <%= String.fromCharCode(65+i) %>
                 </option>
             <% } %>
@@ -64,8 +64,26 @@
             <!-- submit -->
             <input type="submit" value="<%= postURL == `problem/new`? 'Create' : 'Update'%>" class="btn btn-success">
             <% if(postURL != 'problem/new' && user.isAdmin){ %>
-                <button type="button" <%- 'onclick="deleteContest()"' %> class="btn btn-danger ml-5"> Delete </button>
+                <button type="button" <%- 'onclick="deleteProblem()"' %> class="btn btn-danger ml-5"> Delete </button>
             <% } %>
         </div>
     </div>
 </form>
+
+<%- '<script> let contestId = ' + contest.ID + '; </script>' %> 
+<% if(postURL !== '/problem/new') { %>
+    <script>
+        function deleteProblem(){
+            let str = 'ADMIN ACTION:\nYOU ARE ABOUT TO DELETE THIS PROBLEM. ARE YOU SURE?';
+            if(confirm(str)){
+                let xhttp = new XMLHttpRequest();
+                    xhttp.onreadystatechange = function() {
+                    let response = JSON.parse(this.responseText);
+                    window.location.href = response.url;    
+                };
+                xhttp.open("DELETE", window.location.href, true);
+                xhttp.send();
+            }
+        }
+    </script>
+<% } %>

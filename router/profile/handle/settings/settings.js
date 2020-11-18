@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const fs = require('fs');
 var path = require('path');
-const rightPanelUtils = require('../../../../utils/rightPanel-utils');
+const rightPanelUtils = require(process.env.ROOT+'/utils/rightPanel-utils');
 
 const DB_profile = require(process.env.ROOT+'/DB-codes/DB-profile-api');
 const DB_global = require(process.env.ROOT+'/DB-codes/DB-global-api');

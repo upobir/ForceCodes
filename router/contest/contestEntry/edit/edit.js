@@ -8,7 +8,7 @@ const DB_contests = require(process.env.ROOT+'/DB-codes/DB-contest-api');
 const router = express.Router({mergeParams : true});
 
 router.get('/', async (req, res) => {
-    let contestId = req.params.id;
+    let contestId = req.params.contestId;
     let contest = req.contest;
 
     if(contest.TIME_START < new Date() || req.user == null || 
@@ -21,12 +21,18 @@ router.get('/', async (req, res) => {
             x.AUTHOR = (x.TYPE == 'MAIN')? 'true' : 'false'
         });
 
+        let innerNav = [
+            {url : `/contest/${contestId}`, name : 'PROBLEMS'},
+            {url : `/contest/${contestId}/edit`, name : 'EDIT CONTEST'}
+        ];
+
         let rightPanel = await rightPanelUtils.getRightPanel(req.user);
 
         res.render('layout.ejs', {
             title : 'Edit Contest - ForceCodes',
-            body : ['panel-view', 'contestForm'],
+            body : ['panel-view', 'contestForm', 'EDIT CONTEST'],
             user : req.user,
+            innerNav : innerNav,
             postURL : `contest/${contestId}/edit`,
             admins : contest.ADMINS,
             form : {
@@ -106,6 +112,10 @@ router.delete('/', async (req, res, next) =>{
     }
     else {
         await DB_contests.deleteContest(contestId);
+        res.json({
+            message : 'deleted',
+            url : '/contest'
+        });
     }
 });
 

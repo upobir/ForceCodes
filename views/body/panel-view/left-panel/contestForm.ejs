@@ -81,9 +81,9 @@
             let str = 'ADMIN ACTION:\nYOU ARE ABOUT TO DELETE THIS CONTEST. ARE YOU SURE?';
             if(confirm(str)){
                 let xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function() {
-                    //console.log(this.responseText);
-                    window.location.href = `/contest`;    
+                xhttp.onreadystatechange = function() {
+                    let response = JSON.parse(this.responseText);
+                    window.location.href = response.url;   
                 };
                 xhttp.open("DELETE", window.location.href, true);
                 xhttp.send();

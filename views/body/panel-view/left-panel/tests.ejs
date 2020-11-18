@@ -1,0 +1,60 @@
+<div>
+    <b>
+        Sample:
+    </b>
+    <ol>
+        <li class="m-2">
+            <div class="row">
+                <div class="col-2 pt-1">
+                    Input: <a href="" >1.in</a> 
+                </div>
+                <div class="col-2 pt-1">
+                    Output: <a href="" >1.out</a>
+                </div>
+                <div class="col-8 text-right">
+                    <button class="btn btn-danger py-1">Delete Test 1</button>
+                </div>
+            </div>
+        </li>
+        <li class="m-2">
+            <a href="">2.in</a> 
+            <a href="">2.out</a>
+        </li>
+    </ol>
+    <b>
+        Main:
+    </b>
+    <ul>
+        <li>
+            <a href="">1.in</a> 
+            <a href="">1.out</a>
+        </li>
+        <li>
+            <a href="">2.in</a> 
+            <a href="">2.out</a>
+        </li>
+    </ul>
+
+    <hr>
+
+    <form action="" method="POST" enctype="multipart/form-data">
+        <div class="form-group row">
+            <label for="test_type" class="col-1 pt-1">
+                Type:
+            </label>
+            <select name="test_type" class="form-control col-3">
+                <option value="MAIN" selected>Main</option>
+                <option value="SAMPLE">Sample</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="input">Input File:</label>
+            <input type="file" name="input">
+            <label for="output">Output File:</label>
+            <input type="file" name="output">
+        </div>
+        <div class="form-group text-center">
+            <input type="submit" value="Add Test" class="btn btn-primary">
+        </div>
+    </form>
+</div>
