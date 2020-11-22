@@ -1,39 +1,48 @@
-<div>
+<div class="pl-2">
     <b>
         Sample:
     </b>
     <ol>
-        <li class="m-2">
-            <div class="row">
-                <div class="col-2 pt-1">
-                    Input: <a href="" >1.in</a> 
+        <% sampleTests.forEach(test =>{ %>
+            <li class="m-2">
+                <div class="row">
+                    <div class="col-2 pt-1">
+                        Input: <a href="./tests/<%=test.INPUT_URL%>" ><%= test.TEST_NUMBER %>.in</a> 
+                    </div>
+                    <div class="col-2 pt-1">
+                        Output: <a href="./tests/<%=test.OUTPUT_URL%>" ><%= test.TEST_NUMBER %>.out</a>
+                    </div>
+                    <div class="col-8 text-right">
+                        <button class="btn btn-danger py-1" <%- `onclick="deleteTest(this,'SAMPLE',${test.TEST_NUMBER})"` %>>
+                            Delete Sample <%= test.TEST_NUMBER %>
+                        </button>
+                    </div>
                 </div>
-                <div class="col-2 pt-1">
-                    Output: <a href="" >1.out</a>
-                </div>
-                <div class="col-8 text-right">
-                    <button class="btn btn-danger py-1">Delete Test 1</button>
-                </div>
-            </div>
-        </li>
-        <li class="m-2">
-            <a href="">2.in</a> 
-            <a href="">2.out</a>
-        </li>
+            </li>
+        <% }) %>
     </ol>
     <b>
         Main:
     </b>
-    <ul>
-        <li>
-            <a href="">1.in</a> 
-            <a href="">1.out</a>
-        </li>
-        <li>
-            <a href="">2.in</a> 
-            <a href="">2.out</a>
-        </li>
-    </ul>
+    <ol>
+        <% mainTests.forEach(test =>{ %>
+            <li class="m-2">
+                <div class="row">
+                    <div class="col-2 pt-1">
+                        Input: <a href="./tests/<%=test.INPUT_URL%>" ><%= test.TEST_NUMBER %>.in</a> 
+                    </div>
+                    <div class="col-2 pt-1">
+                        Output: <a href="./tests/<%=test.OUTPUT_URL%>" ><%= test.TEST_NUMBER %>.out</a>
+                    </div>
+                    <div class="col-8 text-right">
+                        <button class="btn btn-danger py-1" <%- `onclick="deleteTest(this,'MAIN',${test.TEST_NUMBER})"` %>>
+                            Delete Main <%= test.TEST_NUMBER %>
+                        </button>
+                    </div>
+                </div>
+            </li>
+        <% }) %>
+    </ol>
 
     <hr>
 
@@ -49,12 +58,27 @@
         </div>
         <div class="form-group">
             <label for="input">Input File:</label>
-            <input type="file" name="input">
+            <input type="file" name="input" required>
             <label for="output">Output File:</label>
-            <input type="file" name="output">
+            <input type="file" name="output" required>
         </div>
         <div class="form-group text-center">
             <input type="submit" value="Add Test" class="btn btn-primary">
         </div>
     </form>
 </div>
+
+<script>
+    function deleteTest(node, type, number){
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            let response = JSON.parse(this.responseText);
+            if(response.message == 'deleted'){
+                window.location.href = response.url;
+            }
+        };
+        xhttp.open("DELETE", window.location.href, true);
+        xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhttp.send(JSON.stringify({type : type, testNum : number}));
+    }
+</script>

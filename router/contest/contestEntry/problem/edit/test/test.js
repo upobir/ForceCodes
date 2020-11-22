@@ -26,8 +26,11 @@ router.get('/', async (req, res) =>{
     let prob_num = req.params.num;
     let probNum = prob_num.charCodeAt(0)-65;
 
+    let sampleTests = await DB_problems.getSampleTests(contestId, probNum);
+    let mainTests = await DB_problems.getMainTests(contestId, probNum);
+
     let innerNav = [
-        {url : `/contest/${contestId}`, name : 'PROBLEMS'},
+        {url : `/contest/${contestId}/problem/${prob_num}`, name : 'PROBLEM'},
         {url : `/contest/${contestId}/problem/${prob_num}/edit`, name : 'EDIT PROBLEM'},
         {url : `/contest/${contestId}/problem/${prob_num}/edit/tests`, name : 'TESTS'}
     ];
@@ -39,6 +42,8 @@ router.get('/', async (req, res) =>{
         user: req.user,
         innerNav : innerNav,
         contest : req.contest,
+        sampleTests : sampleTests,
+        mainTests : mainTests,
         rightPanel : rightPanel
     });  
 });
@@ -57,7 +62,43 @@ router.post('/', upload.fields([{
     let outputURL = req.files.output[0].filename;
 
     await DB_problems.addTestFile(contestId, probNum, req.test_type, inputURL, outputURL);
-    res.redirect(`/contest/${contestId}/problem/${probNum}/edit/tests`);
+    res.redirect(`/contest/${contestId}/problem/${prob_num}/edit/tests`);
+});
+
+router.delete('/', async (req, res) =>{
+    let contestId = parseInt(req.params.contestId);
+    let prob_num = req.params.num;
+    let probNum = prob_num.charCodeAt(0)-65;
+
+    let files = await DB_problems.deleteTest(contestId, probNum, req.body.type, req.body.testNum);
+    fs.unlinkSync(process.env.ROOT + '/problem-data/tests/' + files.inputURL);
+    fs.unlinkSync(process.env.ROOT + '/problem-data/tests/' + files.outputURL);
+
+    res.json({
+        message : 'deleted',
+        url : req.originalUrl
+    });
+});
+
+router.get('/:testURL', async (req, res, next) =>{
+    let contestId = parseInt(req.params.contestId);
+    let prob_num = req.params.num;
+    let probNum = prob_num.charCodeAt(0)-65;
+    let testURL = req.params.testURL;
+    if(await DB_problems.isValidTestURL(contestId, probNum, testURL)){
+        fs.readFile(process.env.ROOT + '/problem-data/tests/' + testURL, 'utf8', (err, contents) =>{
+            if(err){
+                console.log('ERROR reading test file:' + err.message);
+                next();
+            }
+            else{
+                res.send(contents);
+            }
+        });
+    }
+    else{
+        next();
+    }
 });
 
 module.exports = router;

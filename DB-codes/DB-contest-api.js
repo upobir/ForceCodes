@@ -284,6 +284,7 @@ async function registerForContest(contestId, userId, contestantId){
 async function checkRegistration(contestId, userId){
     let sql = `
         SELECT
+            CN.ID,
             CN.HANDLE
         FROM
             CONTEST_REGISTRATION "R" JOIN

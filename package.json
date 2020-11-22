@@ -10,6 +10,7 @@
   "author": "Md Sabbir Rahman",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.2.0",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
@@ -20,7 +21,8 @@
     "marked": "^1.2.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
-    "oracledb": "^5.0.0"
+    "oracledb": "^5.0.0",
+    "tree-kill": "^1.2.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.5"

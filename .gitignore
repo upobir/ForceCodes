@@ -21,5 +21,10 @@ draft.js
 # public data like images
 public/public-images
 
+# problem data
+problem-data/tests
+problem-data/submissions
+problem-data/environment
+
 # stuff to test code
 code-testing

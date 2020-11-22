@@ -1,0 +1,52 @@
+<div class="ml-2">
+    <div class="text-center">
+        <h2>
+            Submit Code
+        </h2>
+        <h3>
+            Contest 1
+        </h3>
+    </div>
+
+    <form action="" method="POST" class="card-body">
+        <!-- Problem -->
+        <div class="form-group row">
+            <label for="problem" class="col-2 col-form-label text-right">Problem</label>
+            <div class="col-10">
+                <select name="problem" class="form-control" required>
+                    <% problems.forEach(problem =>{ %>
+                        <% let rank = String.fromCharCode(65 + problem.PROB_NUM) %>
+                        <option value="<%= problem.PROB_NUM %>" <%= (rank == selected)? 'selected' : '' %>>
+                            <%= rank %>. <%= problem.NAME %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+        </div>
+        <!-- Language -->
+        <div class="form-group row">
+            <label for="language" class="col-2 col-form-label text-right">Language</label>
+            <div class="col-10">
+                <select name="language" class="form-control" required>
+                    <% languages.forEach(language =>{ %>
+                        <option value="<%= language.ID %>">
+                            <%= language.NAME %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+        </div>
+        <!-- Code -->
+        <div class="form-group row">
+            <label for="code" class="col-2 col-form-label text-right">Code</label>
+            <div class="col-10">
+                <textarea name="code" class="form-control" rows="20" style="font-family: consolas;" required></textarea>
+            </div>
+        </div>
+        <!-- submit -->
+        <div class="form-group row">
+            <input type="submit" value="Submit" class="btn btn-success col-2 mx-auto">
+        </div>
+
+    </form>
+</div>

@@ -21,6 +21,9 @@ function getContestInnerNav(contest){
         {url : `/contest/${contest.ID}/submissions`, name: 'STATUS'},
         {url : `/contest/${contest.ID}/standing`, name: 'STANDINGS'},
     ];
+    if(contest.IS_ADMIN){
+        innerNav.splice(3, 0, {url : `/contest/${contest.ID}/submissions/admin`, name : 'ADMIN SUBMISSIONS'});
+    }
     return innerNav;
 }
 

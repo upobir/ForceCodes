@@ -12,6 +12,7 @@ const router = express.Router({mergeParams : true});
 const registerRouter = require('./register/register');
 const editRouter = require('./edit/edit');
 const problemRouter = require('./problem/problem');
+const submitRouter = require('./submit/submit');
 
 router.use('/', async(req, res, next) =>{
     let contestId = parseInt(req.params.contestId);
@@ -76,5 +77,6 @@ router.get('/', async (req, res) =>{
 router.use('/edit', editRouter);
 router.use('/register', registerRouter);
 router.use('/problem', problemRouter);
+router.use('/submit', submitRouter);
 
 module.exports = router;

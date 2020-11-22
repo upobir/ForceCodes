@@ -1,6 +1,7 @@
 // libraries
 const express = require('express');
 const marked = require('marked');
+const fs = require('fs');
 
 const innerNavUtils = require(process.env.ROOT + '/utils/innerNav-utils');
 const rightPanelUtils = require(process.env.ROOT + '/utils/rightPanel-utils');
@@ -110,6 +111,7 @@ router.post('/new', async(req, res) =>{
 })
 
 router.get('/:num', async(req, res) =>{
+    let contestId = parseInt(req.params.contestId);
     let prob_num = req.params.num;
     let probNum = prob_num.charCodeAt(0)-65;
     let problems = await DB_problems.getProblem(req.params.contestId, probNum);
@@ -118,6 +120,13 @@ router.get('/:num', async(req, res) =>{
         res.redirect(`/contest/${req.contest.ID}`);
     }
     else{
+
+        let sampleTests = await DB_problems.getSampleTests(contestId, probNum);
+        sampleTests.forEach(test=>{
+            test.INPUT = fs.readFileSync(process.env.ROOT + '/problem-data/tests/' + test.INPUT_URL).toString();
+            test.OUTPUT = fs.readFileSync(process.env.ROOT + '/problem-data/tests/' + test.OUTPUT_URL).toString();
+        })
+
         let innerNav = innerNavUtils.getContestInnerNav(req.contest);
         let rightPanel = await rightPanelUtils.getRightPanel(req.user);
 
@@ -130,6 +139,7 @@ router.get('/:num', async(req, res) =>{
             innerNav : innerNav,
             contest : req.contest,
             problem : problems[0],
+            sampleTests : sampleTests,
             adminContest : req.contest.IS_ADMIN,
             rightPanel : rightPanel
         }); 

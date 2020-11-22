@@ -30,7 +30,7 @@
     </div>
     <!-- source limit -->
     <div class="form-group">
-        <label for="SL"><b>Source Limit (in bytes)</b></label>
+        <label for="SL"><b>Source Limit (in Bytes)</b></label>
         <input type="number" class="form-control" name="SL" required value="<%= (typeof form != 'undefined')? form.SL : '' %>">
     </div>
     <!-- time limit -->
@@ -79,7 +79,7 @@
                 let xhttp = new XMLHttpRequest();
                     xhttp.onreadystatechange = function() {
                     let response = JSON.parse(this.responseText);
-                    window.location.href = response.url;    
+                    window.location.href = response.url; 
                 };
                 xhttp.open("DELETE", window.location.href, true);
                 xhttp.send();

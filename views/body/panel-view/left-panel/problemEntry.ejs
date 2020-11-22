@@ -28,3 +28,27 @@
 <div class="mt-4 pl-2">
     <%- problem.BODY %>
 </div>
+
+<div class="pl-2">
+    <b>Samples</b>
+    <% sampleTests.forEach(test => { %>
+        <table class="table table-sm table-bordered mb-5" style="border: 0.2sem solid;">
+            <tr>
+                <td>input</td>
+            </tr>
+            <tr style="background-color: #EFEFEF;">
+                <td>
+                    <pre><%= test.INPUT %></pre>
+                </td>
+            </tr>
+            <tr>
+                <td>output</td>
+            </tr>
+            <tr style="background-color: #EFEFEF;">
+                <td>
+                    <pre><%= test.OUTPUT %></pre>
+                </td>
+            </tr>
+        </table>
+    <% }) %>
+</div>

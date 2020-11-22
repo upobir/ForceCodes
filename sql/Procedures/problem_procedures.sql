@@ -185,7 +185,8 @@ BEGIN
     FROM
         TEST_FILE
     WHERE
-        PROBLEM_ID = P_ID;
+        PROBLEM_ID = P_ID AND
+        TYPE = T_TYPE;
 
     INSERT INTO
         TEST_FILE(
@@ -205,3 +206,89 @@ BEGIN
         T_OUTPUT
     );
 END;
+
+CREATE OR REPLACE PROCEDURE
+    DELETE_TEST_FILE(
+        C_ID IN PROBLEM.CONTEST_ID%TYPE,
+        P_NUM IN PROBLEM.PROB_NUM%TYPE,
+        T_TYPE IN TEST_FILE.TYPE%TYPE,
+        T_NUM IN TEST_FILE.TEST_NUMBER%TYPE,
+        T_IN_URL OUT TEST_FILE.INPUT_URL%TYPE,
+        T_OUT_URL OUT TEST_FILE.OUTPUT_URL%TYPE
+    )
+IS
+    P_ID PROBLEM.ID%TYPE;
+BEGIN
+    SELECT
+        ID
+    INTO
+        P_ID
+    FROM
+        PROBLEM
+    WHERE
+        CONTEST_ID = C_ID AND
+        PROB_NUM = P_NUM;
+
+    SELECT
+        INPUT_URL,
+        OUTPUT_URL
+    INTO
+        T_IN_URL,
+        T_OUT_URL
+    FROM
+        TEST_FILE
+    WHERE
+        PROBLEM_ID = P_ID AND
+        TYPE = T_TYPE AND
+        TEST_NUMBER = T_NUM;
+
+    DELETE FROM
+        TEST_FILE
+    WHERE
+        PROBLEM_ID = P_ID AND
+        TYPE = T_TYPE AND
+        TEST_NUMBER = T_NUM;
+
+    UPDATE
+        TEST_FILE
+    SET
+        TEST_NUMBER = TEST_NUMBER-1
+    WHERE
+        PROBLEM_ID = P_ID AND
+        TYPE = T_TYPE AND
+        TEST_NUMBER > T_NUM;
+END;
+
+CREATE OR REPLACE PROCEDURE
+    CREATE_SUBMISSION(
+        S_ID OUT SUBMISSION.ID%TYPE,
+        P_ID IN PROBLEM.ID%TYPE,
+        U_ID IN CONTESTANT.ID%TYPE,
+        L_ID IN LANGUAGE.ID%TYPE,
+        S_SIZE IN SUBMISSION.CODE_SIZE%TYPE,
+        S_URL IN SUBMISSION.URL%TYPE
+    )
+IS
+BEGIN
+    S_ID := SBMSSN_SEQ.NEXTVAL;
+
+    INSERT INTO
+        SUBMISSION(
+            ID,
+            PROBLEM_ID,
+            AUTHOR_ID,
+            LANG_ID,
+            CODE_SIZE,
+            URL
+        )
+    VALUES(
+        S_ID,
+        P_ID,
+        U_ID,
+        L_ID,
+        S_SIZE,
+        S_URL
+    );
+END;
+
+SHOW ERRORS;

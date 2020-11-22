@@ -31,7 +31,7 @@ router.get('/', async (req, res) =>{
     let probNum = prob_num.charCodeAt(0)-65;
 
     let innerNav = [
-        {url : `/contest/${contestId}`, name : 'PROBLEMS'},
+        {url : `/contest/${contestId}/problem/${prob_num}`, name : 'PROBLEM'},
         {url : `/contest/${contestId}/problem/${prob_num}/edit`, name : 'EDIT PROBLEM'},
         {url : `/contest/${contestId}/problem/${prob_num}/edit/tests`, name : 'TESTS'}
     ];
@@ -91,7 +91,7 @@ router.post('/', async (req, res) =>{
 
     if(errors.length > 0){
         let innerNav = [
-            {url : `/contest/${contestId}`, name : 'PROBLEMS'},
+            {url : `/contest/${contestId}/problem/${prob_num}`, name : 'PROBLEM'},
             {url : `/contest/${contestId}/problem/${prob_num}/edit`, name : 'EDIT PROBLEM'},
             {url : `/contest/${contestId}/problem/${prob_num}/edit/tests`, name : 'TESTS'}
         ];
@@ -133,7 +133,7 @@ router.post('/', async (req, res) =>{
             tags : []
         }
         await DB_problems.updateProblem(problem);
-        res.redirect(`/contest/${req.params.contestId}`);
+        res.redirect(`/contest/${req.params.contestId}/problem/${prob_num}`);
     }
 });
 
