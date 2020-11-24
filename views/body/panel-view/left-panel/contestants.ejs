@@ -11,7 +11,7 @@
         </tr>
         <!-- each row -->
         <% for(let i = 0; i<users.length; i++){ %>
-            <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %> <%= (users[i].handle == registeredName)? 'my-row-selected' : '' %>" >
+            <tr class="<%= (users[i].HANDLE == registeredName)? 'my-row-selected' : '' %> <%= (i%2 == 1)? 'my-row-alter' : '' %>" >
                 <td class="text-center">
                     <%= i+1 %>
                 </td>

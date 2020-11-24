@@ -22,6 +22,8 @@ function getContestInnerNav(contest){
         {url : `/contest/${contest.ID}/standing`, name: 'STANDINGS'},
     ];
     if(contest.IS_ADMIN){
+        innerNav[3].url = `/contest/${contest.ID}/register`;
+        innerNav[3].name = 'REGISTERED';
         innerNav.splice(3, 0, {url : `/contest/${contest.ID}/submissions/admin`, name : 'ADMIN SUBMISSIONS'});
     }
     return innerNav;

@@ -77,7 +77,10 @@
         <!-- list header -->
         <tr>
             <th width="15%" class="text-center">When</th>
-            <th width="85%"></th>
+            <th width="*"></th>
+            <% if(contest.IS_ADMIN){ %>
+                <th width="10%"></th>
+            <% } %>
         </tr>
         <!-- each row -->
         <tr>
@@ -85,13 +88,34 @@
                 1
             </td>
             <td class="pl-3" >
-                2
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel reprehenderit saepe quis omnis! Sequi vitae non porro rem, ad, optio adipisci aspernatur voluptatum quis atque est quisquam voluptates voluptatem. Eaque!
             </td>
+            <% if(contest.IS_ADMIN){ %>
+                <td class="my-td-center">
+                    <form action="" method="POST">
+                        <input type="hidden" name="type" value="delete">
+                        <input type="hidden" name="ann_no" value="1">
+                        <input type="submit" value="delete" class="btn btn-danger">
+                    </form>
+                </td>
+            <% } %>
         </tr>
-        <tr>
-            <td colspan="2" class="text-center">
-                add announcement
-            </td>
-        </tr>
+        <% if(contest.IS_ADMIN) { %>
+            <tr class="bg-info" >
+                <td style="min-height: 10px;" colspan="3"></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <form action="" method="POST">
+                        <input type="hidden" name="type" value="post">
+                        <label for="announcement">
+                            <b>New Announcement</b>
+                        </label>
+                        <textarea name="announcement" class="form-control" rows="3"></textarea>
+                        <input type="submit" value="Post" class="mt-1 btn btn-success float-right">
+                    </form>
+                </td>
+            </tr>
+        <% } %>
     </table>
 </div>

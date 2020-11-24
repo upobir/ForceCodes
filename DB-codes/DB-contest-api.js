@@ -321,6 +321,76 @@ async function getAllRegistered(contestId){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+async function getUserSubmissions(contestId, userId){
+    let sql = `
+        SELECT
+            *
+        FROM
+            SUBMISSIONS_VIEW
+        WHERE
+            AUTHOR_ID = :userId AND
+            CONTEST_ID = :contestId
+        ORDER BY
+            ID DESC
+    `;
+    let binds = {
+        userId : userId,
+        contestId : contestId
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getAdminSubmissions(contestId){
+    let sql = `
+        SELECT
+            *
+        FROM
+            SUBMISSIONS_VIEW
+        WHERE
+            TYPE = 'ADMIN' AND
+            CONTEST_ID = :contestId
+        ORDER BY
+            ID DESC
+    `;
+    let binds = {
+        contestId : contestId
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getAllSubmissions(contestId){
+    let sql = `
+        SELECT
+            *
+        FROM
+            SUBMISSIONS_VIEW
+        WHERE
+            TYPE = 'REGULAR' AND
+            CONTEST_ID = :contestId
+        ORDER BY
+            ID DESC
+    `;
+    let binds = {
+        contestId : contestId
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getSubmission(sbmssnId){
+    let sql = `
+        SELECT
+            *
+        FROM
+            SUBMISSIONS_VIEW
+        WHERE
+            ID = :sbmssnId
+    `;
+    let binds = {
+        sbmssnId : sbmssnId
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
 module.exports = {
     createContest,
     getFutureContests,
@@ -331,5 +401,9 @@ module.exports = {
     checkRegistration,
     getAllRegistered,
     updateContest,
-    deleteContest
+    deleteContest,
+    getUserSubmissions,
+    getAdminSubmissions,
+    getAllSubmissions,
+    getSubmission
 }

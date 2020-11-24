@@ -13,6 +13,7 @@ const registerRouter = require('./register/register');
 const editRouter = require('./edit/edit');
 const problemRouter = require('./problem/problem');
 const submitRouter = require('./submit/submit');
+const submissionsRouter = require('./submissions/submissions.js');
 
 router.use('/', async(req, res, next) =>{
     let contestId = parseInt(req.params.contestId);
@@ -58,9 +59,11 @@ router.get('/', async (req, res) =>{
     }
     
     let problems = await DB_problems.getContestProblems(contest.ID);
+    let announcements = await DB_problems.getAnnouncements(contest.ID);
 
     let innerNav = innerNavUtils.getContestInnerNav(contest);
     let rightPanel = await rightPanelUtils.getRightPanel(req.user);
+    
 
     res.render('layout.ejs', {
         title: `${contest.NAME} - ForceCodes`,
@@ -78,5 +81,6 @@ router.use('/edit', editRouter);
 router.use('/register', registerRouter);
 router.use('/problem', problemRouter);
 router.use('/submit', submitRouter);
+router.use('/submissions', submissionsRouter);
 
 module.exports = router;

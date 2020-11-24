@@ -84,3 +84,47 @@ AS
             GROUP BY
                 BLOG_ID
         ) "V" ON (V.BLOG_ID = B.ID) 
+
+
+CREATE OR REPLACE VIEW
+    SUBMISSIONS_VIEW
+AS
+    SELECT
+        S.ID,
+        S.SUBMISSION_TIME,
+        S.AUTHOR_ID,
+        S.JUDGE_TIME,
+        S.URL,
+        S.RESULT,
+        P.PROB_NUM,
+        P.NAME,
+        P.CONTEST_ID,
+        L.NAME "LANGUAGE",
+        CN.HANDLE,
+        CN.TYPE "AUTHOR_TYPE",
+        NVL(U.COLOR, 'black') "COLOR",
+        RT.MAX_TEST,
+        RT.TIME,
+        RT.MEMORY,
+        CASE
+            WHEN S.SUBMISSION_TIME < C.TIME_START THEN 'ADMIN'
+            ELSE 'REGULAR'
+        END "TYPE"
+    FROM
+        SUBMISSION "S" JOIN
+        PROBLEM "P" ON (S.PROBLEM_ID = P.ID) JOIN
+        CONTEST "C" ON (P.CONTEST_ID = C.ID) JOIN 
+        CONTESTANT "CN"  ON (S.AUTHOR_ID = CN.ID) LEFT JOIN
+        USER_LIST_VIEW "U" ON (CN.ID = U.ID) JOIN
+        LANGUAGE "L" ON (L.ID = S.LANG_ID) LEFT JOIN (
+            SELECT
+                R.SUBMISSION_ID,
+                MAX(T.TEST_NUMBER) "MAX_TEST",
+                MAX(R.RUNTIME) "TIME",
+                MAX(R.MEMORY) "MEMORY"
+            FROM
+                SUBMISSION_TEST_RUN "R" JOIN
+                TEST_FILE "T" ON (R.TEST_ID = T.ID)
+            GROUP BY
+                R.SUBMISSION_ID
+        ) "RT" ON (RT.SUBMISSION_ID = S.ID);
