@@ -62,7 +62,7 @@ router.get('/admin', async(req, res) =>{
 
         res.render('layout.ejs', {
             title: `${req.contest.NAME} - ForceCodes`,
-            body: ['panel-view', 'submissions', 'MY SUBMISSIONS'],
+            body: ['panel-view', 'submissions', 'ADMIN SUBMISSIONS'],
             user: req.user,
             innerNav : innerNav,
             listHeader : 'Admin Submissions',
@@ -74,17 +74,26 @@ router.get('/admin', async(req, res) =>{
 
 router.get('/:sbmssnId', async(req, res, next) =>{
     let submissions = await DB_contests.getSubmission(req.params.sbmssnId);
-    if(submissions.length == 0 || (submissions[0].TYPE == 'ADMIN' && !req.contest.IS_ADMIN)){
+    if(submissions.length == 0 || req.user == null){
         next();
+        return;
+    }
+    if(submissions[0].TYPE == 'ADMIN' && !req.contest.IS_ADMIN){
+        next();
+        return;
+    }
+    if(submissions[0].TYPE == 'CONTEST' && req.user.id != submissions[0].AUTHOR_ID && !req.contest.IS_ADMIN && Date.now() - req.contest.TIME_START <= req.contest.DURATION * 60 * 1000){
+        res.redirect(`/contest/${req.contest.ID}/submissions`);
         return;
     }
 
     let code = await fs.readFileSync(process.env.ROOT + '/problem-data/submissions/' + submissions[0].URL);
-    //code = hljs.highlightAuto(code).value;
+    let layoutNav = innerNavUtils.getContestInnerNav(req.contest);
 
     res.render('layout.ejs', {
         title : 'Submission - ForceCodes',
         body : ['submission'],
+        layoutNav : layoutNav,
         user : req.user,
         submission : submissions[0],
         code : code

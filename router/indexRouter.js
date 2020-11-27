@@ -1,7 +1,12 @@
 // libraries
 const express = require('express');
+const marked = require('marked');
 
 const router = express.Router({mergeParams : true});
+
+const DB_blog = require(process.env.ROOT + '/DB-codes/DB-blog-api');
+
+const blogUtils = require(process.env.ROOT + '/utils/blog-utils');
 
 // sub-routers
 const signupRouter = require('./auth/signup');
@@ -17,12 +22,22 @@ const rightPanelUtils = require('../utils/rightPanel-utils');
 
 // ROUTE: home page
 router.get('/', async (req, res) =>{
+
+    const id = (req.user === null)? null : req.user.id;
+    const blogs = await DB_blog.getAdminBlogs(id);
+
+    for(let i = 0; i<blogs.length; i++){
+        await blogUtils.blogProcess(blogs[i]);
+        blogs[i].BODY = marked(blogs[i].BODY);
+    }
+
     let rightPanel = await rightPanelUtils.getRightPanel(req.user);
 
     res.render('layout.ejs', {
         title: 'ForceCodes', 
-        body : ['panel-view', 'home'],
+        body : ['panel-view', 'blog'],
         user: req.user,
+        blogs : blogs,
         rightPanel : rightPanel
     });
 });

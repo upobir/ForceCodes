@@ -10,6 +10,7 @@ async function getRightPanel(user){
             file : 'contestAlert',
             title : contests[0].NAME,
             start : contests[0].TIME_START,
+            duration : contests[0].DURATION,
             id : contests[0].ID
         })
     }

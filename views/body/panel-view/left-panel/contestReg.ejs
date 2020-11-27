@@ -15,7 +15,11 @@
                 Notice
             </div>
             <div class="col-8 text-danger">
-                The contest is rated for range <%= contest.MIN_RATED %> to <%= contest.MAX_RATED %> and is <%- (user.rating == null ||( contest.MIN_RATING <= user.rating && user.rating <= contest.MAX_RATING))? '<b>not</b>' : '' %> rated for you.
+                <% if(contest.MIN_RATED == null){ %>
+                    This contest is unrated.
+                <% } else { %>
+                    The contest is rated for range <%= contest.MIN_RATED %> to <%= contest.MAX_RATED %> and is <%- (user.rating == null ||( contest.MIN_RATING <= user.rating && user.rating <= contest.MAX_RATING))? '<b>not</b>' : '' %> rated for you.
+                <% } %>
             </div>
         </div>
     

@@ -81,6 +81,7 @@ async function updateProblem(problem){
 async function getContestProblems(contestId){
     let sql = `
         SELECT
+            P.ID,
             P.PROB_NUM,
             P.NAME,
             P.SOURCE_LIMIT "SL",
@@ -94,8 +95,9 @@ async function getContestProblems(contestId){
                 WHERE
                     S.PROBLEM_ID = P.ID AND
                     S.RESULT = 'AC' AND
-                    S.SUBMISSION_TIME >= C.TIME_START
-            ) "SOLVE_CNT"
+                    S.TYPE = 'CONTEST'
+            ) "SOLVE_CNT",
+            P.RATING
         FROM
             PROBLEM "P" JOIN
             CONTEST "C" ON (C.ID = P.CONTEST_ID) 

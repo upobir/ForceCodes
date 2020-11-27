@@ -1,3 +1,13 @@
+<%
+    function remainingTime(start_time, duration){
+        let rem = new Date(start_time.getTime() + duration * 60 * 1000) - Date.now();
+        let hour = Math.floor(rem/1000/60/60);
+        let minute = String(Math.floor(rem/1000/60) % 60).padStart(2, '0');
+        let second = String(Math.floor(rem/1000) % 60).padStart(2, '0');
+        return hour + ':' + minute + ':' + second;
+    }
+%>
+
 <div class="card border-secondary mb-4">
     <div class="card-header">
         Upcoming Contest
@@ -8,7 +18,11 @@
         </a>
         <br>
         <span class="text-muted">
-            <%= new Date() < panel.start? panel.start.toLocaleString('en-GB') : 'Running' %>
+            <% if(Date.now() < panel.start){ %>
+                <%= panel.start.toLocaleString('en-GB') %>
+            <% } else { %>
+                Running: <%= remainingTime(panel.start, panel.duration) %> left
+            <% } %>
         </span>
     </p>
 </div>

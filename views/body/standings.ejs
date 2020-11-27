@@ -1,0 +1,108 @@
+<% 
+    function timeFormat(time){
+        if(time < 0)
+            time = -time;
+        time = Math.floor(time/60);
+        return Math.floor(time/60) + ':' + String(time % 60).padStart(2, '0');
+    }
+
+    function remainingTime(start_time, duration){
+        let rem = new Date(start_time.getTime() + duration * 60 * 1000) - Date.now();
+        let hour = Math.floor(rem/1000/60/60);
+        let minute = String(Math.floor(rem/1000/60) % 60).padStart(2, '0');
+        let second = String(Math.floor(rem/1000) % 60).padStart(2, '0');
+        return hour + ':' + minute + ':' + second;
+    }
+%> 
+
+<div class="px-3 col-12" style="min-height: 60vh;">
+    <h3 class="text-center text-primary">
+        <%= contest.NAME %>
+    </h3>
+    <h5 class="text-center text-muted">
+        <% if(Date.now() < contest.TIME_START){ %>
+            <%= contest.TIME_START.toLocaleString('en-GB') %>
+        <% } else if ((Date.now() - contest.TIME_START <= contest.DURATION*60000)) { %>
+            Running: <%= remainingTime(contest.TIME_START, contest.DURATION) %> left
+        <% } else { %>
+            Contest over
+        <% } %>
+    </h5>
+    <div class="card border">
+        <table class="table table-sm table-bordered my-card-no-bottom my-small-text">
+            <!-- list header -->
+            <tr>
+                <th class="my-td-center" width="6%">
+                    #
+                </th>
+                <th class="my-td-center text-left pl-4" width="*">
+                    Who
+                </th>
+                <th class="my-td-center" width="8%">
+                    Score
+                </th>
+                <th class="my-td-center" width="8%">
+                    Penalty
+                </th>
+                <% for(let j = 0; j<problems.length; j++){ %>
+                    <th class="my-td-center" width="8%">
+                        <% let prob_num = String.fromCharCode(problems[j].PROB_NUM + 65); %>
+                        <a href="/contest/<%= contest.ID %>/problem/<%= prob_num %>">
+                            <%= prob_num %>
+                        </a>
+                        <br>
+                        <%= problems[j].RATING %>
+                    </th>
+                <% } %>
+                <% if(Date.now() - contest.TIME_START > contest.DURATION*60*1000){ %>
+                    <th class="my-td-center" width="8%">
+                        Rating Change
+                    </th>
+                <% } %>
+            </tr>
+            <!-- each row -->
+            <% for(let i = 0; i<standings.length; i++){ %>
+                <tr>
+                    <td class="my-td-center">
+                        <%= standings[i].RANK_NO %>
+                    </td>
+                    <td class="my-td-center text-left pl-4">
+                        <% if(standings[i].TYPE == 'TEAM'){ %>
+                            <%- include('../partials/handle', {id : standings[i].ID, handle : standings[i].HANDLE}) %>
+                        <% } else { %>
+                            <%- include('../partials/handle', {handle : standings[i].HANDLE, color : standings[i].COLOR}) %>
+                        <% } %>
+                    </td>
+                    <td class="my-td-center">
+                        <%= standings[i].SCORE %>
+                    </td>
+                    <td class="my-td-center">
+                        <%= timeFormat(standings[i].PENALTY) %>
+                    </td>
+                    <% for(let j = 0; j<problems.length; j++){ %>
+                        <td class="my-td-center">
+                            <% if(standings[i][`P${j}_ACC_COUNT`] > 0){ %>
+                                <span class="text-success">
+                                    <%= problems[j].RATING %> (<%= standings[i][`P${j}_ATTEMPTS`] %>)
+                                </span>
+                                <br>
+                                <span class="text-muted">
+                                    <%= timeFormat((standings[i][`P${j}_ACC_TIME`] - contest.TIME_START)/1000) %>
+                                </span>
+                            <% } else { %>
+                                <span class="text-muted">
+                                    -<%= standings[i][`P${j}_ATTEMPTS`] %>
+                                </span>
+                            <% } %>
+                        </td>
+                    <% } %>
+                    <% if(Date.now() - contest.TIME_START > contest.DURATION*60*1000){ %>
+                        <td>
+                            <%= (standings[i].RATING_CHANGE == null)? '-' : standings[i].RATING_CHANGE %>
+                        </td>
+                    <% } %>
+                </tr>
+            <% } %>
+        </table>
+    </div>
+</div>

@@ -5,7 +5,7 @@
                 You are administrating this contest
             </b>
         </li>
-        <% if(contest.TIME_START > new Date()) { %>
+        <% if(Date.now() - contest.TIME_START <= contest.DURATION*60*1000) { %>
             <li class="list-inline-item my-small-text float-right">
                 <a href="/contest/<%= contest.ID %>/edit">
                     Edit Contest Details
@@ -83,36 +83,43 @@
             <% } %>
         </tr>
         <!-- each row -->
-        <tr>
-            <td class="text-center">
-                1
-            </td>
-            <td class="pl-3" >
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel reprehenderit saepe quis omnis! Sequi vitae non porro rem, ad, optio adipisci aspernatur voluptatum quis atque est quisquam voluptates voluptatem. Eaque!
-            </td>
-            <% if(contest.IS_ADMIN){ %>
-                <td class="my-td-center">
-                    <form action="" method="POST">
-                        <input type="hidden" name="type" value="delete">
-                        <input type="hidden" name="ann_no" value="1">
-                        <input type="submit" value="delete" class="btn btn-danger">
-                    </form>
-                </td>
-            <% } %>
-        </tr>
-        <% if(contest.IS_ADMIN) { %>
-            <tr class="bg-info" >
-                <td style="min-height: 10px;" colspan="3"></td>
-            </tr>
+        <% for(let i = 0; i<announcements.length; i++){ %>
             <tr>
-                <td colspan="3">
+                <td class="my-td-center">
+                    <b># <%= i+1 %> </b><br>
+                    <%= announcements[i].CREATION_TIME.toLocaleString('en-GB') %>
+                </td>
+                <td class="pl-3" >
+                    <%= announcements[i].BODY %>
+                </td>
+                <% if(contest.IS_ADMIN){ %>
+                    <td class="my-td-center">
+                        <form action="" method="POST">
+                            <input type="hidden" name="type" value="delete">
+                            <input type="hidden" name="ann_no" value="<%= i+1 %>">
+                            <input type="submit" value="delete" class="btn btn-danger">
+                        </form>
+                    </td>
+                <% } %>
+            </tr>
+        <% } %>
+        <% if(contest.IS_ADMIN) { %>
+            <!-- <tr class="bg-info" >
+                <td style="min-height: 10px;" colspan="3"></td>
+            </tr> -->
+            <tr>
+                <td colspan="3" class="text-center">
                     <form action="" method="POST">
                         <input type="hidden" name="type" value="post">
-                        <label for="announcement">
-                            <b>New Announcement</b>
-                        </label>
-                        <textarea name="announcement" class="form-control" rows="3"></textarea>
-                        <input type="submit" value="Post" class="mt-1 btn btn-success float-right">
+                        <!-- <label for="announcement"> -->
+                            <b class="my-clickable text-info" data-target="#new" data-toggle="collapse">
+                                New Announcement
+                            </b>
+                        <!-- </label> -->
+                        <div class="collapse" id="new">
+                            <textarea name="announcement" class="form-control" rows="3"></textarea>
+                            <input type="submit" value="Post" class="mt-1 btn btn-success float-right">
+                        </div>
                     </form>
                 </td>
             </tr>

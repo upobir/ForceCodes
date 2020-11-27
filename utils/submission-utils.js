@@ -5,6 +5,10 @@ const treeKill = require('tree-kill');
 
 const DB_problems = require(process.env.ROOT + '/DB-codes/DB-problem-api');
 
+
+let debug = false;
+
+
 async function submit(author, contestId, probNum, langId, code){
     let problem = await DB_problems.getProblem(contestId, probNum);
     let fileName = Date.now();
@@ -13,9 +17,13 @@ async function submit(author, contestId, probNum, langId, code){
     fs.writeFileSync(fullFileName, code);
     let size = fs.statSync(fullFileName).size;
 
-    let sbmssnId = await DB_problems.createSubmission(problem[0].ID, author, langId, size, fileName + '.' + ext);
+    let sbmssnId = -1;
+    if(!debug){
+        sbmssnId = await DB_problems.createSubmission(problem[0].ID, author, langId, size, fileName + '.' + ext);
+    }
     if(size > problem[0].SL){
-        updateSubmissionResult(sbmssnId, 'SLE');
+        if(!debug)
+            updateSubmissionResult(sbmssnId, 'SLE');
     }
     else{
         let tests = await DB_problems.getMainTests(problem[0].CONTEST_ID, problem[0].PROB_NUM);
@@ -43,7 +51,8 @@ function runOnTests(sbmssnId, problem, langId, fileName, ext, tests){
     })
     compile.on('close', (data) =>{
         if(data !== 0){
-            updateSubmissionResult(sbmssnId, 'CE');
+            if(!debug)
+                updateSubmissionResult(sbmssnId, 'CE');
         }
         else{
             let testNum = 0;
@@ -54,9 +63,9 @@ function runOnTests(sbmssnId, problem, langId, fileName, ext, tests){
                     return;
                 }
                 let runCommand = commands[1].replace('{input}', tests[testNum].INPUT_URL).replace('{output}', tests[testNum].OUTPUT_URL);
-                //console.log(runCommand.replace(/\//g, '\\'));
                 let time1 = Date.now();
-                let run = childProcess.spawn(runCommand.replace(/\//g, '\\'), {shell : true});
+                runCommand = runCommand.replace(/\//g, '\\').replace(/\\w/g, '/w');
+                let run = childProcess.spawn(runCommand, {shell : true});
 
                 let timeout = setTimeout(() =>{
                     result = 'TLE';
@@ -95,10 +104,16 @@ function runOnTests(sbmssnId, problem, langId, fileName, ext, tests){
                 if(err){
                     console.log(err.message);
                 }
-                await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.exe');
-                await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.out');
-                await DB_problems.updateTestResults(sbmssnId, results);
-                await updateSubmissionResult(sbmssnId, result);
+                
+                if(!debug){
+                    await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.exe');
+                    await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.out');
+                    await DB_problems.updateTestResults(sbmssnId, results);
+                    await updateSubmissionResult(sbmssnId, result);
+                }
+                else{
+                    console.log(results);
+                }
             })
         }
     })
@@ -108,7 +123,7 @@ function getCommands(langId, fileName, ext){
     let commands = [];
     if(langId ==  '1'){
         commands.push(`cd ${process.env.ROOT + '/problem-data/environment'} && g++.exe -O2 -std=c++14 -o ${fileName}.exe ${process.env.ROOT + '/problem-data/submissions/' + fileName + '.' + ext}`);
-        commands.push(`(${process.env.ROOT + '/problem-data/environment/' + fileName}.exe < ${process.env.ROOT + '/problem-data/tests/'}{input} > ${process.env.ROOT + '/problem-data/environment/' + fileName}.out && ( fc ${process.env.ROOT + '/problem-data/environment/' + fileName}.out ${process.env.ROOT + '/problem-data/tests/'}{output} > ${process.env.ROOT + '/problem-data/environment/'}log.txt || echo WA)) || echo RTE`);
+        commands.push(`(${process.env.ROOT + '/problem-data/environment/' + fileName}.exe < ${process.env.ROOT + '/problem-data/tests/'}{input} > ${process.env.ROOT + '/problem-data/environment/' + fileName}.out && ( fc /w ${process.env.ROOT + '/problem-data/environment/' + fileName}.out ${process.env.ROOT + '/problem-data/tests/'}{output} > ${process.env.ROOT + '/problem-data/environment/'}log.txt || echo WA)) || echo RTE`);
         //console.log(commands);
     }
     return commands;

@@ -42,3 +42,162 @@ BEGIN
         C_ID := NULL;
     END IF;
 END;
+
+CREATE OR REPLACE PROCEDURE
+    ASSIGN_RATING(
+        C_ID IN CONTEST.ID%TYPE
+    )
+IS
+    RANK NUMBER;
+    E_RANK NUMBER;
+    BASE_DEL NUMBER;
+    DEL NUMBER;
+    TOT_CNT NUMBER;
+    C_MIN_RATING NUMBER;
+    C_MAX_RATING NUMBER;
+BEGIN
+    -- GET COUNT OF USER CONTESTANT WHO PARTICIPATED
+    SELECT
+        COUNT(*)
+    INTO
+        TOT_CNT
+    FROM
+        CONTEST_REGISTRATION "CR" JOIN
+        USER_ACCOUNT "U" ON (CR.CONTESTANT_ID = U.ID)
+    WHERE
+        CR.CONTEST_ID = C_ID AND
+        EXISTS(
+            SELECT
+                *
+            FROM
+                SUBMISSION "S" JOIN
+                PROBLEM "P" ON (S.PROBLEM_ID = P.ID)
+            WHERE
+                S.TYPE = 'CONTEST' AND
+                P.CONTEST_ID = C_ID
+        );
+
+    -- GET RATING RANGE OF CONTEST
+    SELECT
+        MIN_RATED,
+        MAX_RATED
+    INTO
+        C_MIN_RATING,
+        C_MAX_RATING
+    FROM
+        CONTEST
+    WHERE
+        ID = C_ID;
+
+    -- SET RANK VARIABLE
+    RANK := 1;
+
+    -- LOOP OVER ALL CONTESTANT WITH THEIR RANK
+    FOR REC IN (
+        SELECT
+            ROWNUM "RANK_NO",
+            T.*
+        FROM
+        (
+            SELECT
+                R.ID,
+                R.TYPE,
+                U.RATING,
+                SUM(R.ACC_TIME - C.TIME_START)*24*60*60 + SUM(R.ATTEMPTS-1)*10*60 "PENALTY",
+                SUM(R.RATING) "SCORE"
+            FROM
+                PRBLM_CNTSTNT_REPORT_VIEW "R" JOIN
+                CONTEST "C" ON (R.CONTEST_ID = C.ID) JOIN
+                USER_ACCOUNT "U" ON (U.ID = R.ID)
+            WHERE
+                R.CONTEST_ID = C_ID AND
+                R.ACC_COUNT > 0
+            GROUP BY
+                R.ID,
+                R.TYPE,
+                U.RATING
+            ORDER BY
+                SCORE DESC,
+                PENALTY ASC
+        ) "T"
+    )
+    LOOP
+        -- UPDATE THE STANDING TO REGISTRATION TABLE
+        UPDATE
+            CONTEST_REGISTRATION
+        SET
+            STANDING = REC.RANK_NO
+        WHERE
+            CONTESTANT_ID = REC.ID AND
+            CONTEST_ID = C_ID;
+        
+        -- IF TEAM CONTESTANT THEN NO NEED TO UPDATE
+        IF (REC.TYPE = 'TEAM') THEN
+            CONTINUE;
+        END IF;
+
+        -- IF NOT RATED FOR USER THEN CONTINUE
+        IF(C_MIN_RATING IS NULL OR REC.RATING < C_MIN_RATING OR C_MAX_RATING < REC.RATING) THEN
+            CONTINUE;
+        END IF;
+
+        -- GET EXPECTED STANDING
+        SELECT
+            COUNT(*) + 1
+        INTO
+            E_RANK
+        FROM
+            CONTEST_REGISTRATION "CR" JOIN
+            USER_ACCOUNT "U" ON (CR.CONTESTANT_ID = U.ID)
+        WHERE
+            CR.CONTEST_ID = C_ID AND
+            U.RATING > REC.RATING AND
+            EXISTS(
+                SELECT
+                    *
+                FROM
+                    SUBMISSION "S" JOIN
+                    PROBLEM "P" ON (S.PROBLEM_ID = P.ID)
+                WHERE
+                    S.TYPE = 'CONTEST' AND
+                    P.CONTEST_ID = C_ID
+            );
+
+        -- COMPUTE BASE DEL
+        BASE_DEL := 500;
+        DEL := 0;
+
+        IF(REC.RATING = 0) THEN
+            BASE_DEL := 100;
+            DEL := 500;
+        ELSIF (RANK > E_RANK AND 2*BASE_DEL > REC.RATING) THEN
+            BASE_DEL := FLOOR(REC.RATING/2);
+        END IF;
+
+        -- COMPUTE RATING CHANGE
+        DEL := DEL + FLOOR((E_RANK - RANK + 1)/TOT_CNT * BASE_DEL);
+
+        -- UPDATE RATING CHANGE IN REGISTRATION TABLE
+        UPDATE
+            CONTEST_REGISTRATION
+        SET
+            RATING_CHANGE = DEL
+        WHERE
+            CONTEST_ID = C_ID AND
+            CONTESTANT_ID = REC.ID;
+
+        -- UPDATE USER RATING
+        UPDATE
+            USER_ACCOUNT
+        SET
+            RATING = RATING + DEL
+        WHERE
+            ID = REC.ID;
+        
+
+        -- UPDATE RANK VARIABLE
+        RANK := RANK + 1;
+    END LOOP;
+END;
+
+SHOW ERRORS;

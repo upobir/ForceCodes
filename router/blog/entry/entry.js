@@ -1,6 +1,8 @@
 // libraries
 require('dotenv').config();
 const express = require('express');
+const marked = require('marked');
+
 const rightPanelUtils = require('../../../utils/rightPanel-utils');
 const blogUtils = require(process.env.ROOT + '/utils/blog-utils');
 const innerNavUtils = require(process.env.ROOT + '/utils/innerNav-utils');
@@ -29,6 +31,7 @@ router.get('/', async (req, res) =>{
     } else {
         let blog = results[0];
         await blogUtils.blogProcess(blog);
+        blog.BODY = marked(blog.BODY);
 
         let comments = await DB_cmnt.getAllComments(blog.ID, req.user === null? null : req.user.id);
         let allCmnts = {};

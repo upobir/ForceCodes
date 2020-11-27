@@ -244,6 +244,34 @@ async function deleteBlog(blogId){
     return;
 }
 
+async function getAdminBlogs(userId){
+    let sql = `
+        SELECT
+            B.*,
+            UV.TYPE "VOTED"
+        FROM
+            BLOG_INFO_VIEW "B" LEFT JOIN
+            (
+                SELECT
+                    BLOG_ID,
+                    TYPE
+                FROM
+                    BLOG_USER_VOTE
+                WHERE
+                    USER_ID = :userId
+            ) "UV" ON (UV.BLOG_ID = B.ID) JOIN
+            USER_CONTESTANT_VIEW "U" ON (U.HANDLE = B.AUTHOR)
+        WHERE
+            U.RATING IS NULL
+        ORDER BY
+            B.CREATION_TIME DESC
+    `;
+    let binds = {
+        userId : userId
+    }
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
 module.exports = {
     getAllBlogTags,
     createBlog,
@@ -258,5 +286,6 @@ module.exports = {
     getBlogSettingsInfo,
     updateBlogById,
     deleteAllTags,
-    deleteBlog
+    deleteBlog,
+    getAdminBlogs
 };

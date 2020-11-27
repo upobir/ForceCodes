@@ -1,11 +1,13 @@
 <div class="pl-2">
     <div class="list-inline">
-        <h3 class="list-inline-item">
-            <b>
-                <%= handle %>'s Blog
-            </b>
-        </h3>
-        <% if(user !== null && user.handle == handle){ %>
+        <% if(typeof handle != 'undefined'){ %>
+            <h3 class="list-inline-item">
+                <b>
+                    <%= handle %>'s Blog
+                </b>
+            </h3>
+        <% } %>
+        <% if(typeof handle != 'undefined' && user !== null && user.handle == handle){ %>
             <div class="list-inline-item float-right my-small-text mt-2">
                 <a href="/blog/new" class="my-link">
                     Add new blog entry
@@ -32,9 +34,11 @@
             </ul>
             <!-- body -->
             <div class="my-blog-post">
-                <p class="px-3">
-                    <%= blog.BODY %>
-                </p>
+                <div class="ml-3">
+                    <p class="px-3">
+                        <%- blog.BODY %>
+                    </p>
+                </div>
             </div>
             <div class="mb-1">
                 <span class="text-info">tags: </span>

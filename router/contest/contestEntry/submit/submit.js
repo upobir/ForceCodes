@@ -45,7 +45,7 @@ router.post('/', async(req, res) =>{
             return;
         }
     }
-    else if(new Date(req.contest.TIME_START + req.contest.duration * 60 * 1000) >= Data.now()){
+    else if(new Date(req.contest.TIME_START + req.contest.duration * 60 * 1000) >= Date.now()){
         let results = (await DB_contests.checkRegistration(req.contest.ID, req.user.ID));
         if(results.length > 0){
             author = results[0].ID;

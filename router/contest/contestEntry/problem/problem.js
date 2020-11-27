@@ -132,6 +132,8 @@ router.get('/:num', async(req, res) =>{
 
         problems[0].BODY = marked(problems[0].BODY);
 
+        innerNav[1].url += '?problem=' + String.fromCharCode(65 + problems[0].PROB_NUM);
+
         res.render('layout.ejs', {
             title: `Problem ${prob_num} - ForceCodes`,
             body: ['panel-view', 'problemEntry', 'PROBLEMS'],

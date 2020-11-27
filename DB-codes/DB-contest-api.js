@@ -277,7 +277,6 @@ async function registerForContest(contestId, userId, contestantId){
         contestantId : contestantId
     };
 
-    console.log(binds);
     await database.execute(sql, binds, database.options);
 }
 
@@ -365,7 +364,7 @@ async function getAllSubmissions(contestId){
         FROM
             SUBMISSIONS_VIEW
         WHERE
-            TYPE = 'REGULAR' AND
+            TYPE <> 'ADMIN' AND
             CONTEST_ID = :contestId
         ORDER BY
             ID DESC
@@ -391,6 +390,240 @@ async function getSubmission(sbmssnId){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+async function getAnnouncements(contestId){
+    let sql = `
+        SELECT
+            *
+        FROM
+            CONTEST_ANNOUNCEMENTS
+        WHERE
+            CONTEST_ID = :contestId
+        ORDER BY
+            CREATION_TIME ASC
+    `;
+    let binds = {
+        contestId : contestId
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function createAnnouncement(contestId, body){
+    let sql = `
+        INSERT INTO
+            CONTEST_ANNOUNCEMENTS(
+                ID,
+                CONTEST_ID,
+                BODY
+            )
+        VALUES(
+            ANNCMNT_SEQ.NEXTVAL,
+            :contestId,
+            :body
+        )
+    `;
+    let binds = {
+        contestId : contestId,
+        body : body
+    };
+    await database.execute(sql, binds, {});
+    return;
+}
+
+async function deleteAnnouncement(contestId, ann_no){
+    let sql = `
+        DELETE FROM
+            CONTEST_ANNOUNCEMENTS "A1"
+        WHERE
+            :ann_no = (
+                SELECT
+                    1 + COUNT(*)
+                FROM 
+                    CONTEST_ANNOUNCEMENTS "A2"
+                WHERE
+                    A2.CONTEST_ID = :contestId AND
+                    A2.CREATION_TIME < A1.CREATION_TIME
+            )
+    `;
+    let binds = {
+        contestId : contestId,
+        ann_no : ann_no
+    };
+    await database.execute(sql, binds, {});
+    return;
+}
+
+async function getStandings(contestId, problems){
+    let select_part = '';
+    let from_part = '';
+    for(let i= 0; i<problems.length; i++){
+        select_part += `,
+            T${i}.ACC_COUNT "P${i}_ACC_COUNT",
+            T${i}.ACC_TIME "P${i}_ACC_TIME",
+            T${i}.ATTEMPTS "P${i}_ATTEMPTS"`;
+        from_part += ` LEFT JOIN
+            (
+                SELECT
+                    *
+                FROM
+                    PRBLM_CNTSTNT_REPORT_VIEW
+                WHERE
+                    PROBLEM_ID = :prob${i}
+            ) "T${i}" ON (T.ID = T${i}.ID)`;
+    }
+    let sql = `
+        SELECT
+            ROWNUM "RANK_NO",
+            T.*${select_part}
+        FROM
+        (
+            SELECT
+                R.ID,
+                R.HANDLE,
+                R.COLOR,
+                R.TYPE,
+                SUM(R.ACC_TIME - C.TIME_START)*24*60*60 + SUM(R.ATTEMPTS-1)*10*60 "PENALTY",
+                SUM(
+                    CASE 
+                        WHEN R.ACC_COUNT > 0 THEN 
+                            R.RATING
+                        ELSE 
+                            0
+                    END
+                ) "SCORE",
+                CR.RATING_CHANGE
+            FROM
+                PRBLM_CNTSTNT_REPORT_VIEW "R" JOIN
+                CONTEST "C" ON (R.CONTEST_ID = C.ID) LEFT JOIN
+                CONTEST_REGISTRATION "CR" ON (
+                    CR.CONTEST_ID = C.ID AND
+                    CR.CONTESTANT_ID = R.ID
+                )
+            WHERE
+                R.CONTEST_ID = :contestId AND
+                R.ATTEMPTS > 0
+            GROUP BY
+                R.ID,
+                R.HANDLE,
+                R.COLOR,
+                R.TYPE,
+                R.CONTEST_ID,
+                CR.RATING_CHANGE
+            ORDER BY
+                SCORE DESC,
+                PENALTY ASC
+        ) "T" ${from_part}
+        ORDER BY
+            RANK_NO ASC
+    `;
+    let binds = {
+        contestId : contestId
+    };
+
+    for(let i = 0; i<problems.length; i++){
+        binds[`prob${i}`] = problems[i].ID;
+    }
+
+
+    let result = (await database.execute(sql, binds, database.options)).rows;
+
+    return result;
+}
+
+async function getFriendStandings(userId, contestId, problems){
+    let select_part = '';
+    let from_part = '';
+    for(let i= 0; i<problems.length; i++){
+        select_part += `,
+            T${i}.ACC_COUNT "P${i}_ACC_COUNT",
+            T${i}.ACC_TIME "P${i}_ACC_TIME",
+            T${i}.ATTEMPTS "P${i}_ATTEMPTS"`;
+        from_part += ` LEFT JOIN
+            (
+                SELECT
+                    *
+                FROM
+                    PRBLM_CNTSTNT_REPORT_VIEW
+                WHERE
+                    PROBLEM_ID = :prob${i}
+            ) "T${i}" ON (T.ID = T${i}.ID)`;
+    }
+    let sql = `
+        SELECT
+            TT.*
+        FROM
+        (
+            SELECT
+                ROWNUM "RANK_NO",
+                T.*${select_part}
+            FROM
+            (
+                SELECT
+                    R.ID,
+                    R.HANDLE,
+                    R.COLOR,
+                    R.TYPE,
+                    SUM(R.ACC_TIME - C.TIME_START)*24*60*60 + SUM(R.ATTEMPTS-1)*10*60 "PENALTY",
+                    SUM(
+                        CASE 
+                            WHEN R.ACC_COUNT > 0 THEN 
+                                R.RATING
+                            ELSE 
+                                0
+                        END
+                    ) "SCORE",
+                    CR.RATING_CHANGE
+                FROM
+                    PRBLM_CNTSTNT_REPORT_VIEW "R" JOIN
+                    CONTEST "C" ON (R.CONTEST_ID = C.ID) LEFT JOIN
+                    CONTEST_REGISTRATION "CR" ON (
+                        CR.CONTEST_ID = C.ID AND
+                        CR.CONTESTANT_ID = R.ID
+                    )
+                WHERE
+                    R.CONTEST_ID = :contestId AND
+                    R.ATTEMPTS > 0
+                GROUP BY
+                    R.ID,
+                    R.HANDLE,
+                    R.COLOR,
+                    R.TYPE,
+                    R.CONTEST_ID,
+                    CR.RATING_CHANGE
+                ORDER BY
+                    SCORE DESC,
+                    PENALTY ASC
+            ) "T" ${from_part}
+        ) "TT"
+        WHERE
+            TT.ID = :userId OR
+            EXISTS
+            (
+                SELECT
+                    *
+                FROM
+                    USER_USER_FOLLOW "F"
+                WHERE
+                    TT.ID = F.FOLLOWED_ID AND
+                    F.FOLLOWER_ID = :userId
+            )
+        ORDER BY
+            TT.RANK_NO ASC
+    `;
+    let binds = {
+        userId : userId,
+        contestId : contestId
+    };
+
+    for(let i = 0; i<problems.length; i++){
+        binds[`prob${i}`] = problems[i].ID;
+    }
+
+
+    let result = (await database.execute(sql, binds, database.options)).rows;
+
+    return result;
+}
+
 module.exports = {
     createContest,
     getFutureContests,
@@ -405,5 +638,10 @@ module.exports = {
     getUserSubmissions,
     getAdminSubmissions,
     getAllSubmissions,
-    getSubmission
+    getSubmission,
+    getAnnouncements,
+    createAnnouncement,
+    deleteAnnouncement,
+    getStandings,
+    getFriendStandings
 }

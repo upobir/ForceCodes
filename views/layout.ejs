@@ -22,6 +22,11 @@
 
         <!-- body -->
         <div class="my-container container mx-auto my-1 px-0 row">
+            <% if(typeof(layoutNav) != 'undefined' && layoutNav != null){ %>
+                <div class="ml-3">
+                    <%- include('body/panel-view/left-panel/inner-body-nav-bar/inner-body-nav-bar', {innerNav : layoutNav}) %>
+                </div>
+            <% } %>
             <%- include('body/' + body[0]) %>    
         </div>
 

@@ -106,10 +106,7 @@ AS
         RT.MAX_TEST,
         RT.TIME,
         RT.MEMORY,
-        CASE
-            WHEN S.SUBMISSION_TIME < C.TIME_START THEN 'ADMIN'
-            ELSE 'REGULAR'
-        END "TYPE"
+        S.TYPE
     FROM
         SUBMISSION "S" JOIN
         PROBLEM "P" ON (S.PROBLEM_ID = P.ID) JOIN
@@ -128,3 +125,49 @@ AS
             GROUP BY
                 R.SUBMISSION_ID
         ) "RT" ON (RT.SUBMISSION_ID = S.ID);
+
+
+CREATE OR REPLACE VIEW
+    PRBLM_CNTSTNT_REPORT_VIEW
+AS
+    SELECT
+        CN.ID,
+        CN.HANDLE,
+        CN.TYPE,
+        U.COLOR,
+        S.PROBLEM_ID,
+        P.RATING,
+        P.CONTEST_ID,
+        SUM(
+            CASE
+                WHEN S.RESULT = 'AC' THEN 1
+                ELSE 0
+            END
+        ) "ACC_COUNT",
+        COUNT(S.ID) "ATTEMPTS",
+        (
+            SELECT
+                MIN(S_.SUBMISSION_TIME)
+            FROM
+                SUBMISSION "S_"
+            WHERE
+                S_.RESULT = 'AC' AND
+                S_.PROBLEM_ID = S.PROBLEM_ID AND
+                S_.AUTHOR_ID = CN.ID
+        ) "ACC_TIME"
+    FROM
+        CONTESTANT "CN" LEFT JOIN
+        USER_LIST_VIEW "U" ON (CN.ID = U.ID) JOIN
+        SUBMISSION "S" ON (S.AUTHOR_ID = CN.ID) JOIN
+        PROBLEM "P" ON (S.PROBLEM_ID = P.ID)
+    -- TODO ADD THIS
+    WHERE
+        S.TYPE = 'CONTEST'
+    GROUP BY
+        CN.ID,
+        CN.HANDLE,
+        CN.TYPE,
+        U.COLOR,
+        S.PROBLEM_ID,
+        P.RATING,
+        P.CONTEST_ID;

@@ -1,4 +1,5 @@
 const express = require('express');
+const marked = require('marked');
 const rightPanelUtils = require('../../../../utils/rightPanel-utils');
 
 const DB_blog = require(process.env.ROOT + '/DB-codes/DB-blog-api');
@@ -15,6 +16,7 @@ router.get('/', async (req, res) => {
     const blogs = await DB_blog.getBlogInfosByHandle(handle, id);
     for(let i = 0; i<blogs.length; i++){
         await blogUtils.blogProcess(blogs[i]);
+        blogs[i].BODY = marked(blogs[i].BODY);
     }
 
     let rightPanel = await rightPanelUtils.getRightPanel(req.user);

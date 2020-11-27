@@ -3,10 +3,11 @@ const express = require('express');
 
 const DB_profile = require(process.env.ROOT+'/DB-codes/DB-profile-api');
 
-
 const friendsRouter = require('./friends/friends');
 const settingsRouter = require('./settings/settings');
 const blogRouter = require('./blog/blog');
+const submissionsRouter = require('./submissions/submissions');
+
 const rightPanelUtils = require('../../../utils/rightPanel-utils');
 
 const innerNavUtils = require(process.env.ROOT+'/utils/innerNav-utils');
@@ -56,5 +57,6 @@ router.post('/admin', async (req, res) =>{
 router.use('/friends', friendsRouter);
 router.use('/settings', settingsRouter);
 router.use('/blog', blogRouter);
+router.use('/submissions', submissionsRouter);
 
 module.exports = router;

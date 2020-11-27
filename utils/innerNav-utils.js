@@ -22,14 +22,28 @@ function getContestInnerNav(contest){
         {url : `/contest/${contest.ID}/standing`, name: 'STANDINGS'},
     ];
     if(contest.IS_ADMIN){
-        innerNav[3].url = `/contest/${contest.ID}/register`;
-        innerNav[3].name = 'REGISTERED';
+        if(contest.TIME_START > Date.now()){
+            innerNav[3].url = `/contest/${contest.ID}/register`;
+            innerNav[3].name = 'REGISTERED';
+        }
         innerNav.splice(3, 0, {url : `/contest/${contest.ID}/submissions/admin`, name : 'ADMIN SUBMISSIONS'});
     }
     return innerNav;
 }
 
+function getStandingsInnerNav(user, contestId){
+    let innerNav = [
+        {url : `/contest/${contestId}`, name: 'PROBLEMS'},
+        {url : `/contest/${contestId}/standing`, name: 'STANDINGS'}
+    ];
+
+    if(user != null)
+        innerNav.push({url : `/contest/${contestId}/standing/friends`, name: 'FRIEND STANDINGS'});
+    return innerNav;
+}
+
 module.exports = {
     getProfileInnerNav,
-    getContestInnerNav
+    getContestInnerNav,
+    getStandingsInnerNav
 }

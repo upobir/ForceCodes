@@ -40,16 +40,14 @@
                 </td>
                 <td class="my-td-center">
                     <% if(submission.AUTHOR_TYPE == 'TEAM'){ %>
-                        <a href="/team/<%= submission.AUTHOR_ID %>" style="color:black;" class="my-link my-handle">
-                            <%= submission.HANDLE %>
-                        </a>
+                        <%- include('../partials/handle', {id : submission.AUTHOR_ID, handle : submission.HANDLE}) %>
                     <% } else { %>
                         <%- include('../partials/handle', {handle : submission.HANDLE, color : submission.COLOR}) %>
                     <% } %>
                 </td>
                 <td class="my-td-center">
-                    <a href="/contest/<%= submission.CONTEST_ID %>/problem/<%= String.fromCharCode(submission.PROB_NUM) %>">
-                        <%= submission.CONTEST_ID %><%= String.fromCharCode(submission.PROB_NUM) %> <%= submission.NAME %>
+                    <a href="/contest/<%= submission.CONTEST_ID %>/problem/<%= String.fromCharCode(submission.PROB_NUM + 65) %>">
+                        <%= submission.CONTEST_ID %><%= String.fromCharCode(submission.PROB_NUM + 65) %> - <%= submission.NAME %>
                     </a>
                 </td>
                 <td class="my-td-center">
