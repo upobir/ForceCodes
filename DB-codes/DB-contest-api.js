@@ -197,9 +197,19 @@ async function getPastContests(){
                     CONTEST_ID,
                     COUNT(*) "PART_CNT"
                 FROM
-                    CONTEST_REGISTRATION
+                    CONTEST_REGISTRATION "CR" 
                 WHERE
-                    STANDING IS NOT NULL
+                    EXISTS(
+                        SELECT
+                            *
+                        FROM
+                            SUBMISSION "S" JOIN
+                            PROBLEM "P" ON (P.ID = S.PROBLEM_ID)
+                        WHERE
+                            S.AUTHOR_ID = CR.CONTESTANT_ID AND
+                            S.TYPE = 'CONTEST' AND
+                            P.CONTEST_ID = CR.CONTEST_ID
+                    )
                 GROUP BY
                     CONTEST_ID
             ) "R" ON (R.CONTEST_ID = C.ID)
@@ -624,6 +634,40 @@ async function getFriendStandings(userId, contestId, problems){
     return result;
 }
 
+async function checkContestRatingUpdated(contestId){
+    let sql = `
+        SELECT
+            COUNT(*) "CNT"
+        FROM
+            SUBMISSION "S" JOIN
+            PROBLEM "P" ON (P.ID = S.PROBLEM_ID) JOIN
+            CONTEST_REGISTRATION "CR" ON (CR.CONTEST_ID = P.CONTEST_ID AND S.AUTHOR_ID = CR.CONTESTANT_ID)
+        WHERE
+            S.TYPE = 'CONTEST' AND
+            P.CONTEST_ID = :contestId AND
+            CR.STANDING IS NULL
+    `;
+    let binds = {
+        contestId : contestId
+    };
+    return (await database.execute(sql, binds, database.options)).rows[0].CNT > 0;
+}
+
+async function updateRating(contestId){
+    let sql = `
+        BEGIN
+            ASSIGN_RATING(
+                :contestId
+            );
+        END;
+    `;
+    let binds = {
+        contestId : contestId
+    };
+    await database.execute(sql, binds, {});
+    return;
+}
+
 module.exports = {
     createContest,
     getFutureContests,
@@ -643,5 +687,7 @@ module.exports = {
     createAnnouncement,
     deleteAnnouncement,
     getStandings,
-    getFriendStandings
+    getFriendStandings,
+    checkContestRatingUpdated,
+    updateRating
 }

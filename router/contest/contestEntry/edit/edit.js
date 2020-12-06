@@ -11,7 +11,7 @@ router.get('/', async (req, res) => {
     let contestId = req.params.contestId;
     let contest = req.contest;
 
-    if(contest.TIME_START < new Date() || req.user == null || 
+    if(Date.now() - contest.TIME_START > contest.DURATION * 60 * 1000 || req.user == null || 
         contest.ADMINS.filter(x => x.HANDLE == req.user.handle).length == 0)
     {
         res.redirect(`/contest/${contestId}`);
@@ -53,8 +53,8 @@ router.post('/', async (req, res) => {
     let contest = req.contest
 
 
-    if(contest.TIME_START < new Date() || req.user == null || 
-        contest.ADMINS.filter(x => x.HANDLE == req.user.handle).length == 0)
+    if(Date.now() - contest.TIME_START > contest.DURATION * 60 * 1000 || req.user == null || 
+        !contest.IS_ADMIN)
     {
         res.redirect(`/contest/${contestId}`);
     }
@@ -62,7 +62,7 @@ router.post('/', async (req, res) => {
         let errors = [];
         let newContest = {};
 
-        await contestUtils.processContest(req.body, newContest, errors);
+        await contestUtils.processContest(req.body, newContest, errors, contest.TIME_START);
         
         let mainAdmin = contest.ADMINS.filter(x => x.TYPE == 'MAIN')[0].HANDLE;
 

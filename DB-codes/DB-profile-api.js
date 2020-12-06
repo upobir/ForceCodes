@@ -267,6 +267,60 @@ async function getTeamsById(id){
     return (await database.execute(sql, binds, database.options)).rows;
 }
 
+async function getAdminnedContests(handle){
+    let sql = `
+        SELECT
+            C.ID,
+            C.NAME,
+            C.TIME_START, 
+            C.DURATION,
+            NVL(R.PART_CNT, 0) "PART_CNT"
+        FROM
+            CONTEST "C" LEFT JOIN
+            (
+                SELECT 
+                    CONTEST_ID,
+                    COUNT(*) "PART_CNT"
+                FROM
+                    CONTEST_REGISTRATION
+                WHERE
+                    STANDING IS NOT NULL
+                GROUP BY
+                    CONTEST_ID
+            ) "R" ON (R.CONTEST_ID = C.ID) JOIN
+            USER_CONTEST_ADMIN "A" ON (A.CONTEST_ID = C.ID) JOIN
+            CONTESTANT "CN" ON (CN.ID = A.USER_ID)
+        WHERE 
+            TIME_START + NUMTODSINTERVAL(DURATION, 'MINUTE') < SYSDATE AND
+            CN.HANDLE = :handle
+        ORDER BY
+            TIME_START DESC
+    `;
+    let binds = {
+        handle : handle
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function getSubmissionsByHandle(handle){
+    let sql = `
+        SELECT
+            S.*
+        FROM
+            SUBMISSIONS_VIEW "S" JOIN
+            CONTESTANT "C" ON (C.ID = S.AUTHOR_ID)
+        WHERE
+            S.TYPE <> 'ADMIN' AND
+            C.HANDLE = :handle
+        ORDER BY
+            S.ID DESC
+    `;
+    let binds = {
+        handle : handle
+    };
+    return (await database.execute(sql, binds, database.options)).rows;
+}
+
 module.exports = {
     getProfileByHandle,
     isFriendOfId,
@@ -279,5 +333,7 @@ module.exports = {
     updateSettingsById,
     changePictureById,
     updateAdminship,
-    getTeamsById
+    getTeamsById,
+    getAdminnedContests,
+    getSubmissionsByHandle
 }

@@ -1,0 +1,42 @@
+<div class="card border">
+    <div class="card-header my-card-header">
+        All Problems
+    </div>
+    <table class="table table-sm table-bordered my-card-no-bottom">
+        <!-- list header -->
+        <tr>
+            <th width="8%" class="text-center">#</th>
+            <th width="*" class="pl-3">name</th>
+            <th width="10%"></th>
+            <th width="10%" class="text-center">Rating</th>
+            <th width="10%" class="text-center">Solved</th>
+        </tr>
+        <!-- each row -->
+        <% for(let i = 0; i<problems.length; i++){ %>
+            <% let rank =  String.fromCharCode(problems[i].PROB_NUM + 65) %>
+            <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %>">
+                <td class="text-center">
+                    <a href="/contest/<%= problems[i].CONTEST_ID %>/problem/<%= rank %>">
+                        <%= problems[i].CONTEST_ID %><%= rank %>
+                    </a>
+                </td>
+                <td class="pl-3" >
+                    <a href="/contest/<%= problems[i].CONTEST_ID %>/problem/<%= rank %>">
+                        <%= problems[i].NAME %>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a href="/contest/<%= problems[i].CONTEST_ID %>/submit?problem=<%= rank %>">
+                        Submit
+                    </a>
+                </td>
+                <td class="text-center">
+                    <%= problems[i].RATING %>
+                </td>
+                <td class="text-center">
+                    <%= problems[i].SOLVE_CNT %>
+                </td>
+            </tr>
+        <% } %>
+    </table>
+</div>

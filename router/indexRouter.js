@@ -17,6 +17,7 @@ const profileRouter = require('./profile/profile');
 const blogRouter = require('./blog/blog');
 const countryRouter = require('./country/countryAll');
 const contestRouter = require('./contest/contest');
+const problemsRouter = require('./problems/problems');
 const apiRouter = require('./api/api');
 const rightPanelUtils = require('../utils/rightPanel-utils');
 
@@ -52,6 +53,7 @@ router.use('/blog', blogRouter);
 router.use('/country', countryRouter);
 router.use('/contest', contestRouter);
 router.use('/api', apiRouter);
+router.use('/problems', problemsRouter);
 
 
 module.exports = router

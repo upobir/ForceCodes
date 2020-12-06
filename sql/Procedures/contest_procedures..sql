@@ -74,7 +74,8 @@ BEGIN
                 PROBLEM "P" ON (S.PROBLEM_ID = P.ID)
             WHERE
                 S.TYPE = 'CONTEST' AND
-                P.CONTEST_ID = C_ID
+                P.CONTEST_ID = C_ID AND
+                S.AUTHOR_ID = U.ID
         );
 
     -- GET RATING RANGE OF CONTEST
@@ -101,21 +102,28 @@ BEGIN
         (
             SELECT
                 R.ID,
+                R.HANDLE,
                 R.TYPE,
                 U.RATING,
                 SUM(R.ACC_TIME - C.TIME_START)*24*60*60 + SUM(R.ATTEMPTS-1)*10*60 "PENALTY",
-                SUM(R.RATING) "SCORE"
+                SUM(
+                    CASE
+                        WHEN R.ACC_COUNT > 0 THEN R.RATING
+                        ELSE 0
+                    END
+                ) "SCORE"
             FROM
                 PRBLM_CNTSTNT_REPORT_VIEW "R" JOIN
                 CONTEST "C" ON (R.CONTEST_ID = C.ID) JOIN
                 USER_ACCOUNT "U" ON (U.ID = R.ID)
             WHERE
                 R.CONTEST_ID = C_ID AND
-                R.ACC_COUNT > 0
+                R.ATTEMPTS > 0
             GROUP BY
                 R.ID,
                 R.TYPE,
-                U.RATING
+                U.RATING,
+                R.HANDLE
             ORDER BY
                 SCORE DESC,
                 PENALTY ASC
@@ -160,7 +168,8 @@ BEGIN
                     PROBLEM "P" ON (S.PROBLEM_ID = P.ID)
                 WHERE
                     S.TYPE = 'CONTEST' AND
-                    P.CONTEST_ID = C_ID
+                    P.CONTEST_ID = C_ID AND
+                    S.AUTHOR_ID = U.ID
             );
 
         -- COMPUTE BASE DEL
@@ -168,14 +177,18 @@ BEGIN
         DEL := 0;
 
         IF(REC.RATING = 0) THEN
-            BASE_DEL := 100;
             DEL := 500;
+            IF(RANK > E_RANK) THEN
+                BASE_DEL := 100;
+            END IF;
         ELSIF (RANK > E_RANK AND 2*BASE_DEL > REC.RATING) THEN
             BASE_DEL := FLOOR(REC.RATING/2);
         END IF;
 
         -- COMPUTE RATING CHANGE
         DEL := DEL + FLOOR((E_RANK - RANK + 1)/TOT_CNT * BASE_DEL);
+
+        --DBMS_OUTPUT.PUT_LINE(REC.HANDLE || ' : ' || DEL);
 
         -- UPDATE RATING CHANGE IN REGISTRATION TABLE
         UPDATE
@@ -186,18 +199,29 @@ BEGIN
             CONTEST_ID = C_ID AND
             CONTESTANT_ID = REC.ID;
 
+        -- UPDATE RANK VARIABLE
+        IF(REC.SCORE <> 0) THEN
+            RANK := RANK + 1;
+        END IF;
+    END LOOP;
+
+    -- LOOP OVER THE REGISTRATION LIST
+    FOR REC IN (
+        SELECT
+            *
+        FROM
+            CONTEST_REGISTRATION
+        WHERE
+            CONTEST_ID = C_ID AND
+            RATING_CHANGE IS NOT NULL
+    )
+    LOOP
         -- UPDATE USER RATING
         UPDATE
             USER_ACCOUNT
         SET
-            RATING = RATING + DEL
+            RATING = RATING + REC.RATING_CHANGE
         WHERE
-            ID = REC.ID;
-        
-
-        -- UPDATE RANK VARIABLE
-        RANK := RANK + 1;
+            ID = REC.CONTESTANT_ID;
     END LOOP;
 END;
-
-SHOW ERRORS;

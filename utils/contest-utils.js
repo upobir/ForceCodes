@@ -1,10 +1,15 @@
 
 
-async function processContest(body, contest, errors){
+async function processContest(body, contest, errors, time_start){
     contest.title = body.title;
     contest.start = new Date(body.start);
-    if(contest.start < new Date()){
-        errors.push('Invalid start time');
+
+    if(time_start == null){
+        if(contest.start < new Date())
+            errors.push('Invalid start time')
+    } else {
+        if(time_start <= Date.now() && contest.start.getTime() != time_start.getTime())
+            errors.push('Invalid start time')
     }
 
     let re = /^[0-9]+:[0-9]+$/;

@@ -58,6 +58,10 @@ router.get('/', async (req, res) =>{
             return;
         }
     }
+
+    if(req.contest.IS_ADMIN && Date.now() - req.contest.TIME_START > req.contest.DURATION*60*1000){
+        req.contest.NOT_UPDATED = await DB_contests.checkContestRatingUpdated(req.contest.ID);    
+    }
     
     let problems = await DB_problems.getContestProblems(contest.ID);
     let announcements = await DB_contests.getAnnouncements(contest.ID);
@@ -90,6 +94,12 @@ router.post('/', async(req, res, next) =>{
     else{
         await DB_contests.deleteAnnouncement(req.contest.ID, req.body.ann_no);
     }
+    res.redirect(`/contest/${req.contest.ID}`);
+});
+
+router.post('/update-rating', async (req, res) =>{
+    if(req.contest.IS_ADMIN)
+        await DB_contests.updateRating(req.contest.ID);
     res.redirect(`/contest/${req.contest.ID}`);
 });
 

@@ -1,6 +1,12 @@
-<% if(user != null && user.isAdmin) { %>
+<% if(user != null && user.isAdmin && typeof header == 'undefined') { %>
     <div width="100%" class="mt-1 text-right" >
         <a href="contest/new"> Create New Contest </a>
+    </div>
+<% } %>
+
+<% if(contestsFuture.length == 0 && contestsPast.length == 0) { %>
+    <div class="ml-1">
+        No contests.
     </div>
 <% } %>
 
@@ -68,7 +74,11 @@
 <% if(contestsPast.length > 0) { %>
     <div class="card border my-3">
         <div class="card-header my-card-header">
-            Past Contests
+            <% if(typeof header == 'undefined'){ %>
+                Past Contests
+            <% } else { %>
+                <%= header %>
+            <% } %>
         </div>
         <table width="100%" class="table table-sm table-bordered my-card-no-bottom" style="font-size: 14px;">
             <!-- list header -->

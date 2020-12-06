@@ -4,7 +4,7 @@ function getProfileInnerNav(user, handle){
         {url: `/profile/${handle}/blog`, name: `BLOG`},
         {url: `/profile/${handle}/teams`, name: `TEAMS`},
         {url: `/profile/${handle}/submissions`, name: `SUBMISSIONS`},
-        {url: `/profile/${handle}/problemsettting`, name: `PROBLEMSETTING`}
+        {url: `/profile/${handle}/problemsetting`, name: `PROBLEMSETTING`}
     ];
     if(user !== null && user.handle == handle){
         innerNav.splice(1, 0, {url: `/profile/${handle}/settings`, name: `SETTINGS`});
@@ -42,8 +42,17 @@ function getStandingsInnerNav(user, contestId){
     return innerNav;
 }
 
+function getProblemsNav(){
+    let innerNav = [
+        {url : `/problems`, name: 'PROBLEMS'},
+        {url : `/problems/status`, name: 'STATUS'}
+    ]
+    return innerNav;
+}
+
 module.exports = {
     getProfileInnerNav,
     getContestInnerNav,
-    getStandingsInnerNav
+    getStandingsInnerNav,
+    getProblemsNav
 }

@@ -13,6 +13,7 @@ const contestRouter = require('./contestEntry/contestEntry.js');
 const router = express.Router({mergeParams : true});
 router.get('/', async (req, res) =>{
 
+
     let contestsMap = {}
 
     let contestsFuture = await DB_contest.getFutureContests();
@@ -77,7 +78,7 @@ router.post('/new', async(req, res) =>{
         let errors = [];
         let contest = {};
 
-        await contestUtils.processContest(req.body, contest, errors);
+        await contestUtils.processContest(req.body, contest, errors, null);
         contest.mainAdmin = req.user.handle;
 
         if(errors.length == 0){

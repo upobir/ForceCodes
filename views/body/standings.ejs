@@ -54,7 +54,7 @@
                         <%= problems[j].RATING %>
                     </th>
                 <% } %>
-                <% if(Date.now() - contest.TIME_START > contest.DURATION*60*1000){ %>
+                <% if(!contest.NOT_UPDATED){ %>
                     <th class="my-td-center" width="8%">
                         Rating Change
                     </th>
@@ -96,9 +96,19 @@
                             <% } %>
                         </td>
                     <% } %>
-                    <% if(Date.now() - contest.TIME_START > contest.DURATION*60*1000){ %>
-                        <td>
-                            <%= (standings[i].RATING_CHANGE == null)? '-' : standings[i].RATING_CHANGE %>
+                    <% if(!contest.NOT_UPDATED){ %>
+                        <td class="my-td-center">
+                            <% if(standings[i].RATING_CHANGE == null) { %>
+                                -
+                            <% } else if(standings[i].RATING_CHANGE > 0){ %>
+                                <span class="text-success">
+                                    +<%= standings[i].RATING_CHANGE %>
+                                </span>
+                            <% } else { %>
+                                <span class="text-danger">
+                                    <%= standings[i].RATING_CHANGE %>
+                                </span>
+                            <% } %>
                         </td>
                     <% } %>
                 </tr>

@@ -10,6 +10,11 @@ const router = express.Router({mergeParams : true});
 
 router.get('/', async(req, res) =>{
 
+    req.contest.NOT_UPDATED = true;
+    if(req.contest.IS_ADMIN && Date.now() - req.contest.TIME_START > req.contest.DURATION*60*1000){
+        req.contest.NOT_UPDATED = await DB_contests.checkContestRatingUpdated(req.contest.ID);    
+    }
+
     let problems = await DB_problems.getContestProblems(req.contest.ID);
     let result = await DB_contests.getStandings(req.contest.ID, problems);
 
@@ -26,6 +31,11 @@ router.get('/', async(req, res) =>{
 })
 
 router.get('/friends', async(req, res) =>{
+
+    req.contest.NOT_UPDATED = true;
+    if(req.contest.IS_ADMIN && Date.now() - req.contest.TIME_START > req.contest.DURATION*60*1000){
+        req.contest.NOT_UPDATED = await DB_contests.checkContestRatingUpdated(req.contest.ID);    
+    }
 
     let problems = await DB_problems.getContestProblems(req.contest.ID);
     let result = await DB_contests.getFriendStandings(req.user.id, req.contest.ID, problems);

@@ -379,6 +379,48 @@ async function updateTestResults(sbmssnId, results){
     return;
 }
 
+async function getAllProblems(){
+    let sql = `
+        SELECT
+            P.ID,
+            P.NAME,
+            P.PROB_NUM,
+            P.CONTEST_ID,
+            P.SOURCE_LIMIT "SL",
+            P.TIME_LIMIT "TL",
+            P.MEMORY_LIMIT "ML",
+            P.RATING,
+            (
+                SELECT
+                    COUNT(*)
+                FROM
+                    CONTESTANT "CN"
+                WHERE
+                    EXISTS
+                    (
+                        SELECT
+                            *
+                        FROM
+                            SUBMISSION "S"
+                        WHERE
+                            S.AUTHOR_ID = CN.ID AND
+                            S.TYPE <> 'ADMIN' AND
+                            S.RESULT = 'AC' AND
+                            S.PROBLEM_ID = P.ID
+                    )
+            ) SOLVE_CNT
+        FROM
+            PROBLEM "P" JOIN
+            CONTEST "C" ON (P.CONTEST_ID = C.ID)
+        WHERE
+            C.TIME_START + NUMTODSINTERVAL(C.DURATION, 'MINUTE') < SYSDATE
+        ORDER BY
+            C.TIME_START DESC,
+            P.PROB_NUM ASC
+    `;
+    return (await database.execute(sql, {}, database.options)).rows;
+}
+
 module.exports = {
     getContestProbCount,
     createProblem,
@@ -394,5 +436,6 @@ module.exports = {
     getLanguages,
     createSubmission,
     updateSubmissionResult,
-    updateTestResults
+    updateTestResults,
+    getAllProblems
 };

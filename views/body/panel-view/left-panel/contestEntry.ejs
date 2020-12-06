@@ -27,7 +27,7 @@
             <th width="53%" class="pl-3">name</th>
             <th width="22%" class="text-center">limits</th>
             <th width="10%"></th>
-            <th width="8%">Solved</th>
+            <th width="8%" class="text-center">Solved</th>
         </tr>
         <!-- each row -->
         <% for(let i = 0; i<problems.length; i++){ %>
@@ -126,3 +126,11 @@
         <% } %>
     </table>
 </div>
+
+<% if(contest.NOT_UPDATED){ %>
+    <div class="text-center mt-5">
+        <form action="/contest/<%= contest.ID %>/update-rating" method="POST">
+            <input type="submit" value="Update Rating" class="btn btn-success">
+        </form>
+    </div>
+<% } %>

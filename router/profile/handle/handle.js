@@ -7,6 +7,7 @@ const friendsRouter = require('./friends/friends');
 const settingsRouter = require('./settings/settings');
 const blogRouter = require('./blog/blog');
 const submissionsRouter = require('./submissions/submissions');
+const problemsettingRouter = require('./problemsetting/problemsetting');
 
 const rightPanelUtils = require('../../../utils/rightPanel-utils');
 
@@ -58,5 +59,6 @@ router.use('/friends', friendsRouter);
 router.use('/settings', settingsRouter);
 router.use('/blog', blogRouter);
 router.use('/submissions', submissionsRouter);
+router.use('/problemsetting', problemsettingRouter);
 
 module.exports = router;
