@@ -9,6 +9,8 @@ async function getRatingOrderedUsers(){
             RATING
         FROM
             USER_LIST_VIEW
+        WHERE
+            RATING IS NOT NULL
         ORDER BY
             RANK_NO
     `;

@@ -34,9 +34,10 @@
                 
                 let xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function(){
-                    //console.log(this.responseText);
-                    let result = JSON.parse(this.responseText);
-                    window.location.href = result.url;
+                    if(xhttp.readyState == 4){
+                        let result = JSON.parse(this.responseText);
+                        window.location.href = result.url;
+                    }
                 };
                 let method = (action == 'ADD')? 'POST': 'DELETE';
                 xhttp.open(method, url, true);

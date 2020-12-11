@@ -53,8 +53,8 @@
             function deletePost(blogId){
                 let xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function() {
-                    //console.log(this.responseText);
-                    window.location.href = `/profile/${user}/blog`;    
+                    if(xhttp.readyState == 4)
+                        window.location.href = `/profile/${user}/blog`;    
                 };
                 xhttp.open("DELETE", "/blog/entry/" + blogId + "/edit", true);
                 xhttp.send();

@@ -62,13 +62,13 @@
             </tr>
             <!-- each row -->
             <% for(let i = 0; i<standings.length; i++){ %>
-                <tr>
+                <tr class="<%= (i%2 == 1)? 'my-row-alter' : '' %> <%= standings[i].ID == selfId? 'my-row-selected' : '' %>">
                     <td class="my-td-center">
                         <%= standings[i].RANK_NO %>
                     </td>
                     <td class="my-td-center text-left pl-4">
                         <% if(standings[i].TYPE == 'TEAM'){ %>
-                            <%- include('../partials/handle', {id : standings[i].ID, handle : standings[i].HANDLE}) %>
+                            <%- include('../partials/team', {id : standings[i].ID, handle : standings[i].HANDLE}) %>
                         <% } else { %>
                             <%- include('../partials/handle', {handle : standings[i].HANDLE, color : standings[i].COLOR}) %>
                         <% } %>

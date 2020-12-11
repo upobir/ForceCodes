@@ -1,0 +1,58 @@
+<div class="card border-secondary mb-4">
+    <% if(panel.user == null){ %>
+        <p class="card-text text-center p-2">
+            Sign in to take part in programming contests.
+        </p>
+    <% } else { %>
+        <div class="card-header text-center">
+            Your profile
+        </div>
+        <p class="card-text">
+            
+            <div class="text-right pr-3 my-small-text">
+                <%- include('../../../partials/handle', {handle : panel.user.handle, color : panel.user.color}) %>
+            </div>
+            <div class="text-left my-small-text">
+                <% if(panel.user.rating !== null || panel.user.rating > 0){ %>
+                    <span class="ml-4">
+                        Rating: <%= panel.user.rating %>
+                    </span>    
+                    <br>
+                    <br>
+                <% } %>
+                <ul class="mb-1">
+                    <li>
+                        <a href="/profile/<%=panel.user.handle%>">
+                            Profile
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/profile/<%=panel.user.handle%>/settings">
+                            Settings
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/profile/<%=panel.user.handle%>/friends">
+                            Friends
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/profile/<%=panel.user.handle%>/teams">
+                            Teams
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/profile/<%=panel.user.handle%>/submissions">
+                            Submissions
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/profile/<%=panel.user.handle%>/problemsetting">
+                            Problem Setting
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </p>
+    <% } %>
+</div>

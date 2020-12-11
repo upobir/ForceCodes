@@ -134,7 +134,7 @@ BEGIN
         SET
             RATING = (
                 SELECT
-                    NVL(500+SUM(RATING_CHANGE), 0)
+                    NVL(SUM(RATING_CHANGE), 0)
                 FROM
                     CONTEST_REGISTRATION
                 WHERE
@@ -152,4 +152,89 @@ BEGIN
     END IF;
 END;
 
-SHOW ERRORS;
+CREATE OR REPLACE PROCEDURE
+    CREATE_TEAM(
+        T_ID OUT CONTESTANT.ID%TYPE,
+        T_NAME IN CONTESTANT.HANDLE%TYPE
+    )
+IS
+BEGIN
+    T_ID := CNTSTNT_SEQ.NEXTVAL;
+
+    INSERT INTO
+        CONTESTANT(
+            ID,
+            HANDLE,
+            TYPE
+        )
+    VALUES(
+        T_ID,
+        T_NAME,
+        'TEAM'
+    );
+
+    INSERT INTO
+        TEAM(
+            ID,
+            DESCRIPTION
+        )
+    VALUES(
+        T_ID,
+        ''
+    );
+END;
+
+CREATE OR REPLACE PROCEDURE
+    ADD_TEAM_MEMBER(
+        T_ID IN CONTESTANT.ID%TYPE,
+        M_HANDLE IN CONTESTANT.HANDLE%TYPE,
+        M_ID OUT CONTESTANT.ID%TYPE
+    )
+IS
+    CNT NUMBER;
+BEGIN
+    M_ID := NULL;
+
+    SELECT
+        COUNT(*)
+    INTO
+        CNT
+    FROM
+        CONTESTANT "CN"
+    WHERE
+        CN.TYPE <> 'TEAM' AND
+        CN.HANDLE = M_HANDLE AND
+        NOT EXISTS (
+            SELECT
+                *
+            FROM
+                USER_TEAM_MEMBER
+            WHERE
+                USER_ID = CN.ID AND
+                TEAM_ID = T_ID
+        );
+
+    IF (CNT > 0) THEN
+        SELECT
+            ID
+        INTO
+            M_ID
+        FROM
+            CONTESTANT
+        WHERE
+            HANDLE = M_HANDLE;
+
+        INSERT INTO
+            USER_TEAM_MEMBER(
+                USER_ID,
+                TEAM_ID,
+                TYPE
+            )
+        VALUES(
+            M_ID,
+            T_ID,
+            'MEMBER'
+        );
+    END IF;
+END;
+    

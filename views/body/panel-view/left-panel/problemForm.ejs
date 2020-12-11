@@ -78,8 +78,10 @@
             if(confirm(str)){
                 let xhttp = new XMLHttpRequest();
                     xhttp.onreadystatechange = function() {
-                    let response = JSON.parse(this.responseText);
-                    window.location.href = response.url; 
+                    if(xhttp.readyState == 4){
+                        let response = JSON.parse(this.responseText);
+                        window.location.href = response.url; 
+                    }
                 };
                 xhttp.open("DELETE", window.location.href, true);
                 xhttp.send();

@@ -62,6 +62,17 @@ router.get('/', async (req, res) =>{
     if(req.contest.IS_ADMIN && Date.now() - req.contest.TIME_START > req.contest.DURATION*60*1000){
         req.contest.NOT_UPDATED = await DB_contests.checkContestRatingUpdated(req.contest.ID);    
     }
+
+    let msg = null;
+    if(Date.now() - req.contest.TIME_START <= req.contest.DURATION*60*1000 && !req.contest.IS_ADMIN){
+        let results = (await DB_contests.checkRegistration(req.contest.ID, req.user.id));
+        if(results.length > 0){
+            msg = results[0];
+        }
+        else{
+            msg = 'invalid';
+        }
+    }
     
     let problems = await DB_problems.getContestProblems(contest.ID);
     let announcements = await DB_contests.getAnnouncements(contest.ID);
@@ -69,7 +80,6 @@ router.get('/', async (req, res) =>{
     let innerNav = innerNavUtils.getContestInnerNav(contest);
     let rightPanel = await rightPanelUtils.getRightPanel(req.user);
     
-
     res.render('layout.ejs', {
         title: `${contest.NAME} - ForceCodes`,
         body: ['panel-view', 'contestEntry', 'PROBLEMS'],
@@ -77,6 +87,7 @@ router.get('/', async (req, res) =>{
         innerNav : innerNav,
         contest : contest,
         adminContest : adminContest,
+        msg: msg,
         problems : problems,
         announcements : announcements,
         rightPanel : rightPanel
@@ -98,8 +109,9 @@ router.post('/', async(req, res, next) =>{
 });
 
 router.post('/update-rating', async (req, res) =>{
-    if(req.contest.IS_ADMIN)
+    if(req.contest.IS_ADMIN){
         await DB_contests.updateRating(req.contest.ID);
+    }
     res.redirect(`/contest/${req.contest.ID}`);
 });
 

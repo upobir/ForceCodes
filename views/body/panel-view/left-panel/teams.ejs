@@ -1,0 +1,30 @@
+<% if(user != null && user.handle == handle) { %>
+    <div width="100%" class="mt-1 text-right" >
+        <a href="/team/new"> Create New Team </a>
+    </div>
+<% } %>
+
+<div class="card border my-3" >
+    <div class="card-header my-card-header">
+        Teams
+    </div>
+    <table width="100%" class="table table-sm table-bordered my-card-no-bottom" style="font-size: 14px;">
+        <!-- list header -->
+        <tr>
+            <th width="45%" class="text-center">Name</th>
+            <th width="*" class="text-center">Members</th>
+        </tr>
+        <% teams.forEach(team => { %>
+            <tr>
+                <td class="my-td-center">
+                    <%- include('../../../partials/team', {id : team.ID, handle : team.HANDLE}) %>
+                </td>
+                <td class="my-td-center">
+                    <% team.members.forEach(member => { %>
+                        <%- include('../../../partials/handle', {handle : member.HANDLE, color : member.COLOR}) %> <br>
+                    <% }) %>
+                </td>
+            </tr>
+        <% }) %>
+    </table>
+</div>

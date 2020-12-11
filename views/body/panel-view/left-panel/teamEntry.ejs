@@ -1,0 +1,172 @@
+<div class="ml-2 border p-4">
+    <form method="POST">
+        <% if(team.name == null){ %>
+            <label for="name" >
+                Team Name:
+            </label> 
+            <input type="text" name="name" required class="form-control">
+        <% } else { %>
+            <h2 class="my-bold">
+                <%= team.name %>
+            </h2>
+        <% } %>
+    
+        <% if(team.id != null){ %>
+            created <%= team.created + ((team.created == 'now' )? '' : ' ago')  %>
+        <% } %>
+        <div class="card border mt-5">
+            <div class="card-header">
+                Members
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-bordered my-card-no-bottom" id="table">
+                    <% team.members.forEach( member =>{ %>
+                        <tr>
+                            <td class="pl-4" width="*" height="36px">
+                                <%- include('../../../partials/handle', {handle : member.handle, color : member.color}) %>
+                            </td>
+                            
+                            <% if(team.isMember){ %>
+                                <td width="20%" class="my-td-center">
+                                    <% if(member.type != 'CREATOR' ){ %>
+                                        <button type="button"  class="btn btn-danger py-0" onclick="removeMember(this, '<%= member.handle %>')">
+                                            Remove
+                                        </button>
+                                    <% } %>
+                                </td>
+                            <% } %>
+                        </tr>
+                    <% }) %>
+                </table>
+            </div>
+            
+        </div>
+        <% if(team.isMember){ %>
+            <table width="100%" class="my-4">
+                <tr>
+                    <td class="pl-1">
+                        Add new member:
+                    </td>
+                </tr>
+                <tr>
+                    <td width="*" class="my-td-center">
+                        <input type="text" id="new" class="form-control">
+                    </td>
+                    <td width="5%" class="my-td-center">
+                        <button type="button" class="btn btn-success px-5 py-1" onclick="addMember()">
+                            Add
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        <% } %>
+
+        <% if(team.id == null){ %> 
+            <input type="hidden" id="members" name="members" value="<%= team.members.map(x => ','+x.handle).join() %>">
+            <div class="text-center mt-4">
+                <input type="submit" value="Create New Team" class="btn btn-success">
+            </div>    
+        <% } %>
+    </form>
+</div>
+<% if(team.id == null){ %>
+    <script>
+        function addMember(){
+            let input = document.getElementById('new');
+            let handle = input.value;
+
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(this.responseText != ''){
+                    let result = JSON.parse(this.responseText);
+                    let user = result.user;
+                    let membersInput = document.getElementById('members');
+
+                    if(user != null && membersInput.value.indexOf(',' + user.HANDLE) < 0){
+                        input.value = '';
+                        membersInput.value += ',' + user.HANDLE;
+                        addTableMember(user.HANDLE, user.COLOR);
+                    }
+                }
+            };
+            xhttp.open('GET', '/api/users/'+handle, true);
+            xhttp.send();
+        }
+
+        function removeMember(node, handle){
+            let membersInput = document.getElementById('members');
+            membersInput.value = membersInput.value.replace(','+handle, '');
+            removeTableMember(node);
+        }
+    </script>
+<% } else { %>
+    <%- '<script>let teamId = ' + team.id +  ';</script>' %>
+    <script>
+        function addMember(){
+            let input = document.getElementById('new');
+            let handle = input.value;
+
+            let done = false;
+
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(this.responseText != '' && !done){
+                    done = true;
+                    let result = JSON.parse(this.responseText);
+                    let user = result.user;
+
+                    if(user != null){
+                        input.value = '';
+                        addTableMember(user.HANDLE, user.COLOR);
+                    }
+                }
+            };
+            xhttp.open('POST', `/team/${teamId}/add`, true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({handle : handle}));
+        }
+
+        function removeMember(node, handle){
+            let xhttp = new XMLHttpRequest();
+            let done = false;
+            xhttp.onreadystatechange = function(){
+                if(this.responseText != '' && !done){
+                    done = true;
+                    let result = JSON.parse(this.responseText);
+                    removeTableMember(node);
+                }
+            };
+            xhttp.open('POST', `/team/${teamId}/remove`, true);
+            xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhttp.send(JSON.stringify({handle : handle}));
+        }
+    </script>
+<% } %>
+
+<script>
+    function addTableMember(handle, color){
+        let table = document.getElementById('table');
+        let row = document.createElement('TR');
+        
+        row.innerHTML = `
+            <td class="pl-4" width="*">
+                <a href="/profile/${handle}" style="color:${color};" >
+                    ${handle}
+                </a>
+            </td>
+            <td width="20%" class="my-td-center">
+                <button type="button" onclick="removeMember(this, '${handle}')">
+                    Remove
+                </button>
+            </td>
+        `;
+
+        row.childNodes[1].childNodes[1].className = "my-link my-handle";
+        row.childNodes[3].childNodes[1].className = "btn btn-danger py-0";
+        table.appendChild(row);
+    }
+    function removeTableMember(node){
+        node = node.parentNode.parentNode;
+        node.parentNode.removeChild(node);
+    }
+</script>

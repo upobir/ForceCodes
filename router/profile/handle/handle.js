@@ -8,9 +8,9 @@ const settingsRouter = require('./settings/settings');
 const blogRouter = require('./blog/blog');
 const submissionsRouter = require('./submissions/submissions');
 const problemsettingRouter = require('./problemsetting/problemsetting');
+const teamsRouter = require('./teams/teams');
 
 const rightPanelUtils = require('../../../utils/rightPanel-utils');
-
 const innerNavUtils = require(process.env.ROOT+'/utils/innerNav-utils');
 const timeUtils = require(process.env.ROOT+'/utils/time-utils');
 
@@ -60,5 +60,6 @@ router.use('/settings', settingsRouter);
 router.use('/blog', blogRouter);
 router.use('/submissions', submissionsRouter);
 router.use('/problemsetting', problemsettingRouter);
+router.use('/teams', teamsRouter);
 
 module.exports = router;

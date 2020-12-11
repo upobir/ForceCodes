@@ -100,9 +100,10 @@ async function updateUserTokenById(id, token){
 async function getUserPromptById(id){
     const sql = `
         SELECT
-            HANDLE,
-            LOGIN_TOKEN,
-            RATING,
+            U.HANDLE,
+            U.LOGIN_TOKEN,
+            U.RATING,
+            R.COLOR,
             (SELECT
                 COUNT(*)
             FROM
@@ -112,9 +113,10 @@ async function getUserPromptById(id){
                 TIME_READ = NULL
             ) AS "MESSAGE_COUNT"
         FROM
-            USER_CONTESTANT_VIEW
+            USER_CONTESTANT_VIEW "U" JOIN
+            RANK "R" ON (U.RANK_ID = R.ID)
         WHERE
-            ID = :id
+            U.ID = :id
     `;
     const binds = {
         id: id

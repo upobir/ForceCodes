@@ -3,10 +3,3 @@
 <form action="/logout" method="POST" class="my-logout-form">
     <input type="submit" value="log out" class="btn btn-link my-non-btn">
 </form>
-
-<% if (user.msgCount > 0) { %>
-    <br>
-    <span hidden>
-        <a href="/messages"><b>messages(<%= user.msgCount %>)</b></a>
-    </span>
-<% } %>

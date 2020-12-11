@@ -310,8 +310,19 @@ async function getSubmissionsByHandle(handle){
             SUBMISSIONS_VIEW "S" JOIN
             CONTESTANT "C" ON (C.ID = S.AUTHOR_ID)
         WHERE
-            S.TYPE <> 'ADMIN' AND
-            C.HANDLE = :handle
+            S.TYPE <> 'ADMIN' AND (
+                C.HANDLE = :handle OR
+                EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        USER_TEAM_MEMBER "M" JOIN
+                        CONTESTANT "C2" ON (M.USER_ID = C2.ID)
+                    WHERE
+                        M.TEAM_ID = S.AUTHOR_ID AND
+                        C2.HANDLE = :handle
+                )
+            )
         ORDER BY
             S.ID DESC
     `;
@@ -319,6 +330,200 @@ async function getSubmissionsByHandle(handle){
         handle : handle
     };
     return (await database.execute(sql, binds, database.options)).rows;
+}
+
+async function createTeam(name, members){
+    let sql = `
+        BEGIN
+            CREATE_TEAM(
+                :id,
+                :name
+            );
+        END;
+    `;
+    let binds = {
+        id: {
+            dir: oracledb.BIND_OUT, 
+            type: oracledb.NUMBER
+        },
+        name: name
+    };
+    let result = (await database.execute(sql, binds, {})).outBinds;
+    let teamId = result.id;
+    console.log(teamId)
+
+    sql = `
+            INSERT INTO
+                USER_TEAM_MEMBER(
+                    USER_ID,
+                    TEAM_ID,
+                    TYPE
+                )
+            SELECT
+                ID,
+                :teamId,
+                :type
+            FROM
+                CONTESTANT
+            WHERE
+                HANDLE = :handle
+    `;
+
+    binds = [];
+    for(let i = 0; i<members.length; i++){
+        binds.push({
+            handle : members[i],
+            teamId : teamId,
+            type : (i == 0)? 'CREATOR' : 'MEMBER'
+        });
+    }
+    await database.executeMany(sql, binds, {});
+    return teamId;
+}
+
+async function getTeamsByHandle(handle){
+    let sql = `
+        SELECT
+            *
+        FROM
+            CONTESTANT "CN"
+        WHERE
+            CN.TYPE = 'TEAM' AND
+            EXISTS(
+                SELECT
+                    *
+                FROM
+                    USER_TEAM_MEMBER "M" JOIN
+                    CONTESTANT "U" ON (U.ID = M.USER_ID)
+                WHERE
+                    U.HANDLE = :handle AND
+                    M.TEAM_ID = CN.ID
+            )
+        ORDER BY
+            CN.CREATION_TIME DESC
+    `;
+    let binds = {
+        handle : handle
+    };
+
+    let results = (await database.execute(sql, binds, database.options)).rows;
+
+    sql = `
+        SELECT
+            M.TEAM_ID,
+            M.USER_ID,
+            U.HANDLE,
+            U.COLOR
+        FROM
+            USER_TEAM_MEMBER "M" JOIN
+            USER_LIST_VIEW "U" ON (M.USER_ID = U.ID)
+        WHERE
+            EXISTS(
+                SELECT
+                    *
+                FROM
+                    USER_TEAM_MEMBER "M2" JOIN
+                    CONTESTANT "CN" ON (CN.ID = M2.USER_ID)
+                WHERE
+                    CN.HANDLE = :handle AND
+                    M2.TEAM_ID = M.TEAM_ID
+            )
+    `;
+    binds = {
+        handle : handle
+    };
+
+    let members = (await database.execute(sql, binds, database.options)).rows;
+    
+    let teamMap = {};
+    results.forEach(team =>{
+        teamMap[team.ID] = team;
+        team.members = [];
+    });
+
+    members.forEach(member =>{
+        teamMap[member.TEAM_ID].members.push(member);
+    })
+
+    return results;
+}
+
+async function getTeam(teamId){
+    let sql = `
+        SELECT
+            *
+        FROM
+            CONTESTANT
+        WHERE
+            TYPE = 'TEAM' AND
+            ID = :teamId
+    `;
+    let binds = {
+        teamId : teamId
+    };
+    let results = (await database.execute(sql, binds, database.options)).rows;
+    if(results.length == 0) return null;
+
+    sql = `
+        SELECT
+            M.TYPE,
+            U.HANDLE,
+            U.COLOR
+        FROM
+            USER_TEAM_MEMBER "M" JOIN
+            USER_LIST_VIEW "U" ON (M.USER_ID = U.ID)
+        WHERE
+            M.TEAM_ID = :teamId
+        ORDER BY
+            M.TYPE
+    `;
+    results[0].MEMBERS = (await database.execute(sql, binds, database.options)).rows;
+    return results[0];
+}
+
+async function addTeamMember(team, handle){
+    let sql = `
+        BEGIN
+            ADD_TEAM_MEMBER(
+                :teamId,
+                :handle,
+                :memberId
+            );
+        END;
+    `;
+    let binds = {
+        teamId : team,
+        handle : handle,
+        memberId : {
+            dir: oracledb.BIND_OUT, 
+            type: oracledb.NUMBER
+        }
+    };
+    let result = (await database.execute(sql, binds, {})).outBinds.memberId;
+    return result;
+}
+
+async function removeTeamMember(team, handle){
+    let sql = `
+        DELETE FROM
+            USER_TEAM_MEMBER
+        WHERE
+            TYPE = 'MEMBER' AND
+            TEAM_ID = :teamId AND
+            USER_ID = (
+                SELECT
+                    ID
+                FROM
+                    CONTESTANT
+                WHERE
+                    HANDLE = :handle
+            )
+    `
+    let binds = {
+        teamId : team,
+        handle : handle
+    };
+    await database.execute(sql, binds, {});
 }
 
 module.exports = {
@@ -335,5 +540,10 @@ module.exports = {
     updateAdminship,
     getTeamsById,
     getAdminnedContests,
-    getSubmissionsByHandle
+    getSubmissionsByHandle,
+    createTeam,
+    getTeamsByHandle,
+    getTeam,
+    addTeamMember,
+    removeTeamMember
 }

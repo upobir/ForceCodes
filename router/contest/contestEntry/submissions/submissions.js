@@ -74,21 +74,30 @@ router.get('/admin', async(req, res) =>{
 
 router.get('/:sbmssnId', async(req, res, next) =>{
     let submissions = await DB_contests.getSubmission(req.params.sbmssnId);
-    if(submissions.length == 0 || req.user == null){
+    if(submissions.length == 0){
         next();
+        return;
+    }
+    if(req.user == null){
+        res.redirect(`/contest/${req.contest.ID}/submissions`);
         return;
     }
     if(submissions[0].TYPE == 'ADMIN' && !req.contest.IS_ADMIN){
         next();
         return;
     }
-    if(submissions[0].TYPE == 'CONTEST' && req.user.id != submissions[0].AUTHOR_ID && !req.contest.IS_ADMIN && Date.now() - req.contest.TIME_START <= req.contest.DURATION * 60 * 1000){
-        res.redirect(`/contest/${req.contest.ID}/submissions`);
-        return;
+    if(!req.contest.IS_ADMIN && submissions[0].TYPE == 'CONTEST' && Date.now() - req.contest.TIME_START <= req.contest.DURATION * 60 * 1000){
+        let regs = await DB_contests.checkRegistration(req.contest.ID, req.user.id);
+
+        if(regs.length == 0 || regs[0].ID != submissions[0].AUTHOR_ID){
+            res.redirect(`/contest/${req.contest.ID}/submissions`);
+            return;
+        }
     }
 
     let code = await fs.readFileSync(process.env.ROOT + '/problem-data/submissions/' + submissions[0].URL);
     let layoutNav = innerNavUtils.getContestInnerNav(req.contest);
+
 
     res.render('layout.ejs', {
         title : 'Submission - ForceCodes',

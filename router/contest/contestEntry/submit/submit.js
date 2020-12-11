@@ -45,8 +45,8 @@ router.post('/', async(req, res) =>{
             return;
         }
     }
-    else if(new Date(req.contest.TIME_START + req.contest.duration * 60 * 1000) >= Date.now()){
-        let results = (await DB_contests.checkRegistration(req.contest.ID, req.user.ID));
+    else if(Date.now() - req.contest.TIME_START <=  req.contest.DURATION * 60 * 1000){
+        let results = (await DB_contests.checkRegistration(req.contest.ID, req.user.id));
         if(results.length > 0){
             author = results[0].ID;
         }
@@ -56,7 +56,7 @@ router.post('/', async(req, res) =>{
         }
     }
 
-    await submissionUtils.submit(req.user.id, req.contest.ID, req.body.problem, req.body.language, req.body.code);
+    await submissionUtils.submit(author, req.contest.ID, req.body.problem, req.body.language, req.body.code);
 
     res.redirect(`/contest/${req.contest.ID}/submissions/my`);
 });

@@ -16,7 +16,12 @@ async function getRightPanel(user){
     }
 
     panels.push({
-        file : 'random'
+        file : 'user',
+        user : user
+    });
+
+    panels.push({
+        file : 'bugReport'
     });
 
     return panels;

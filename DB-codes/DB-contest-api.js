@@ -122,7 +122,8 @@ async function updateContest(contest){
         });
     })
 
-    await database.executeMany(sql, binds, {});
+    if(binds.length > 0)
+        await database.executeMany(sql, binds, {});
     return;
 }
 
@@ -335,12 +336,23 @@ async function getUserSubmissions(contestId, userId){
         SELECT
             *
         FROM
-            SUBMISSIONS_VIEW
+            SUBMISSIONS_VIEW "S"
         WHERE
-            AUTHOR_ID = :userId AND
-            CONTEST_ID = :contestId
+            (
+                S.AUTHOR_ID = :userId OR
+                EXISTS (
+                    SELECT
+                        *
+                    FROM
+                        USER_TEAM_MEMBER "M"
+                    WHERE
+                        M.TEAM_ID = S.AUTHOR_ID AND
+                        M.USER_ID = :userId
+                )
+            ) AND
+            S.CONTEST_ID = :contestId
         ORDER BY
-            ID DESC
+            S.ID DESC
     `;
     let binds = {
         userId : userId,
@@ -606,6 +618,15 @@ async function getFriendStandings(userId, contestId, problems){
         ) "TT"
         WHERE
             TT.ID = :userId OR
+            EXISTS(
+                SELECT
+                    *
+                FROM
+                    USER_TEAM_MEMBER "M"
+                WHERE
+                    M.TEAM_ID = TT.ID AND
+                    M.USER_ID = :userId
+            ) OR
             EXISTS
             (
                 SELECT

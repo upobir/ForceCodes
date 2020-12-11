@@ -15,6 +15,20 @@
     </ul>
 <% } %>
 
+<% if(msg != null) { %>
+    <ul class="list-inline">
+        <li class="list-inline-item">
+            <b class="text-info pl-1">
+                <% if(msg === 'invalid'){ %>
+                    You are not registered for this contest.
+                <% } else { %>
+                    You are registered with "<%= msg.HANDLE %>" for this contest.
+                <% } %>
+            </b>
+        </li>
+    </ul>
+<% } %>
+
 <b class="float-left"></b>
 <div class="card border">
     <div class="card-header my-card-header">
@@ -127,7 +141,7 @@
     </table>
 </div>
 
-<% if(contest.NOT_UPDATED){ %>
+<% if(contest.IS_ADMIN && contest.NOT_UPDATED){ %>
     <div class="text-center mt-5">
         <form action="/contest/<%= contest.ID %>/update-rating" method="POST">
             <input type="submit" value="Update Rating" class="btn btn-success">

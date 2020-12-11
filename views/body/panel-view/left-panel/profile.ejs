@@ -60,10 +60,6 @@
             <div class="py-2">
                 <a href="<%= profile.HANDLE %>/blog" >Blog entries(<%= profile.BLOG_COUNT %>)</a>
             </div>
-            <!-- talks -->
-            <div class="py-2">
-                <a href="/messeges"> Talks </a>
-            </div>
             <!-- admin button -->
             <% if(user != null && user.isAdmin && user.handle !== profile.HANDLE) { %>
                 <div class="py-2">
@@ -112,12 +108,12 @@
             if(confirm('ADMIN ACTION\n' + str.toUpperCase())){
                 let xhttp = new XMLHttpRequest();
                 xhttp.onreadystatechange = function(){
-                    window.location.href = "/profile/"+handle;
+                    if(xhttp.readyState == 4)
+                        window.location.href = "/profile/"+handle;
                 }
                 xhttp.open("POST", "/profile/" + handle + "/admin", true);
                 xhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
                 xhttp.send();
-                
             }
         }
     </script>

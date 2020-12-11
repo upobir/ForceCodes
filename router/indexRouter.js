@@ -19,6 +19,9 @@ const countryRouter = require('./country/countryAll');
 const contestRouter = require('./contest/contest');
 const problemsRouter = require('./problems/problems');
 const apiRouter = require('./api/api');
+const teamsRouter = require('./teams/teams');
+const aboutRouter = require('./about/about');
+
 const rightPanelUtils = require('../utils/rightPanel-utils');
 
 // ROUTE: home page
@@ -54,6 +57,8 @@ router.use('/country', countryRouter);
 router.use('/contest', contestRouter);
 router.use('/api', apiRouter);
 router.use('/problems', problemsRouter);
+router.use('/team', teamsRouter);
+router.use('/about', aboutRouter);
 
 
 module.exports = router

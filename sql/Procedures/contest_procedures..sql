@@ -114,7 +114,7 @@ BEGIN
                 ) "SCORE"
             FROM
                 PRBLM_CNTSTNT_REPORT_VIEW "R" JOIN
-                CONTEST "C" ON (R.CONTEST_ID = C.ID) JOIN
+                CONTEST "C" ON (R.CONTEST_ID = C.ID) LEFT JOIN
                 USER_ACCOUNT "U" ON (U.ID = R.ID)
             WHERE
                 R.CONTEST_ID = C_ID AND
@@ -130,6 +130,7 @@ BEGIN
         ) "T"
     )
     LOOP
+
         -- UPDATE THE STANDING TO REGISTRATION TABLE
         UPDATE
             CONTEST_REGISTRATION

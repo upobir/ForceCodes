@@ -40,7 +40,7 @@
                 </td>
                 <td class="my-td-center">
                     <% if(submission.AUTHOR_TYPE == 'TEAM'){ %>
-                        <%- include('../partials/handle', {id : submission.AUTHOR_ID, handle : submission.HANDLE}) %>
+                        <%- include('../partials/team', {id : submission.AUTHOR_ID, handle : submission.HANDLE}) %>
                     <% } else { %>
                         <%- include('../partials/handle', {handle : submission.HANDLE, color : submission.COLOR}) %>
                     <% } %>

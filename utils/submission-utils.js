@@ -106,8 +106,12 @@ function runOnTests(sbmssnId, problem, langId, fileName, ext, tests){
                 }
                 
                 if(!debug){
-                    await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.exe');
-                    await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.out');
+                    try{
+                        await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.exe');
+                        await fs.unlinkSync(process.env.ROOT + '/problem-data/environment/' + fileName + '.out');
+                    } catch(e){
+                        console.log(e.message);
+                    }
                     await DB_problems.updateTestResults(sbmssnId, results);
                     await updateSubmissionResult(sbmssnId, result);
                 }
